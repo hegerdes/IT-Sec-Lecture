@@ -21,6 +21,19 @@ if os.path.isfile('QA_cache.pickle'):
 start_msg = "Hello Sphinx!"
 mat_nr = "123456"
 
+# QA = {
+#     b'What is the name of the vulnerability linked to SSL heartbeats?': 'heartbleed',
+#     b'Which port is normally used for HTTPS requests?': '443',
+#     b'Which C-function can be used to convert a port from host byte order to network byte oder?': 'htons',
+#     b'What is not only a James Bond film, but also a vulnerability that is harder to exploit and mitigate than Meltdown?': 'spectre',
+#     b'What is my IPv4 address (XXX.XXX.XXX.XXX)?': '131.173.33.211',
+#     b'What does DNS stand for?': 'domain name system',
+#     b'Where is The Great Firewall to be found?': 'china',
+#     b'Which OSI-layer are routers normally associated with (number)?': '3',
+#     b'What is the reliable, connection-oriented transport protocol called (abbreviation)?': 'tcp',
+#     b'What kind of attack is TCP SYN flooding (abbreviation)?': 'dos'}
+
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
     print("Sending: " + start_msg)
@@ -51,16 +64,3 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             QA[data] = text
 
 pickle.dump(QA, open("QA_cache.pickle", "wb"))
-
-# QA:
-# QA = {
-#     b'What is the name of the vulnerability linked to SSL heartbeats?': 'heartbleed',
-#     b'Which port is normally used for HTTPS requests?': '443',
-#     b'Which C-function can be used to convert a port from host byte order to network byte oder?': 'htons',
-#     b'What is not only a James Bond film, but also a vulnerability that is harder to exploit and mitigate than Meltdown?': 'spectre',
-#     b'What is my IPv4 address (XXX.XXX.XXX.XXX)?': '131.173.33.211',
-#     b'What does DNS stand for?': 'domain name system',
-#     b'Where is The Great Firewall to be found?': 'china',
-#     b'Which OSI-layer are routers normally associated with (number)?': '3',
-#     b'What is the reliable, connection-oriented transport protocol called (abbreviation)?': 'tcp',
-#     b'What kind of attack is TCP SYN flooding (abbreviation)?': 'dos'}
