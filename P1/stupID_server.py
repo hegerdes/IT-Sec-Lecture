@@ -29,7 +29,10 @@ def Main():
         print('Error while opening socket: %s' % str(e))
         exit(0)
 
+    # Base64 decoded
+    # 'amRvbnBocjd1QUdPYWp4aENETkx6bUVKd3NwN0dZalhEZTVVajdDLzNGU3hMTWRmKzYvamhLSGFweG9lQTE2bFlIR08xUG94OUF0NE83b2VaTFZxS2c9PQo='
     msg = 'ITS202021:'.encode() + b'jdonphr7uAGOajxhCDNLzmEJwsp7GYjXDe5Uj7C/3FSxLMdf+6/jhKHapxoeA16lYHGO1Pox9At4O7oeZLVqKg=='
+
     print(msg)
     # receive tcp packets and check payload for correct password
     try:
