@@ -19,23 +19,21 @@ to_replace = {
 USER = 'ITS202021:'
 PORT = 5000
 HOST = '127.0.0.1'
+
 # Nice formatting
 RED='\033[1;31m'
 GRN='\033[1;32m'
 YEL='\033[1;33m'
 BLU='\033[1;34m'
 GRY='\033[1;90m'
-LRD='\033[1;41m' # Red Background, White Letters
 NC='\033[0m' # No Color
 
 def chrReplace(word):
     for key in to_replace.keys():
-
         # Check index with multible hits
         while True:
             if key in word.lower():
                 index = word.lower().find(key)
-
                 word = word[:index] + to_replace[key] + word[index + 1:]
             else: break
     return word
@@ -72,7 +70,7 @@ def sendMsg(conn, word, original='NONE'):
         if data == b'01 - Password correct.':
             conn.close()
             if original != 'NONE':
-                print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + 'SHA:' + msg.decode() )
+                print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + 'SHA' + msg.decode() )
             else: print('Found PW: ' + word)
             exit(0)
         return conn
@@ -84,11 +82,14 @@ def sendMsg(conn, word, original='NONE'):
 
 if __name__ == "__main__":
     PATH = 'P1/rfc4960.txt'
+
+    # Input argument check
     if(len(sys.argv)!= 2):
         print(YEL + 'Plese specify dictionary!\nUsage python pa1_client.py <Path to dict>' + NC)
         exit(0)
     else: PATH = sys.argv[1]
 
+    # Check if file exists
     if not os.path.isfile(PATH):
         print(RED + 'File does not exist.' + NC)
         exit(0)
@@ -100,13 +101,13 @@ if __name__ == "__main__":
             s = reader.readline()
             while s != '':
                 for word in s.split():
-                    #With and without replacement
+                    # Send msg with and without replacement
                     conn = sendMsg(conn, chrReplace(word), word)
                     conn = sendMsg(conn, word)
 
                 s = reader.readline()
 
     except KeyboardInterrupt:
-        print("Interrupt received, stopping server..")
+        print("Interrupt received, stopping server...")
         conn.close()
     print(RED + 'No PW found' + NC)

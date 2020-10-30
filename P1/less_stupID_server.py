@@ -54,7 +54,7 @@ def Main():
                 # TODO: Log restricted IPs and reset slowdown after 6h or so.
                 # Should be fine though for this task ;)
                 con_tracker[connID] = 0.0
-                print('added to tracker')
+                print('Added to ' + str(connID) + ' to connection tracker')
 
             data = conn.recv(512)
             while data:
@@ -85,7 +85,7 @@ def Main():
                 data = conn.recv(512)
             print(str(addr) + " disconnected.")
     except KeyboardInterrupt:
-        print("Interrupt received, stopping server..")
+        print("Interrupt received, stopping server...")
         mySocket.close()
 
 
