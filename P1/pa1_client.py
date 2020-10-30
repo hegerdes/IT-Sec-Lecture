@@ -60,20 +60,26 @@ def createConnection():
 
 
 def sendMsg(conn, word, original='NONE'):
-    msg = toBase64(createHash(word))
-    conn.sendall(USER.encode() + msg)
-    data = conn.recv(1024)
-    # print('Sending: ' + USER + msg.decode())
-    # print('recived: ' + data.decode())
-    if data == b'02 - Connection refused.':
-        print(YEL + 'Refused connection. Restoreing connection...' + NC)
-        conn = createConnection()
-    if data == b'01 - Password correct.':
-        if original != 'NONE':
-            print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + 'SHA:' + msg.decode() )
-        else: print('Found PW: ' + word)
+    try:
+        msg = toBase64(createHash(word))
+        conn.sendall(USER.encode() + msg)
+        data = conn.recv(1024)
+        # print('Sending: ' + USER + msg.decode())
+        # print('recived: ' + data.decode())
+        if data == b'02 - Connection refused.':
+            print(YEL + 'Refused connection. Restoreing...' + NC)
+            conn = createConnection()
+        if data == b'01 - Password correct.':
+            conn.close()
+            if original != 'NONE':
+                print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + 'SHA:' + msg.decode() )
+            else: print('Found PW: ' + word)
+            exit(0)
+        return conn
+    except socket.error as e:
+        print('Error while sending data: %s' % str(e))
         exit(0)
-    return conn
+
 
 
 if __name__ == "__main__":
