@@ -18,7 +18,7 @@ import time
 # Remember all connected IPs
 # In deplyment you would make it persistent
 con_tracker = {}
-# The slowdown factor and when to
+# The slowdown factor and when to disconnect
 SLOWDOWN = 0.1
 MAX_TRYS = 100 * SLOWDOWN
 
@@ -37,6 +37,7 @@ def Main():
         print('Error while opening socket: %s' % str(e))
         exit(0)
 
+    # TODO: Add a SALT
     msg = 'ITS202021:'.encode() + b'jdonphr7uAGOajxhCDNLzmEJwsp7GYjXDe5Uj7C/3FSxLMdf+6/jhKHapxoeA16lYHGO1Pox9At4O7oeZLVqKg=='
 
     print(msg)
