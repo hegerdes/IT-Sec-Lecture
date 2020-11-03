@@ -53,7 +53,7 @@ def createConnection():
         s.connect((HOST, PORT))
         return s;
     except socket.error as e:
-        print('Error while opening socket: %s' % str(e))
+        print(RED + 'Error while opening socket.\nErrMsg: %s' % str(e) + NC + '\nSystem exit')
         exit(0)
 
 
@@ -64,19 +64,22 @@ def sendMsg(conn, word, original='NONE'):
         data = conn.recv(1024)
         # print('Sending: ' + USER + msg.decode())
         # print('recived: ' + data.decode())
-        if data == b'02 - Connection refused.':
+        if data == b'02 - Connection refused.' or len(data) == 0:
             print(YEL + 'Refused connection. Restoreing...' + NC)
             conn = createConnection()
         if data == b'01 - Password correct.':
             conn.close()
             if original != 'NONE':
+                # Hopefully I did the output format right
                 print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + 'SHA' + msg.decode() )
-            else: print('Found PW: ' + word)
+            else: print(GRN + 'Found PW: ' + word)
             exit(0)
         return conn
     except socket.error as e:
-        print('Error while sending data: %s' % str(e))
-        exit(0)
+        print(RED + 'Error while sending data.\nErrMsg: %s' % str(e))
+        print(YEL + 'Trying to reconnect...' + NC)
+        conn = createConnection()
+        return conn
 
 
 
@@ -106,8 +109,9 @@ if __name__ == "__main__":
                     conn = sendMsg(conn, word)
 
                 s = reader.readline()
-
     except KeyboardInterrupt:
         print("Interrupt received, stopping server...")
         conn.close()
+    except: # Catch all. -> I know not a good practice but should do it for this assignment ¯\_(ツ)_/¯
+        print('Unexpected error: ' + str(sys.exc_info()[0]))
     print(RED + 'No PW found' + NC)
