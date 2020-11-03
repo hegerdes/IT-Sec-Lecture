@@ -70,8 +70,10 @@ def sendMsg(conn, word, original='NONE'):
         if data == b'01 - Password correct.':
             conn.close()
             if original != 'NONE':
-                # Hopefully I did the output format right
-                print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + 'SHA' + msg.decode() )
+                # Hopefully I did the output format right. Used this template
+                #$ htpasswd -nbs myName myPassword
+                # myName:{SHA}VBPuJHI7uixaa6LQGWx4s+5GKNE=
+                print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + '{SHA}' + msg.decode() )
             else: print(GRN + 'Found PW: ' + word)
             exit(0)
         return conn
@@ -112,6 +114,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Interrupt received, stopping server...")
         conn.close()
-    except: # Catch all. -> I know not a good practice but should do it for this assignment ¯\_(ツ)_/¯
-        print('Unexpected error: ' + str(sys.exc_info()[0]))
+    except UnicodeDecodeError: # Catch all. -> I know not a good practice but should do it for this assignment ¯\_(ツ)_/¯
+        print('Unexpected error while reading. Format not supported.')
     print(RED + 'No PW found' + NC)
