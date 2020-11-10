@@ -16,6 +16,8 @@ to_replace = {
     'b': '8',
     'p': '9'}
 
+tested_words = set()
+
 USER = 'ITS202021:'
 PORT = 5000
 HOST = '127.0.0.1'
@@ -67,6 +69,7 @@ def sendMsg(conn, word, original='NONE'):
         if data == b'02 - Connection refused.' or len(data) == 0:
             print(YEL + 'Refused connection. Restoreing...' + NC)
             conn = createConnection()
+            return(conn, False)
         if data == b'01 - Password correct.':
             conn.close()
             if original != 'NONE':
@@ -76,12 +79,12 @@ def sendMsg(conn, word, original='NONE'):
                 print(GRN + 'Found PW:\n' + NC + chrReplace(word) + ': ' + USER + '{SHA}' + msg.decode() )
             else: print(GRN + 'Found PW: ' + word)
             exit(0)
-        return conn
+        return (conn, True)
     except socket.error as e:
         print(RED + 'Error while sending data.\nErrMsg: %s' % str(e))
         print(YEL + 'Trying to reconnect...' + NC)
         conn = createConnection()
-        return conn
+        return (conn, False)
 
 
 
@@ -106,14 +109,23 @@ if __name__ == "__main__":
             s = reader.readline()
             while s != '':
                 for word in s.split():
-                    # Send msg with and without replacement
-                    conn = sendMsg(conn, chrReplace(word), word)
-                    conn = sendMsg(conn, word)
+                    if word not in tested_words:
+                        # Send msg with and without replacement
+                        conn, sucsess = sendMsg(conn, chrReplace(word), word)
+                        # If connection is reset try the passwort again
+                        while not sucsess:
+                            conn, sucsess = sendMsg(conn, chrReplace(word), word)
+                            print('Retransmitting...')
+                        conn, sucsess = sendMsg(conn, word)
+                        while not sucsess:
+                            conn, sucsess = sendMsg(conn, word)
+                            print('Retransmitting...')
+                        tested_words.add(word)
 
                 s = reader.readline()
     except KeyboardInterrupt:
         print("Interrupt received, stopping server...")
         conn.close()
-    except UnicodeDecodeError: # Catch all. -> I know not a good practice but should do it for this assignment ¯\_(ツ)_/¯
+    except UnicodeDecodeError: # Catch encoding. -> Should do it for this assignment ¯\_(ツ)_/¯
         print('Unexpected error while reading. Format not supported.')
     print(RED + 'No PW found' + NC)
