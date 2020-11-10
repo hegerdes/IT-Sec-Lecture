@@ -73,7 +73,7 @@ def sendMsg(conn, word, original='NONE'):
                 # Hopefully I did the output format right. Used this template
                 #$ htpasswd -nbs myName myPassword
                 # myName:{SHA}VBPuJHI7uixaa6LQGWx4s+5GKNE=
-                print(GRN + 'Found PW:\n' + NC + original + ': ' + USER + '{SHA}' + msg.decode() )
+                print(GRN + 'Found PW:\n' + NC + chrReplace(word) + ': ' + USER + '{SHA}' + msg.decode() )
             else: print(GRN + 'Found PW: ' + word)
             exit(0)
         return conn
