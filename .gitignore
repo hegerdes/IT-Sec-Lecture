@@ -7,3 +7,8 @@ Abgabe/*
 playground/pw_pic.png
 P0/pw_pic.png
 P1/rfc4960.txt
+P2/data/Sniffed.pcapng
+
+#Compiled
+**/__pycache__/**
+*.cpython-38.pyc
