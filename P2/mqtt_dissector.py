@@ -1,6 +1,17 @@
 # /usr/bin/env python3
 
-from struct import *
+from struct import unpack
+
+
+# Nice formatting
+RED='\033[1;31m'
+GRN='\033[1;32m'
+YEL='\033[1;33m'
+BLU='\033[1;34m'
+GRY='\033[1;90m'
+NC='\033[0m' # No Color
+
+
 
 CONNECT = 0b0001
 CONNACT = 0b0010
@@ -67,21 +78,24 @@ class MQTT_Dissector:
 
             #Connect msg
             if bin(fixed_header >> 12) == bin(CONNECT):
-                print('Captured connecting Packet...')
+                print(YEL + 'Captured connecting Packet...' + NC)
                 if(flags_dict['USER_Flag']):
                     USER, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
-                    print(USER)
+                    print(GRN + 'User: ' + NC + USER)
                 if(flags_dict['PW_Flag']):
                     PW, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
-                    print(PW)
-                if(len(mqtt_payload_rest) == 0): print('Everyting parsed')
+                    print(GRN + 'PW: ' + NC + PW)
+                if(len(mqtt_payload_rest) == 0):
+                    print(GRY + 'Everyting parsed' + NC)
+                    return USER, PW
 
+            # For future use. For now it is out of the assaigment scope
             if bin(fixed_header >> 12) == bin(CONNACT):
-                print('ConnACT...')
+                print(YEL + 'Captured conn-act Packet...' + NC)
             if bin(fixed_header >> 12) == bin(SUBSCRIBE):
-                print('Subscribe...')
+                print(YEL + 'Captured subscribe Packet...' + NC)
             if bin(fixed_header >> 12) == bin(PUBLISH):
-                print('Publish...')
+                print(YEL + 'Captured publish Packet...' + NC)
 
         # return if username and password not found
-        return USER, PW
+        return None, None
