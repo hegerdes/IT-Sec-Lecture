@@ -1,6 +1,6 @@
 # /usr/bin/env python3
 
-from struct import unpack
+from struct import unpack, error
 
 
 # Nice formatting
@@ -38,7 +38,15 @@ class MQTT_Dissector:
 
         flags_dict = {}
         for key, val in self.BIT_FLAG_MASK.items():
-            flags_dict[key] = (flags & val) == val
+            if key == 'WILL_QS_Flag':
+                #Handling for double bit Will QoS
+                # See http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718031
+                if((flags & val) == 0b00000000): flags_dict[key] = 0
+                if((flags & val) == 0b00001000): flags_dict[key] = 1
+                if((flags & val) == 0b00010000): flags_dict[key] = 2
+                if((flags & val) == 0b0001100): flags_dict[key] = 3 # Invalid state
+            else:
+                flags_dict[key] = (flags & val) == val
 
         return flags_dict
 
@@ -46,6 +54,8 @@ class MQTT_Dissector:
         length = unpack('!H', buffer[:2])[0]
         return unpack('!' + str(length) + 's', buffer[2:length + 2])[0].decode() , buffer[length + 2:]
 
+    def unspportedErr(self):
+        print(RED + '\nParsing not supported yet' + NC)
 
     def parse_tcp_packet(self, src_addr, dst_addr, src_port, dst_port, tcp_payload):
         """Dissect TCP payload to identify and extract the username and password from
@@ -61,41 +71,60 @@ class MQTT_Dissector:
         """
         USER = None
         PW = None
-        # Only check on packages with len greater 1
-        if len(tcp_payload) > 1:
-            #print('OriPayload: ' + str(tcp_payload))
-            mqtt_fixed_header = tcp_payload[:self.MQTT_FIXED_HEADER_LEN]
-            mqtt_no_header = tcp_payload[self.MQTT_FIXED_HEADER_LEN:]
-            mqtt_var_header = mqtt_no_header[:self.MQTT_VAR_HEADER_LEN]
-            mqtt_payload = mqtt_no_header[self.MQTT_VAR_HEADER_LEN:]
+        try:
+            # Only check on packages with len greater 1
+            if len(tcp_payload) > 1:
+                #print('OriPayload: ' + str(tcp_payload))
+                mqtt_fixed_header = tcp_payload[:self.MQTT_FIXED_HEADER_LEN]
+                mqtt_no_header = tcp_payload[self.MQTT_FIXED_HEADER_LEN:]
+                mqtt_var_header = mqtt_no_header[:self.MQTT_VAR_HEADER_LEN]
+                mqtt_payload = mqtt_no_header[self.MQTT_VAR_HEADER_LEN:]
 
-            fixed_header = unpack('!H', mqtt_fixed_header)[0]
-            p_name_len, p_name, p_version, flags, keep_alive = unpack('!H4sbbH', mqtt_var_header)
-            client_id, mqtt_payload_rest = self.decodeChars(mqtt_payload)
+                #Get packet type
+                fixed_header = unpack('!H', mqtt_fixed_header)[0]
 
-            #Convert Flags in dict of features
-            flags_dict = self.parseFlags(flags)
+                #ID and flags
+                p_name_len, p_name, p_version, flags, keep_alive = unpack('!H4sbbH', mqtt_var_header)
+                client_id, mqtt_payload_rest = self.decodeChars(mqtt_payload)
 
-            #Connect msg
-            if bin(fixed_header >> 12) == bin(CONNECT):
-                print(YEL + 'Captured connecting Packet...' + NC)
-                if(flags_dict['USER_Flag']):
-                    USER, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
-                    print(GRN + 'User: ' + NC + USER)
-                if(flags_dict['PW_Flag']):
-                    PW, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
-                    print(GRN + 'PW: ' + NC + PW)
-                if(len(mqtt_payload_rest) == 0):
-                    print(GRY + 'Everyting parsed' + NC)
-                    return USER, PW
+                #Convert Flags in dict of features
+                flags_dict = self.parseFlags(flags)
 
-            # For future use. For now it is out of the assaigment scope
-            if bin(fixed_header >> 12) == bin(CONNACT):
-                print(YEL + 'Captured conn-act Packet...' + NC)
-            if bin(fixed_header >> 12) == bin(SUBSCRIBE):
-                print(YEL + 'Captured subscribe Packet...' + NC)
-            if bin(fixed_header >> 12) == bin(PUBLISH):
-                print(YEL + 'Captured publish Packet...' + NC)
+                #Connect msg
+                if bin(fixed_header >> 12) == bin(CONNECT):
+                    print(YEL + 'Captured connecting Packet...' + NC)
+                    print(GRY + 'Flags: ' , flags_dict, NC)
+                    #If user flag is set
+                    if(flags_dict['USER_Flag']):
+                        USER, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
+                        print(GRN + 'User: ' + NC + USER)
+                    #If pw flag is set
+                    if(flags_dict['PW_Flag']):
+                        PW, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
+                        print(GRN + 'PW: ' + NC + PW)
+
+                    if(len(mqtt_payload_rest) == 0):
+                        print(GRY + 'Everyting parsed' + NC)
+                        #Done
+                        return USER, PW
+
+                # For future use. For now it is out of the assaigment scope
+                if bin(fixed_header >> 12) == bin(CONNACT):
+                    print(YEL + 'Captured conn-act Packet...' + NC)
+                    self.unspportedErr()
+                if bin(fixed_header >> 12) == bin(SUBSCRIBE):
+                    print(YEL + 'Captured subscribe Packet...' + NC)
+                    self.unspportedErr()
+                if bin(fixed_header >> 12) == bin(PUBLISH):
+                    print(YEL + 'Captured publish Packet...' + NC)
+                    self.unspportedErr()
+        except error:
+            print('Err, parsing packet. Trying next one...')
+        except UnicodeDecodeError:
+            self.unspportedErr()
+        except:
+            print('Something went wrong')
+
 
         # return if username and password not found
         return None, None
