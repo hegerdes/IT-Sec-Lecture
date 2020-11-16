@@ -24,6 +24,8 @@ SUBACT = 0b1001
 class MQTT_Dissector:
     MQTT_FIXED_HEADER_LEN = 2
     MQTT_VAR_HEADER_LEN = 10
+    ERR_COUNTER = 0
+    #Bitmasks to filter for relevant flags
     BIT_FLAG_MASK = {
         'USER_Flag': 0b10000000,
         'PW_Flag': 0b01000000,
@@ -34,7 +36,9 @@ class MQTT_Dissector:
     }
 
     def parseFlags(self, flags):
-        # To check the flags. Return a dict with the key=FlagName val=True/False
+        """ To check the flags. Return a dict with the key=FlagName val=True/False
+            For WILL_QS we can have 4 states. So val is either 1,2,3,4
+        """
 
         flags_dict = {}
         for key, val in self.BIT_FLAG_MASK.items():
@@ -50,8 +54,10 @@ class MQTT_Dissector:
 
         return flags_dict
 
-    def decodeChars(self, buffer):
+    def decodeCharString(self, buffer):
+        # Unpackts the first 2 bytes that tells us the length of the String (in bytes)
         length = unpack('!H', buffer[:2])[0]
+        # Decodes a string with the length specified by length unpacked before
         return unpack('!' + str(length) + 's', buffer[2:length + 2])[0].decode() , buffer[length + 2:]
 
     def unspportedErr(self):
@@ -69,6 +75,13 @@ class MQTT_Dissector:
            :return string username: Extracted username (default: None)
            :return string password: Extracted password (default: None)
         """
+
+        #Error handling of retrys
+        if self.ERR_COUNTER > 10:
+            print('Max number of parsing trys reached!\nPlease make sure MQTT packages are sent. Exit')
+            exit(0)
+
+        #Set defaults
         USER = None
         PW = None
         try:
@@ -85,7 +98,7 @@ class MQTT_Dissector:
 
                 #ID and flags
                 p_name_len, p_name, p_version, flags, keep_alive = unpack('!H4sbbH', mqtt_var_header)
-                client_id, mqtt_payload_rest = self.decodeChars(mqtt_payload)
+                client_id, mqtt_payload_rest = self.decodeCharString(mqtt_payload)
 
                 #Convert Flags in dict of features
                 flags_dict = self.parseFlags(flags)
@@ -94,13 +107,15 @@ class MQTT_Dissector:
                 if bin(fixed_header >> 12) == bin(CONNECT):
                     print(YEL + 'Captured connecting Packet...' + NC)
                     print(GRY + 'Flags: ' , flags_dict, NC)
+
                     #If user flag is set
                     if(flags_dict['USER_Flag']):
-                        USER, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
+                        USER, mqtt_payload_rest = self.decodeCharString(mqtt_payload_rest)
                         print(GRN + 'User: ' + NC + USER)
+
                     #If pw flag is set
                     if(flags_dict['PW_Flag']):
-                        PW, mqtt_payload_rest = self.decodeChars(mqtt_payload_rest)
+                        PW, mqtt_payload_rest = self.decodeCharString(mqtt_payload_rest)
                         print(GRN + 'PW: ' + NC + PW)
 
                     if(len(mqtt_payload_rest) == 0):
@@ -109,22 +124,32 @@ class MQTT_Dissector:
                         return USER, PW
 
                 # For future use. For now it is out of the assaigment scope
-                if bin(fixed_header >> 12) == bin(CONNACT):
+                if bin(fixed_header >> 12) == bin(CONNACT):         #CONNACK package
                     print(YEL + 'Captured conn-act Packet...' + NC)
                     self.unspportedErr()
-                if bin(fixed_header >> 12) == bin(SUBSCRIBE):
+                if bin(fixed_header >> 12) == bin(SUBSCRIBE):       #SUBSCRIBE package
                     print(YEL + 'Captured subscribe Packet...' + NC)
                     self.unspportedErr()
-                if bin(fixed_header >> 12) == bin(PUBLISH):
+                if bin(fixed_header >> 12) == bin(PUBLISH):         #PUBLISH package
                     print(YEL + 'Captured publish Packet...' + NC)
                     self.unspportedErr()
-        except error:
+                # NOTE: There are still some othere packet types.
+                # These are not relevant for this task.
+                # Please refer to http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718026
+
+        except error:   #struct error
             print('Err, parsing packet. Trying next one...')
+            self.ERR_COUNTER += 1
         except UnicodeDecodeError:
+            self.ERR_COUNTER += 1
             self.unspportedErr()
+        except KeyboardInterrupt:
+            print('Keyboard interrupt recceived. Exiting...')
+            exit(0)
         except:
             print('Something went wrong')
+            self.ERR_COUNTER += 1
 
 
-        # return if username and password not found
-        return None, None
+        # return if username and password not found => Default is NONE, NONE
+        return USER, PW
