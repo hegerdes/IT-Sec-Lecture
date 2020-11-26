@@ -2,8 +2,8 @@ import time
 import gnupg
 import socket
 
-HOST = '127.0.0.1'
-PORT = 4711
+
+REC_BUFFER_SIZE = 4098
 
 # Nice formatting
 RED='\033[1;31m'
@@ -20,10 +20,12 @@ class GPG_Messenger:
         self.host = host
         self.port = port
         self.path = path
+
         self.gpg = gnupg.GPG()
         self.gpg.encoding = 'utf-8'
-        self.p_keys = self.gpg.list_keys(True)
-        self.private = None
+        self.public_key_list = self.gpg.list_keys()
+        self.private_key_list = self.gpg.list_keys(True)
+        self.keyset = None
         self.conn = None
         self.public_keys = self.gpg.list_keys()
 
@@ -43,11 +45,23 @@ class GPG_Messenger:
         pw = 'SekII.13.MaPhBIO'
         return self.gpg.export_keys(id, True, passphrase=pw)
 
+    def getPublicKey(self, id):
+        return self.gpg.export_keys(id)
 
     def showKeys(self):
         print('Avaiable private Keys:')
-        for i in range(len(self.p_keys)):
-            print('(' + str(i) +'):', 'KeyID:', self.p_keys[i]['keyid'], 'uids:', self.p_keys[i]['uids'], 'fingerprint:', self.p_keys[i]['fingerprint'] )
+        for i in range(len(self.private_key_list)):
+            print('(' + str(i) +'):', 'KeyID:', self.private_key_list[i]['keyid'], 'uids:', self.private_key_list[i]['uids'], 'fingerprint:', self.private_key_list[i]['fingerprint'] )
+
+    def initConn(self):
+        recipients = ['DF83C56A54A7D878422EFDF1274E3DEF15E41CB1']
+        conn = self.createConnection()
+        conn.sendall(self.keyset['public'].encode())
+        data = conn.recv(REC_BUFFER_SIZE)
+        import_result = self.gpg.import_keys(data.decode())
+        print('Import', import_result.summary(), 'Fingerprints:', import_result.fingerprints)
+        conn.sendall(self.gpg.encrypt('Hello', recipients).data)
+        conn.close()
 
     def selectEncyptKey(self):
         err_msg = RED + 'Invalid input!' + NC
@@ -64,11 +78,14 @@ class GPG_Messenger:
                 exit(0)
             try:
                 num = int(decison)
-                if num >= len(self.p_keys) or num < 0:
+                if num >= len(self.private_key_list) or num < 0:
                     print(err_msg)
                 else:
-                    self.private = self.getPrivateKey(self.p_keys[num]['keyid'])
-                    return self.private
+                    self.keyset = {'id': self.private_key_list[num]['keyid'],
+                                    'public': self.getPublicKey(self.private_key_list[num]['keyid']),
+                                    'private': self.getPrivateKey(self.private_key_list[num]['keyid'])
+                    }
+                    return self.keyset
             except ValueError as e:
                 print(err_msg, e)
 
@@ -82,7 +99,7 @@ class GPG_Messenger:
                     break
 
                 conn.sendall(user_input.encode())
-                data = conn.recv(1024)
+                data = conn.recv(REC_BUFFER_SIZE)
                 print('Received: ', data)
         except socket.error as e:
                 print(RED + 'Error while sending data.\nErrMsg: %s' % str(e))
@@ -98,8 +115,8 @@ if __name__ == "__main__":
     try:
         s_msg = GPG_Messenger()
         s_msg.selectEncyptKey()
-        s_msg.runClienLoop()
-        # pw = input('PW')
+        # s_msg.runClienLoop()
+        s_msg.initConn()
     except KeyboardInterrupt:
         print('Interuped received. Exit')
 
