@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import time
 import gnupg
 import socket
@@ -8,12 +9,12 @@ VERBOSE = False
 SET_TRUST = True
 
 # Nice formatting
-RED='\033[1;31m'
-GRN='\033[1;32m'
-YEL='\033[1;33m'
-BLU='\033[1;34m'
-GRY='\033[1;90m'
-NC='\033[0m' # No Color
+RED = '\033[1;31m'
+GRN = '\033[1;32m'
+YEL = '\033[1;33m'
+BLU = '\033[1;34m'
+GRY = '\033[1;90m'
+NC = '\033[0m'  # No Color
 
 
 class GPG_Messenger:
@@ -25,6 +26,8 @@ class GPG_Messenger:
 
         self.gpg = gnupg.GPG(verbose=VERBOSE)
         self.gpg.encoding = 'utf-8'
+        print('Using gnupg version:', self.gpg.version)
+
         self.public_key_list = self.gpg.list_keys()
         self.private_key_list = self.gpg.list_keys(True)
         self.recipients = None
@@ -32,7 +35,7 @@ class GPG_Messenger:
         self.conn = None
         self.pw = None
 
-    #Create Socket connection
+    # Create Socket connection
     def createConnection(self):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -40,7 +43,8 @@ class GPG_Messenger:
             self.conn = sock
             return sock
         except socket.error as e:
-            print(RED + 'Error while opening socket.\nErrMsg: %s' % str(e) + NC + '\nSystem exit')
+            print(RED + 'Error while opening socket.\nErrMsg: %s' %
+                  str(e) + NC + '\nSystem exit')
             raise e
 
     def getPrivateKey(self, id):
@@ -61,49 +65,53 @@ class GPG_Messenger:
             print(self.gpg.delete_keys(fp, True, passphrase=pw))
             print(self.gpg.delete_keys(fp))
 
-    #Prints list of private keyIDs to stdout
+    # Prints list of private keyIDs to stdout
     def showKeys(self):
         print('Avaiable private Keys:')
         for i in range(len(self.private_key_list)):
             uidstr = ['\n\t' + uid for uid in self.private_key_list[i]['uids']]
-            print('(' + str(i) +'):', 'KeyID:', self.private_key_list[i]['keyid'], 'Fingerprint:', self.private_key_list[i]['fingerprint'], 'uids:', ''.join(uidstr))
+            print('(' + str(i) + '):', 'KeyID:',
+                  self.private_key_list[i]['keyid'], 'Fingerprint:', self.private_key_list[i]['fingerprint'], 'uids:', ''.join(uidstr))
 
-    #Handls the initial key exchange
+    # Handls the initial key exchange
     def initConn(self):
         conn = self.createConnection()
-        #Send key
+        # Send key
         conn.sendall(self.keyset['public'].encode())
 
-        #Receive key
+        # Receive key
         data = conn.recv(REC_BUFFER_SIZE)
         import_result = self.gpg.import_keys(data.decode())
-        print('Imported:', import_result.summary(), 'Fingerprints:', import_result.fingerprints)
+        print('Imported:', import_result.summary(),
+              'Fingerprints:', import_result.fingerprints)
 
-        #Import check
+        # Import check
         for res in import_result.results:
             if(res['fingerprint'] == None or res['text'] == 'No valid data found'):
-                print(RED + 'Error while importing keys. Please make sure to provide a valid key' + NC)
+                print(
+                    RED + 'Error while importing keys. Please make sure to provide a valid key' + NC)
                 raise Exception('Import error')
 
-        #Set TrustLevel
-        if(SET_TRUST): self.gpg.trust_keys(import_result.fingerprints, 'TRUST_ULTIMATE')
+        # Set TrustLevel
+        if(SET_TRUST):
+            self.gpg.trust_keys(import_result.fingerprints, 'TRUST_ULTIMATE')
 
-        #Update pub_key_list
+        # Update pub_key_list
         self.public_key_list = self.gpg.list_keys()
         self.recipients = import_result.fingerprints
         print('Recipients are:', self.recipients)
         return conn
 
-    #User input to select what key to use
+    # User input to select what key to use
     def selectEncyptKey(self):
         err_msg = RED + 'Invalid input!' + NC
         while True:
-            print('Please select the number of the key you want to use!\nTo import a new one type "input" or "exit" for exit')
+            print('Please select the number of the key you want to use!\nTo import a new one type "inport" or "exit" for exit')
             self.showKeys()
             decison = input('What key? ')
 
-            if decison == 'input':
-                #TODO import privat
+            if decison == 'inport':
+                # TODO import privat
                 pass
             if decison == 'exit':
                 print('exit')
@@ -113,43 +121,52 @@ class GPG_Messenger:
                 if num >= len(self.private_key_list) or num < 0:
                     print(err_msg)
                 else:
-                    self.keyset = { 'id': self.private_key_list[num]['keyid'],
-                                    "fingerprint": self.private_key_list[num]['fingerprint'],
-                                    'public': self.getPublicKey(self.private_key_list[num]['keyid']),
+                    self.keyset = {'id': self.private_key_list[num]['keyid'],
+                                   "fingerprint": self.private_key_list[num]['fingerprint'],
+                                   'public': self.getPublicKey(self.private_key_list[num]['keyid']),
 
-                                    #If you want the private key in memory enable this. NOT the best idea
-                                    # 'private': self.getPrivateKey(self.private_key_list[num]['keyid'])
-                    }
+                                   # If you want the private key in memory enable this. NOT the best idea
+                                   # 'private': self.getPrivateKey(self.private_key_list[num]['keyid'])
+                                   }
                     return self.keyset
             except ValueError as e:
-                print(err_msg, e)
+                print(err_msg + ' ErrMSG:', e)
 
+    # Sends encryped and signed msg to server using a tcp socket
     def sendMSG(self, conn):
         try:
+            # Get msg
             user_input = input('Type your message: ')
             if(user_input == 'exit'):
                 conn.close()
                 return (conn, 'exit')
             print('Sending to:', self.recipients)
 
+            # Encryp and sign
             encryped = None
             if self.pw == None:
-                encryped = self.gpg.encrypt(user_input, self.recipients, sign=self.keyset['fingerprint'])
-            else: encryped = self.gpg.encrypt(user_input, self.recipients, sign=self.keyset['fingerprint'], passphrase=self.pw)
+                encryped = self.gpg.encrypt(
+                    user_input, self.recipients, sign=self.keyset['fingerprint'])
+            else:
+                encryped = self.gpg.encrypt(
+                    user_input, self.recipients, sign=self.keyset['fingerprint'], passphrase=self.pw)
 
             if(not encryped.ok):
-                print(RED + 'Err while encrypting. Please try again and check key config or add pw:\n' + encryped.status + NC)
+                print(
+                    RED + 'Err while encrypting. Please try again and check key config or add pw:\n' + encryped.status + NC)
                 self.pw = input('Enter passphrase: ')
                 return (conn, 'conuinue')
 
-            #Send
+            # Send
             conn.sendall(encryped.data)
             data = conn.recv(REC_BUFFER_SIZE).decode()
+
+            # Empty recv. Try send again. Maybe socket was reset
             if data == '':
                 print(YEL + 'Empty server result. Try again.' + NC)
                 return(conn, 'conuinue')
 
-            #Check rev status
+            # Check rev status
             if data == 'UNTRUSTED' or data == 'ERROR':
                 print(RED + 'Received: ' + data + NC)
                 print('Secure and unambiguous communication is not gurenteed. Exit...')
@@ -162,15 +179,15 @@ class GPG_Messenger:
         except socket.error as e:
             print(RED + 'Error while sending data.\nErrMsg: %s' % str(e))
             print(YEL + 'Trying to reconnect...' + NC)
+            # Reconnect and key exchange
             conn = self.initConn()
             return (conn, 'conuinue')
 
-
     def runClienLoop(self):
-
-        #Send keys
+        # Send key
         conn = self.initConn()
-        #MSG loop
+
+        # MSG loop
         while True:
             conn, status = self.sendMSG(conn)
             if status == 'exit':
@@ -179,27 +196,26 @@ class GPG_Messenger:
             if status == 'conuinue':
                 pass
 
+
 if __name__ == "__main__":
-    #Main
+
     try:
         s_msg = GPG_Messenger()
         s_msg.selectEncyptKey()
         s_msg.runClienLoop()
-
     except KeyboardInterrupt:
         print('Interuped received. Exit')
-    except :
+    except:
         print('Something wrong')
         exit(0)
 
-        #Delet all trustedlogs@server.com keys
+        # Delet all trustedlogs@server.com keys
         # fp = []
         # for key in s_msg.public_key_list:
         #     if('trustedlogs@server.com' in key['uids'][0]): fp.append(key['fingerprint'])
         # s_msg.deletKeys(fp)
 
-
-        #Delet all privat and its public key, excep my onw
+        # Delet all privat and its public key, excep my onw
         # fp = []
         # for key in s_msg.private_key_list:
         #     if(key[''] == '84EC23147758B96F03A23FAD3BBE23B367979E80'): continue
