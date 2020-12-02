@@ -29,21 +29,27 @@ class GPG_Logger:
         self.path = path
         self.gpg_socket = None
 
-        # self.gpg = gnupg.GPG(use_agent=True, verbose=False, options='allow-loopback-pinentry')
+        # self.gpg = gnupg.GPG(use_agent=True, verbose=False, options='allow-loopback-pinentry') # Dosn't work
         self.gpg = gnupg.GPG(verbose=VERBOSE)
         self.gpg.encoding = 'utf-8'
         self.private_key_list = self.gpg.list_keys(True)
         self.public_key_list = self.gpg.list_keys()
         self.keyset = None
+        self.myFingerprint = None
         print('Using gnupg version:', self.gpg.version)
 
-        # Task does not specify what should happen if privat key exists (for eg second start)
-        # So on second server start we use the first private key as default
-        if len(self.private_key_list) == 0:
-            print(GRY + 'No pvt key found. Creating...' + NC)
+        # Task does not specify what should happen if privat key exists (for eg. second start)
+        # So on second server start we search for pvt key of trustedlogs@server.com
+        for key in self.private_key_list:
+            for uid in key['uids']:
+                if 'trustedlogs@server.com' in uid:
+                    print(GRY + 'Found key for trustedlogs@server.com' + NC)
+                    self.myFingerprint = key['fingerprint']
+                    break
+
+        if (self.myFingerprint == None):
+            print(GRY + 'No pvt key for trustedlogs@server.com found. Creating...' + NC)
             self.createKey()
-        else:
-            self.myFingerprint = self.private_key_list[0]['fingerprint']
 
         self.getKeySet()
         self.createSocket()
@@ -148,8 +154,7 @@ class GPG_Logger:
                     if decrypt.ok and decrypt.trust_level is not None and decrypt.trust_level > decrypt.TRUST_MARGINAL:
                         print('Decrypted_msg: ', decrypt.data.decode())
                         print('Signed by:', decrypt.username,
-                              decrypt.fingerprint, decrypt.trust_level)
-                        print(GRN + TRUSTED + NC)
+                              decrypt.fingerprint, decrypt.trust_level ,'Status:', GRN + TRUSTED + NC)
                         conn.sendall(TRUSTED.encode())
 
                     data = conn.recv(REC_BUFFER_SIZE)

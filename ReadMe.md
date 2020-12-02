@@ -14,7 +14,14 @@ It contains:
     * A 'advanced' server that slows brute-force attacks down
 
  *  Task 2
-    * Analyse a common protocoll with wireshark
-    * Implement a dessector in python to interprete the raw bytes
+    * Analyse a common protocol with wireshark
+    * Implement a dessector in python to interpret the raw bytes
     * Extract user-name and pw from bytes
     * Create a script to crash a mqtt broker with a DOS attack
+
+ *  Task 3
+    * Create a gpg key pair in linux
+    * Send an encrypted and signed mail
+    * Create a tcp server-client structure
+    * Exchange public keys
+    * Communicate encrypted and signed

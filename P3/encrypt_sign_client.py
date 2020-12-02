@@ -102,17 +102,29 @@ class GPG_Messenger:
         print('Recipients are:', self.recipients)
         return conn
 
+    # Import a new key form terminal
+    def importKey(self, key):
+        if not isinstance(key, str):
+            print(RED + 'Not a string' + NC)
+            return False
+        import_result = self.gpg.import_keys(key)
+        for res in import_result.results:
+            if(res['fingerprint'] == None or res['text'] == 'No valid data found'):
+                print(RED + 'Error while importing key. Please make sure to provide a valid key' + NC)
+                return False
+        return True
+
     # User input to select what key to use
     def selectEncyptKey(self):
         err_msg = RED + 'Invalid input!' + NC
         while True:
-            print('Please select the number of the key you want to use!\nTo import a new one type "inport" or "exit" for exit')
+            print('Please select the number of the key you want to use!\nTo import a new one type "import" or "exit" for exit')
             self.showKeys()
             decison = input('What key? ')
 
-            if decison == 'inport':
-                # TODO import privat
-                pass
+            if decison == 'import':
+                print('Import succseeded:', self.importKey(input('Copy your ASCI key here: ')))
+                continue
             if decison == 'exit':
                 print('exit')
                 exit(0)
@@ -146,10 +158,10 @@ class GPG_Messenger:
             encryped = None
             if self.pw == None:
                 encryped = self.gpg.encrypt(
-                    user_input, self.recipients, sign=self.keyset['fingerprint'])
+                    user_input, self.recipients, sign=self.keyset['fingerprint'], always_trust=True)
             else:
                 encryped = self.gpg.encrypt(
-                    user_input, self.recipients, sign=self.keyset['fingerprint'], passphrase=self.pw)
+                    user_input, self.recipients, sign=self.keyset['fingerprint'], passphrase = self.pw, always_trust=True)
 
             if(not encryped.ok):
                 print(
@@ -208,6 +220,7 @@ if __name__ == "__main__":
     except:
         print('Something wrong')
         exit(0)
+
 
         # Delet all trustedlogs@server.com keys
         # fp = []
