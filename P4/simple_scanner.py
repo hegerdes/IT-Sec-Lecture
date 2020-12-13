@@ -40,6 +40,9 @@ if __name__ == "__main__":
         start_port = int(sys.argv[2])
         end_port = int(sys.argv[3])
 
+        # host = '127.0.0.1'
+        # start_port = 22300
+        # end_port = start_port + 500
         # Sanity check
         if not pattern.match(host):
             raise ValueError('Not a valid IP')
@@ -52,7 +55,7 @@ if __name__ == "__main__":
 
     except ValueError:
         print('Please provide a valid number')
-        printUsage
+        printUsage()
         exit(0)
 
     #Run check
