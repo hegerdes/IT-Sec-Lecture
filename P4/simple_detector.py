@@ -81,6 +81,9 @@ class Detector:
                 # Time longer than 10s. Reset for this IP
                 self.connections[c_ip] = Record(c_ip, [c_port])
 
+        writer.close()
+        await writer.wait_closed()
+
 
     async def start_server(self, host, port):
         try:
