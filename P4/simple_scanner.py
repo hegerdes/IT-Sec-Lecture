@@ -44,6 +44,7 @@ if __name__ == "__main__":
         # start_port = 22300
         # end_port = start_port + 500
         # Sanity check
+        # First 1024 ports are reserved for root
         if not pattern.match(host):
             raise ValueError('Not a valid IP')
         if start_port >= 65535 or end_port >= 65535:
