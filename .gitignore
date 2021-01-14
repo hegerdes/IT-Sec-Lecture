@@ -12,3 +12,11 @@ P2/data/Sniffed.pcapng
 #Compiled
 **/__pycache__/**
 *.cpython-38.pyc
+*.aux
+*.fls
+*.log
+*.synctex.gz
+*.fdb_latexmk
+*.out
+*.toc
+FinalExam/docs/ITS_WiSe_202021_Hausarbeit_969272.pdf

@@ -1,0 +1,24 @@
+\documentclass[12pt, a4paper]{scrartcl}
+
+\include{inc/packages.inc}
+\include{inc/personalize.inc}
+\include{inc/style.inc}
+
+\begin{document}
+
+\pagenumbering{gobble}
+\include{inc/title.inc}
+
+\tableofcontents
+\newpage
+\newcounter{lastroman}
+\setcounter{lastroman}{\value{page}}
+
+\pagestyle{plain}
+\pagenumbering{arabic}
+\maketitle
+\begin{abstract}
+    TODO
+\end{abstract}
+
+\end{document}
