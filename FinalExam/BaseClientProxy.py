@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
-import argparse
+
 import sys
 import time
 import socket
 import threading
+from helper.myParser import myParser
 
 # Nice formatting
 RED = '\033[1;31m'
@@ -80,51 +81,28 @@ class BaseProxyClient (threading.Thread):
             except socket.error:
                 print('Disconnected form: %s' % str(addr))
 
-def parseConfig(config_path):
-    configs = list()
-    with open(config_path, "r") as fr:
-        line = fr.readline()
-        while line:
-            if line[0] != '#' and len(line) !=1:
-                config = list()
-                [config.append(part.strip()) for part in line.split(':')]
-                if (len(config) != 5): raise ValueError('Illigal length in confogfile: ' + config_path)
-                configs.append(config)
-            line = fr.readline()
-            break   #TODO Remove!!!
-    [print(conf) for conf in configs]
-    return configs
 
 def createProxyInstances(confs):
-    proxies = list()
-    [proxies.append(BaseProxyClient(*conf)) for conf in confs]
-    return proxies
+        proxies = list()
+        [proxies.append(BaseProxyClient(*conf)) for conf in confs]
+        return proxies
 
 def startProxies(proxies):
-    for proxy in proxies:
-        proxy.start()
-        break
-
-def versionCheck():
-    if sys.version_info<(3,8,0):
-        sys.stderr.write("You need python 3.8 or later to run this\n")
-        sys.exit(1)
-
-def parseArgs():
-    parser = argparse.ArgumentParser(description='Lunches an argparser')
-    parser.add_argument('--config-file', '-f', help='Config file')
-    return parser.parse_args()
+        for proxy in proxies:
+            proxy.start()
+            break
 
 
 if __name__ == "__main__":
     try:
-        versionCheck()
-        proxs = createProxyInstances(parseConfig(parseArgs().config_file))
+        parser = myParser()
+        configs = parser.parseConfig(parser.parseArgs().config_file)
+        proxs = createProxyInstances(configs)
         # proxs = createProxyInstances(parseConfig('FinalExam/config.txt'))
 
         startProxies(proxs)
         time.sleep(5)
-        print('!sdfsdf')
+        print('Waited')
 
     except KeyboardInterrupt:
         print('Interuped received.')
