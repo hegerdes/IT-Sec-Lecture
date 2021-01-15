@@ -12,6 +12,7 @@ It contains:
     * Client performs char replacement, SHA3 hashing and base64 encoding
     * Handles connection resets
     * A 'advanced' server that slows brute-force attacks down
+    * Credentials: ITS202021:H34278347-4CK
 
  *  Task 2
     * Analyse a common protocol with wireshark
@@ -25,3 +26,11 @@ It contains:
     * Create a tcp server-client structure
     * Exchange public keys
     * Communicate encrypted and signed
+
+ *  Task 4
+    * Create a port scanner
+    * Opens a socket to all ports in the rage
+    * Create a port scann detector
+    * Scanner opens a lot of ports and tracks the connected clients
+    * Create a scanner that is not detected
+    * Use raw sockets to SYN test. Do not allow SYN ACT
