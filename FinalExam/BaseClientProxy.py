@@ -5,10 +5,36 @@ import sys
 import time
 import socket
 import threading
+import socketserver as SocketServer
 from helper.myParser import myParser
 from helper.myParser import color as CL
 
 PAYLOAD_SIZE = 4096
+
+class ForwardServer(SocketServer.ThreadingTCPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+
+class Tunnel:
+
+    def __init__(self, conf, handler):
+        self.conf = conf
+        self.server = ForwardServer(conf.local, self.Default_Handler)
+        self.server.myhandler = handler
+        self.server.conf = conf
+
+    class Default_Handler(SocketServer.BaseRequestHandler):
+        def handle(self):
+            return self.server.myhandler(self)
+
+    def run(self):
+        self.server.serve_forever()
+
+    def getServer(self):
+        return self.server
+
+
 
 class BaseProxyClient (threading.Thread):
 
