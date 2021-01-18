@@ -6,17 +6,9 @@ import time
 import socket
 import threading
 from helper.myParser import myParser
-
-# Nice formatting
-RED = '\033[1;31m'
-GRN = '\033[1;32m'
-YEL = '\033[1;33m'
-BLU = '\033[1;34m'
-GRY = '\033[1;90m'
-NC = '\033[0m'  # No Color
+from helper.myParser import color as CL
 
 PAYLOAD_SIZE = 4096
-
 
 class BaseProxyClient (threading.Thread):
 
@@ -54,12 +46,12 @@ class BaseProxyClient (threading.Thread):
             sock.connect(self.proxy)
             self.proxy_conn = sock
         except socket.error as e:
-            print(RED + 'Error while opening socket.\nErrMsg: %s' %
-                  str(e) + NC + '\nSystem exit')
+            print(CL.RED + 'Error while opening socket.\nErrMsg: %s' %
+                  str(e) + CL.NC + '\nSystem exit')
             exit(0)
 
     def runClientProxyLoop(self):
-        print(GRY + 'Waiting for connections on port ' + str(self.client[1]) + '...' + NC)
+        print(CL.GRY + 'Waiting for connections on port ' + str(self.client[1]) + '...' + CL.NC)
         while True:
             try:
                 # New client
