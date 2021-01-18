@@ -10,6 +10,9 @@ class color:
     GRY = '\033[1;90m'
     NC = '\033[0m'  # No Color
 
+class constants:
+    REV_BUFFER = 1024
+
 class Config:
 
     def __init__(self, dst_host, dst_port, remote_host, remote_port, listen_port):
@@ -50,7 +53,6 @@ class myParser:
                     if (len(conf) != 5): raise ValueError('Illigal length in confogfile: ' + config_path)
                     configs.append(Config(*conf))
                 line = fr.readline()
-                break   #TODO Remove!!!
         [print(conf) for conf in configs]
         return configs
 
