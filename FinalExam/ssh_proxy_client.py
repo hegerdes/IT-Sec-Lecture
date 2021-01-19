@@ -8,10 +8,10 @@ import getpass
 import paramiko
 import select
 import socketserver as SocketServer
-from helper.myParser import myParser
-from helper.myParser import color as CL
-from helper.myParser import constants as CONST
-from BaseClientProxy import Tunnel
+from helper.ProxyParser import ProxyParser
+from helper.ProxyParser import color as CL
+from helper.ProxyParser import constants as CONST
+from BaseProxy import Tunnel
 
 
 def createSSHClient(conf, user, keyfile):
@@ -81,13 +81,15 @@ def ssh_conn_handler(self):
 
 if __name__ == "__main__":
 
-    parser = myParser()
-    parser.parser.add_argument(
+    px_parser = ProxyParser()
+    px_parser.parser.add_argument('--config-file', '-f', help='Config file', default='conf/config.txt')
+    px_parser.parser.add_argument(
         '--user', '-u', help='username', default='hegerdes')
-    parser.parser.add_argument('--key', '-k', help='ssh key file',
+    px_parser.parser.add_argument('--key', '-k', help='ssh key file',
                                default='/home/arthur/.ssh/ITS')  # TODO replace with .ssh/id_rsa
-    args = parser.parseArgs()
-    conf = parser.parseConfig(args.config_file)[1]
+    args = px_parser.parseArgs()
+
+    conf = px_parser.parseConfig(args.config_file)[1]
 
     client = createSSHClient(conf, args.user, args.key)
 
