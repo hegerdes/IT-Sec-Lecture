@@ -19,7 +19,7 @@ class ForwardServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 class Tunnel:
     def __init__(self, conf, handler):
         self.conf = conf
-        self.server = ForwardServer(conf.local, self.Default_Handler)
+        self.server = ForwardServer(tuple(conf.local.values()), self.Default_Handler)
         self.server.myhandler = handler
         self.server.conf = conf
 
@@ -34,7 +34,7 @@ class Tunnel:
             # Easy exit the server thread with main thread
             server_thread.daemon = True
         print((CL.GRN + 'Start listening ({}:{})...' +
-               CL.NC).format(self.server.conf.local[0], self.server.conf.local[1]))
+               CL.NC).format(self.server.conf.local['host'], self.server.conf.local['port']))
         server_thread.start()
 
     def getServer(self):

@@ -13,36 +13,68 @@ def proxy_client_handler(self):
     conf = self.server.conf
     data = self.request.recv(CONST.REV_BUFFER)
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_server_sock:
-        proxy_server_sock.connect(conf.remote)
-        send = struct.pack('5sb', CONST.PROT_ID,
-                           CONST.BIT_FLAG_MASK['CON_Flag'])
-        dst_payload = struct.pack(
-            'IH' + str(len(conf.dst[0])) + 's', len(conf.dst[0]), conf.dst[1], conf.dst[0].encode())
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_server_sock:
+            print((CL.GRN + 'Connecting to {}' + CL.NC).format(conf.remote))
+            proxy_server_sock.connect(tuple(conf.remote.values()))
+            send = struct.pack('5sb', CONST.PROT_ID,
+                               CONST.BIT_FLAG_MASK['CON_Flag'])
+            dst_payload = struct.pack(
+                'IH' + str(len(conf.dst['host'])) + 's', len(conf.dst['host']), conf.dst['port'], conf.dst['host'].encode())
 
-        app_payload = struct.pack(
-            'L' + str(len(data.decode())) + 's', len(data.decode()), data)
+            app_payload = struct.pack(
+                'L' + str(len(data.decode())) + 's', len(data.decode()), data)
 
-        proxy_server_sock.sendall(send + dst_payload + app_payload)
-        response = proxy_server_sock.recv(CONST.REV_BUFFER)
-
-        print('Connected! Tunnel: {} => {} => {}'.format(
-            self.request.getpeername(),
-            proxy_server_sock.getpeername(),
-            (self.server.conf.dst[0], self.server.conf.dst[1])))
-
-        if response == b'YPROX`':
-            print(CL.RED + 'Protocoll error! ProxyServer rejeted this request' + CL.NC)
-            proxy_server_sock.close()
-            self.request.close()
-            return
-
-        while response:
-            self.request.send(response)
+            proxy_server_sock.sendall(send + dst_payload + app_payload)
             response = proxy_server_sock.recv(CONST.REV_BUFFER)
 
+            if errCheck(response):
+                handleErr(self.request, proxy_server_sock, response)
+                return
+
+            print('Connected! Tunnel: {} => {} => {}'.format(
+                self.request.getpeername(),
+                proxy_server_sock.getpeername(),
+                (self.server.conf.dst['host'], self.server.conf.dst['port'])))
+
+            # while data:
+            while response:
+                self.request.sendall(response)
+                response = proxy_server_sock.recv(CONST.REV_BUFFER)
+                if errCheck(response):
+                    handleErr(self.request, proxy_server_sock, response)
+                    return
+                # data = self.request.recv(CONST.REV_BUFFER)
+                # proxy_server_sock.sendall(data)
+                # response = proxy_server_sock.recv(CONST.REV_BUFFER)
+
+
+    except socket.error as e:
+        print(CL.RED + 'Umable to connect to proxy. Err: ' + str(e) + CL.NC)
+        return
     print('Tunnel closed from', self.request.getpeername())
 
+def handleErr(client, proxy, msg=b'proxy responded with an error'):
+    proxy.close()
+    client.send(b'Err ' + msg + b'\nClosing')
+    client.close()
+    return
+
+
+def errCheck(response):
+    if response and len(response) >= 6:
+        # print(response)
+        prot, status = struct.unpack('5sb', response[:6])
+        if prot == CONST.PROT_ID:
+            if status == CONST.BIT_FLAG_MASK['PROT_ERR_Flag']:
+                print(
+                    CL.RED + 'Protocoll error! ProxyServer rejeted this request' + CL.NC)
+                return True
+            if status == CONST.BIT_FLAG_MASK['DST_FAIL_Flag']:
+                print(
+                    CL.RED + 'Connection error! ProxyServer can\'t reach the destination server: ' + str(conf.dst) + CL.NC)
+                return True
+    else: return False
 
 
 if __name__ == "__main__":
@@ -51,7 +83,10 @@ if __name__ == "__main__":
         '--config-file', '-f', help='Config file', default='conf/config.txt')
     args = px_parser.parseArgs()
 
-    conf = px_parser.parseConfig(args.config_file)[2]
+    conf = px_parser.parseConfig(args.config_file)[3]
+    # conf1 = px_parser.parseConfig(args.config_file)[1]
 
     tunnel = Tunnel(conf, proxy_client_handler)
     tunnel.run()
+    # tunnel1 = Tunnel(conf1, proxy_client_handler)
+    # tunnel1.run()
