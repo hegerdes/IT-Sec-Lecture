@@ -22,7 +22,7 @@ def proxy_serv_handler(self):
         print(CL.RED + 'Invalid request. Closing...' + CL.NC)
         print(len(data.decode()), data)
         self.request.send(struct.pack(
-            '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']) + b': Bad protocoll. closing')
+            '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
         self.request.close()
         return
 
@@ -38,9 +38,19 @@ def proxy_serv_handler(self):
     client_request = struct.unpack(str(
         client_reqest_data_len) + 's', client_reqest_data[8: 8+client_reqest_data_len])[0]
 
-    print('client_request', client_request)
     print('URL_Lenth', url_length, port, url)
+    print('client_request', client_request)
     print('Data:', data)
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dst_sock:
+        dst_sock.connect((url, port))
+        dst_sock.sendall(client_request)
+        dst_data = dst_sock.recv(CONST.REV_BUFFER)
+        while dst_data:
+            self.request.sendall(dst_data)
+            dst_data = dst_sock.recv(CONST.REV_BUFFER)
+
+    print('end')
     self.request.send('Echo: '.encode() + data)
 
 
@@ -49,7 +59,7 @@ def client(ip, port, message):
         sock.connect((ip, port))
         send = struct.pack('5sb', CONST.PROT_ID,
                            CONST.BIT_FLAG_MASK['CON_Flag'])
-        dst_host = 'sys.cs.uos.de'
+        dst_host = 'icanhazip.com'
         dst_port = 80
         dst_payload = struct.pack(
             'IH' + str(len(dst_host)) + 's', len(dst_host), dst_port, dst_host.encode())
@@ -59,7 +69,9 @@ def client(ip, port, message):
 
         sock.sendall(send + dst_payload + app_payload)
         response = sock.recv(CONST.REV_BUFFER)
-        # print('Received:', response)
+        while response:
+            print(response)
+            response = sock.recv(CONST.REV_BUFFER)
 
 
 if __name__ == "__main__":
@@ -68,7 +80,7 @@ if __name__ == "__main__":
     px_parser.parser.add_argument(
         '--host', '-l', help='host name', default='127.0.0.1')
     px_parser.parser.add_argument(
-        '--port', '-p', help='port to run the proxy server', default=8000)
+        '--port', '-p', help='port to run the proxy server', default=8001)
     args = px_parser.parseArgs()
     conf = Config()
     conf.local = (args.host, args.port)
@@ -77,6 +89,6 @@ if __name__ == "__main__":
     tunnel.run(False)
 
     ip, port = ('127.0.0.1', 8000)
-    client(ip, port, "Hello World 1")
+    # client(ip, port, "Hello World 1")
     # client(ip, port, "Hello World 2")
     # client(ip, port, "Hello World 3")
