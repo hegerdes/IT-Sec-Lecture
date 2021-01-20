@@ -34,12 +34,12 @@ class Config:
 
     def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de', remote_port=8001, listen_port=8000):
         super().__init__()
-        self.dst = (dst_host, int(dst_port))
-        self.remote = (remote_host, int(remote_port))
-        self.local = ('127.0.0.1', int(listen_port))
+        self.dst = {'host':dst_host, 'port':int(dst_port)}
+        self.remote = {'host': remote_host, 'port':int(remote_port)}
+        self.local = {'host':'127.0.0.1', 'port':int(listen_port)}
 
     def __str__(self):
-        return 'Conf: dst={}, remote={}, local={}'.format(self.dst, self.remote, self.local)
+        return 'Conf: dst={}, remote={}, local={}'.format(tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()))
 
 
 class ProxyParser:

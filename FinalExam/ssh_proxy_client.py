@@ -27,12 +27,12 @@ def createSSHClient(conf, user, keyfile):
     except paramiko.PasswordRequiredException:
         print(CL.RED + 'FAILD: Please log in with user and password' + CL.NC)
         password = getpass.getpass(
-            "Password for %s@%s: " % (user, conf.remote[0]))
-        client.connect(*conf.remote, user, password)
+            "Password for %s@%s: " % (user, conf.remote['host']))
+        client.connect(*tuple(conf.remote.values()), user, password)
     except Exception as e:
         print(CL.RED + 'ConnectionFail; Please check arguments' + CL.NC)
 
-    print('Connected to ssh server {}:{}'.format(conf.remote[0], conf.remote[1]))
+    print('Connected to ssh server {}:{}'.format(conf.remote['host'], conf.remote['port']))
     return client
 
 def addServerAtributes(server, transport):
@@ -43,22 +43,22 @@ def ssh_conn_handler(self):
     try:
         chan = self.server.ssh_transport.open_channel(
             "direct-tcpip",
-            (self.server.conf.dst[0], self.server.conf.dst[1]),
+            (self.server.conf.dst['host'], self.server.conf.dst['port']),
             self.request.getpeername(),
         )
     except Exception as e:
         print('Request to {}:{} failed: {}'.format(
-            self.server.conf.dst[0], self.server.conf.dst[1], str(e)))
+            self.server.conf.dst['host'], self.server.conf.dst['port'], str(e)))
         return
     if chan is None:
         print('Incoming request to {}:{} was rejected.'.format(
-            self.server.conf.dst[0], self.server.conf.dst[1]))
+            self.server.conf.dst['host'], self.server.conf.dst['port']))
         return
 
     print('Connected! Tunnel: {} => {} => {}'.format(
         self.request.getpeername(),
         chan.getpeername(),
-        (self.server.conf.dst[0], self.server.conf.dst[1])))
+        (self.server.conf.dst['host'], self.server.conf.dst['port'])))
 
     while True:
         r, w, x = select.select([self.request, chan], [], [])
