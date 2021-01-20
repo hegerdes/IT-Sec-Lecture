@@ -78,9 +78,9 @@ if __name__ == "__main__":
 
     px_parser = ProxyParser()
     px_parser.parser.add_argument(
-        '--host', '-l', help='host name', default='127.0.0.1')
+        '--host', '-l', help='host name', default='bones.informatik.uni-osnabrueck.de')
     px_parser.parser.add_argument(
-        '--port', '-p', help='port to run the proxy server', default=8001)
+        '--port', '-p', help='port to run the proxy server', default=7622)
     args = px_parser.parseArgs()
     conf = Config()
     conf.local = (args.host, args.port)
