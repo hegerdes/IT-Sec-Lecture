@@ -15,24 +15,24 @@ class color:
 
 
 class constants:
-    REV_BUFFER = 1024
+    REV_BUFFER = 4096
 
     PROT_ID = b'YPROX'
     FIXED_HEADER = 6
     BIT_FLAG_MASK = {
-    'CON_Flag':             0b00000000,
-    'CON_ACK_Flag':         0b10000000,
-    'DST_FAIL_Flag':        0b01000000,
-    'LOC_FAIL_Flag':        0b11000000,
-    'END_Flag':             0b00100000,
-    'RPL_RADY_Flag':        0b10100000,
-    'PROT_ERR_Flag':        0b01100000,
+        'CON_Flag':             0b00000000,
+        'CON_ACK_Flag':         0b10000000,
+        'DST_FAIL_Flag':        0b01000000,
+        'LOC_FAIL_Flag':        0b11000000,
+        'END_Flag':             0b00100000,
+        'RPL_RADY_Flag':        0b10100000,
+        'PROT_ERR_Flag':        0b01100000,
     }
 
 
 class Config:
 
-    def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de', remote_port=22, listen_port=8000):
+    def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de', remote_port=8001, listen_port=8000):
         super().__init__()
         self.dst = (dst_host, int(dst_port))
         self.remote = (remote_host, int(remote_port))

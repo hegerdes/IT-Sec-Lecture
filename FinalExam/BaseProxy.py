@@ -33,6 +33,8 @@ class Tunnel:
         if daemon:
             # Easy exit the server thread with main thread
             server_thread.daemon = True
+        print((CL.GRN + 'Start listening ({}:{})...' +
+               CL.NC).format(self.server.conf.local[0], self.server.conf.local[1]))
         server_thread.start()
 
     def getServer(self):
