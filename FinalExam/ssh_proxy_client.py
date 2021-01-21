@@ -2,19 +2,44 @@
 
 import argparse
 import sys
+import os
 import socket
 import time
 import getpass
 import paramiko
 import signal
 import select
+import subprocess
 import socketserver as SocketServer
+from threading import Thread
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import color as CL
 from helper.ProxyParser import constants as CONST
 from BaseProxy import Tunnel
 
+# Solutions with subprocess
+class SubProcessTunnel(Thread):
 
+    def __init__(self, conf, user, force):
+        Thread.__init__(self)
+        checkDstPort(conf, force)
+        self.ps = None
+        self.output = None
+        self.cmd = 'ssh -L 127.0.0.1:{}:{}:{} {}@{} -p {}'.format(
+            conf.local['port'], conf.dst['host'], conf.dst['port'], user, conf.remote['host'], conf.remote['port'])
+
+    def run(self):
+        print(CL.GRN + 'Executing: ' + self.cmd)
+        self.ps = subprocess.Popen(
+            self.cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.ps.wait()
+        # self.output = self.ps.communicate()
+
+    def stop(self):
+        print(CL.GRY + 'Stopping process' + CL.NC)
+        self.ps.kill()
+
+# Solution with paramiko. More elegant though
 def createSSHClient(conf, user, keyfile, force=False):
     client = paramiko.SSHClient()
     client.load_system_host_keys()
@@ -22,10 +47,8 @@ def createSSHClient(conf, user, keyfile, force=False):
 
     key = paramiko.RSAKey.from_private_key_file(keyfile)
 
-    # Port check
-    if conf.remote['port'] != 22 and not force:
-        print(CL.YEL + 'Detected a remote port != 22 for a ssh connection.\nOverwirting it to port 22. Use option -F to overwrite this behavior.' + CL.NC)
-        conf.remote['port'] = 22
+    # Port check for ssh dst
+    checkDstPort(conf, force)
 
     print("*** Connecting...")
     try:
@@ -42,10 +65,6 @@ def createSSHClient(conf, user, keyfile, force=False):
     print('Connected to ssh server {}:{}'.format(
         conf.remote['host'], conf.remote['port']))
     return client
-
-
-def addServerAtributes(server, transport):
-    server.ssh_transport = transport
 
 
 def ssh_conn_handler(self):
@@ -89,6 +108,16 @@ def ssh_conn_handler(self):
     print(CL.GRY + 'Tunnel closed from', peername, CL.NC)
 
 
+def addServerAtributes(server, transport):
+    server.ssh_transport = transport
+
+
+def checkDstPort(conf, force):
+    if conf.remote['port'] != 22 and not force:
+        print(CL.YEL + 'Detected a remote port != 22 for a ssh connection.\nOverwirting it to port 22. Use option -F to overwrite this behavior.' + CL.NC)
+        conf.remote['port'] = 22
+
+
 if __name__ == "__main__":
 
     try:
@@ -98,35 +127,50 @@ if __name__ == "__main__":
         px_parser.parser.add_argument(
             '--force', '-F', action='store_true', default=False)
         px_parser.parser.add_argument(
+            '--use-subprocess', '-s', action='store_true', default=False)
+        px_parser.parser.add_argument(
             '--user', '-u', help='username', default='hegerdes')
         px_parser.parser.add_argument('--key', '-k', help='ssh key file',
-                                      default='/home/arthur/.ssh/ITS')  # TODO replace with .ssh/id_rsa
+            default=os.path.join(os.environ['HOME'], '.ssh', 'ITS'))  # TODO replace with .ssh/id_rsa
+
         args = px_parser.parseArgs()
+        conf = px_parser.parseConfig(args.config_file)[0]
 
-        conf = px_parser.parseConfig(args.config_file)[1]
+        # Use subprocess
+        if args.use_subprocess:
+            subTunnel = SubProcessTunnel(conf, args.user, args.force)
+            subTunnel.start()
+        else:
+            # Use paramiko lib
 
-        # SSH Client
-        try:
-            client = createSSHClient(conf, args.user, args.key, args.force)
-        except socket.error as e:
-            print(CL.RED + 'SSHConnection Faild' + CL.NC)
-            exit(0)
+            # SSH Client
+            try:
+                client = createSSHClient(conf, args.user, args.key, args.force)
+            except socket.error as e:
+                print(CL.RED + 'SSHConnection Faild' + CL.NC)
+                exit(0)
 
-        # TunnelServer
-        try:
-            tunnel = Tunnel(conf, ssh_conn_handler)
-            addServerAtributes(tunnel.getServer(), client.get_transport())
-            tunnel.run(True)
-        except PermissionError as e:
-            print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
-            exit(0)
-        except OSError as e:
-            print(CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
-            exit(0)
+            # TunnelServer
+            try:
+                tunnel = Tunnel(conf, ssh_conn_handler)
+                addServerAtributes(tunnel.getServer(), client.get_transport())
+                tunnel.run(True)
+            except PermissionError as e:
+                print(
+                    CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
+                exit(0)
+            except OSError as e:
+                print(
+                    CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+                exit(0)
 
-        # Put main thread to sleep
-        signal.pause()
+            # Put main thread to sleep
+            signal.pause()
     except KeyboardInterrupt:
         print('KeybordInterrupt. Shutting down...')
-        tunnel.stop()
-        client.close()
+        if args.use_subprocess:
+            subTunnel.stop()
+            subTunnel.join()
+        else:
+            tunnel.stop()
+            client.close()

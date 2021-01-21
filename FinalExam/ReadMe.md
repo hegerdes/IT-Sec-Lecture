@@ -1,7 +1,10 @@
 # Final Task ITS
 
 ## Task 1
-
+```bash
+# SSH Tunnel with ssh comand
+ssh -L 127.0.0.1:8000:icanhazip.com:80 my_user@bones.informatik.uni-osnabrueck.de -p 22
+```
 
 ---
 ## Task 2
