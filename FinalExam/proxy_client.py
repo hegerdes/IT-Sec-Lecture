@@ -15,7 +15,7 @@ def proxy_client_handler(self):
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_server_sock:
-            print((CL.GRN + 'Connecting to {}' + CL.NC).format(conf.remote))
+            print((CL.BLU + 'Connecting to {}' + CL.NC).format(conf.remote))
             proxy_server_sock.connect(tuple(conf.remote.values()))
             send = struct.pack('5sb', CONST.PROT_ID,
                                CONST.BIT_FLAG_MASK['CON_Flag'])
@@ -32,10 +32,10 @@ def proxy_client_handler(self):
                 handleErr(self.request, proxy_server_sock, response)
                 return
 
-            print('Connected! Tunnel: {} => {} => {}'.format(
+            print(CL.GRN + 'Connected! Tunnel: {} => {} => {}'.format(
                 self.request.getpeername(),
                 proxy_server_sock.getpeername(),
-                (self.server.conf.dst['host'], self.server.conf.dst['port'])))
+                (self.server.conf.dst['host'], self.server.conf.dst['port'])) + CL.NC)
 
             # while data:
             while response:
@@ -44,19 +44,19 @@ def proxy_client_handler(self):
                 if errCheck(response):
                     handleErr(self.request, proxy_server_sock, response)
                     return
-                # data = self.request.recv(CONST.REV_BUFFER)
-                # proxy_server_sock.sendall(data)
-                # response = proxy_server_sock.recv(CONST.REV_BUFFER)
+            # proxy_server_sock.sendall(struct.pack('5sb', CONST.PROT_ID,
+            #                    CONST.BIT_FLAG_MASK['END_Flag']))
+
 
 
     except socket.error as e:
-        print(CL.RED + 'Umable to connect to proxy. Err: ' + str(e) + CL.NC)
+        print(CL.RED + 'Unable to connect to proxy. Err: ' + str(e) + CL.NC)
         return
-    print('Tunnel closed from', self.request.getpeername())
+    print(CL.GRY + 'Tunnel closed from', self.request.getpeername(), CL.NC)
 
 def handleErr(client, proxy, msg=b'proxy responded with an error'):
     proxy.close()
-    client.send(b'Err ' + msg + b'\nClosing')
+    client.sendall(msg)
     client.close()
     return
 
@@ -73,6 +73,10 @@ def errCheck(response):
             if status == CONST.BIT_FLAG_MASK['DST_FAIL_Flag']:
                 print(
                     CL.RED + 'Connection error! ProxyServer can\'t reach the destination server: ' + str(conf.dst) + CL.NC)
+                return True
+            if status == CONST.BIT_FLAG_MASK['END_Flag']:
+                print(
+                    CL.RED + 'Proxy closed connection! Proxy:' + str(conf.dst) + CL.NC)
                 return True
     else: return False
 

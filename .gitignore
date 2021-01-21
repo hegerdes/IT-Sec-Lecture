@@ -6,8 +6,12 @@
 Abgabe/Unpacked/*
 playground/pw_pic.png
 P0/pw_pic.png
-P1/rfc4960.txt
-P2/data/Sniffed.pcapng
+
+#Crt's and keys
+*.pem
+*.key
+*.csr
+
 
 #Compiled
 **/__pycache__/**
