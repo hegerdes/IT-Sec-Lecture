@@ -20,7 +20,7 @@ def proxy_serv_handler(self):
     if conn_flag != CONST.BIT_FLAG_MASK['CON_Flag'] or prot != CONST.PROT_ID:
         print(CL.RED + 'Invalid request. Closing...' + CL.NC)
         print(len(data.decode()), data)
-        self.request.send(struct.pack(
+        self.request.sendall(struct.pack(
             '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
         self.request.close()
         return
@@ -38,12 +38,12 @@ def proxy_serv_handler(self):
         client_request_data_len) + 's', client_request_data[8: 8+client_request_data_len])[0]
 
     print('URL_Lenth', url_length, port, url)
-    print('client_request', client_request)
-    print('Data:', data)
+    print('client_request', client_request[:50], '...')
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dst_sock:
             dst_sock.connect((url, port))
+            print(CL.BLU + 'client ' + str(self.request.getpeername()) + ' requested ' + str((url,port)) + '. Connection to dst: OK' + CL.NC)
             dst_sock.sendall(client_request)
             dst_data = dst_sock.recv(CONST.REV_BUFFER)
             # while data:
@@ -54,16 +54,16 @@ def proxy_serv_handler(self):
                 # dst_sock.sendall(data)
                 # dst_data = dst_sock.recv(CONST.REV_BUFFER)
 
+
     except socket.error as e:
         print((CL.RED + 'Request from {}: Unable to connect to destination: ({},{})' +
                CL.NC).format(self.request.getpeername(), url, port))
-        self.request.send(struct.pack(
+        self.request.sendall(struct.pack(
             '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['DST_FAIL_Flag']))
         self.request.close()
         return
 
-    print('end')
-    # self.request.send('Echo: '.encode() + data)
+    print(CL.GRY + 'Connection closed from', self.request.getpeername(), CL.NC)
 
 
 def client(ip, port, message):
@@ -71,7 +71,7 @@ def client(ip, port, message):
         sock.connect((ip, port))
         send = struct.pack('5sb', CONST.PROT_ID,
                            CONST.BIT_FLAG_MASK['CON_Flag'])
-        dst_host = 'icanhazip.cosm'
+        dst_host = 'icanhazip.com'
         dst_port = 80
         dst_payload = struct.pack(
             'IH' + str(len(dst_host)) + 's', len(dst_host), dst_port, dst_host.encode())
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     px_parser.parser.add_argument(
         '--host', '-l', help='host name', default='127.0.0.1')
     px_parser.parser.add_argument(
-        '--port', '-p', help='port to run the proxy server', default=8001)
+        '--port', '-p', help='port to run the proxy server', default=7622)
     args = px_parser.parseArgs()
     conf = Config()
     conf.local = {'host': args.host, 'port': args.port}
