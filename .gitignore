@@ -3,6 +3,7 @@
 
 # Data
 *.pickle
+FinalExam/pub/*
 Abgabe/Unpacked/*
 playground/pw_pic.png
 P0/pw_pic.png
