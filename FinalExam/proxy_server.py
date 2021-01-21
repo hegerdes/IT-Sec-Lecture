@@ -97,9 +97,15 @@ if __name__ == "__main__":
     conf = Config()
     conf.local = {'host': args.host, 'port': args.port}
 
-    tunnel = Tunnel(conf, proxy_serv_handler)
-    tunnel.run(False)
-
+    try:
+        tunnel = Tunnel(conf, proxy_serv_handler)
+        tunnel.run(False)
+    except PermissionError as e:
+        print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
+        exit(1)
+    except OSError as e:
+        print(CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+        exit(1)
     ip, port = ('127.0.0.1', 8005)
     # client(ip, port, "Hello World 1")
     # client(ip, port, "Hello World 2")

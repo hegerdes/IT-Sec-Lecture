@@ -22,6 +22,7 @@ class Tunnel:
         self.server = ForwardServer(tuple(conf.local.values()), self.Default_Handler)
         self.server.myhandler = handler
         self.server.conf = conf
+        self.server_thread = None
 
     class Default_Handler(SocketServer.BaseRequestHandler):
         def handle(self):
@@ -29,13 +30,18 @@ class Tunnel:
             return self.server.myhandler(self)
 
     def run(self, daemon=False):
-        server_thread = Thread(target=self.server.serve_forever)
+        self.server_thread = Thread(target=self.server.serve_forever)
         if daemon:
             # Easy exit the server thread with main thread
-            server_thread.daemon = True
+            self.server_thread.daemon = True
         print((CL.GRN + 'Start listening ({}:{})...' +
                CL.NC).format(self.server.conf.local['host'], self.server.conf.local['port']))
-        server_thread.start()
+        self.server_thread.start()
+
+    def stop(self):
+        if self.server_thread:
+            self.server.shutdown()
+            self.server_thread.join()
 
     def getServer(self):
         return self.server

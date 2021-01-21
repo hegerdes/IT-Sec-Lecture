@@ -87,7 +87,7 @@ if __name__ == "__main__":
         '--config-file', '-f', help='Config file', default='conf/config.txt')
     args = px_parser.parseArgs()
 
-    conf = px_parser.parseConfig(args.config_file)[3]
+    conf = px_parser.parseConfig(args.config_file)[4]
     # conf1 = px_parser.parseConfig(args.config_file)[1]
 
     tunnel = Tunnel(conf, proxy_client_handler)
