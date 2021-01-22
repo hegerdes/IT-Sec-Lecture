@@ -25,16 +25,19 @@ class SubProcessTunnel(Thread):
         checkDstPort(conf, force)
         self.ps = None
         self.output = None
-        self.cmd = 'ssh -L 127.0.0.1:{}:{}:{} {}@{} -p {}'.format(
+        self.cmd = 'ssh -L 127.0.0.1:{}:{}:{} {}@{} -p {} -N'.format(
             conf.local['port'], conf.dst['host'], conf.dst['port'], user, conf.remote['host'], conf.remote['port'])
 
     def run(self):
-        print(CL.GRN + 'Executing: ' + self.cmd)
-        self.ps = subprocess.Popen(
-            self.cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        self.ps.wait()
-        # self.output = self.ps.communicate()
+        try:
+            print(CL.GRN + 'Executing: ' + self.cmd + CL.NC)
+            self.ps = subprocess.Popen(
+                self.cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            self.ps.wait()
+            # self.output = self.ps.communicate()
 
+        except Exception as e:
+            print('Stopping SSH-Tunnel:' + str(e))
     def stop(self):
         print(CL.GRY + 'Stopping process' + CL.NC)
         self.ps.kill()
