@@ -133,7 +133,7 @@ if __name__ == "__main__":
             '--use-subprocess', '-s', action='store_true', default=False)
         px_parser.parser.add_argument(
             '--user', '-u', help='username', default='hegerdes')
-        px_parser.parser.add_argument('--key', '-k', help='ssh key file',
+        px_parser.parser.add_argument('--ssh-key', '-K', help='ssh key file',
             default=os.path.join(os.environ['HOME'], '.ssh', 'ITS'))  # TODO replace with .ssh/id_rsa
 
         args = px_parser.parseArgs()
@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
             # SSH Client
             try:
-                client = createSSHClient(conf, args.user, args.key, args.force)
+                client = createSSHClient(conf, args.user, args.ssh_key, args.force)
             except socket.error as e:
                 print(CL.RED + 'SSHConnection Faild' + CL.NC)
                 exit(0)

@@ -48,6 +48,8 @@ class ProxyParser:
         self.versionCheck()
         self.parser = argparse.ArgumentParser(
             description='Lunches an argparser')
+        self.parser.add_argument('--certificate', '-c', help='Certificate path', default=None)
+        self.parser.add_argument('--key', '-k', help='Pvt key path', default=None)
 
     def versionCheck(self):
         if sys.version_info < (3, 8, 0):
