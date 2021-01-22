@@ -2,6 +2,7 @@
 
 import socket
 import struct
+import select
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
@@ -11,7 +12,6 @@ from BaseProxy import Tunnel
 
 def proxy_client_handler(self):
     conf = self.server.conf
-    data = self.request.recv(CONST.REV_BUFFER)
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_server_sock:
@@ -22,37 +22,40 @@ def proxy_client_handler(self):
             dst_payload = struct.pack(
                 'IH' + str(len(conf.dst['host'])) + 's', len(conf.dst['host']), conf.dst['port'], conf.dst['host'].encode())
 
-            app_payload = struct.pack(
-                'L' + str(len(data.decode())) + 's', len(data.decode()), data)
+            proxy_server_sock.sendall(send + dst_payload)
+            data = proxy_server_sock.recv(CONST.REV_BUFFER)
 
-            proxy_server_sock.sendall(send + dst_payload + app_payload)
-            response = proxy_server_sock.recv(CONST.REV_BUFFER)
+            if not data or len(data) < 6:
+                print('empty or invalid')
 
-            if errCheck(response):
-                handleErr(self.request, proxy_server_sock, response)
-                return
+            prot, status = struct.unpack('5sb', data[:6])
+            if status != CONST.BIT_FLAG_MASK['CON_ACK_Flag']:
+                print('Prot ERR')
 
             print(CL.GRN + 'Connected! Tunnel: {} => {} => {}'.format(
                 self.request.getpeername(),
                 proxy_server_sock.getpeername(),
                 (self.server.conf.dst['host'], self.server.conf.dst['port'])) + CL.NC)
 
-            # while data:
-            while response:
-                self.request.sendall(response)
-                response = proxy_server_sock.recv(CONST.REV_BUFFER)
-                if errCheck(response):
-                    handleErr(self.request, proxy_server_sock, response)
-                    return
-            # proxy_server_sock.sendall(struct.pack('5sb', CONST.PROT_ID,
-            #                    CONST.BIT_FLAG_MASK['END_Flag']))
-
-
+            while True:
+                r, w, x = select.select(
+                    [self.request, proxy_server_sock], [], [])
+                if self.request in r:
+                    data = self.request.recv(CONST.REV_BUFFER)
+                    if len(data) == 0:
+                        break
+                    proxy_server_sock.send(data)
+                if proxy_server_sock in r:
+                    data = proxy_server_sock.recv(CONST.REV_BUFFER)
+                    if len(data) == 0:
+                        break
+                    self.request.send(data)
 
     except socket.error as e:
         print(CL.RED + 'Unable to connect to proxy. Err: ' + str(e) + CL.NC)
         return
     print(CL.GRY + 'Tunnel closed from', self.request.getpeername(), CL.NC)
+
 
 def handleErr(client, proxy, msg=b'proxy responded with an error'):
     proxy.close()
@@ -78,7 +81,8 @@ def errCheck(response):
                 print(
                     CL.RED + 'Proxy closed connection! Proxy:' + str(conf.dst) + CL.NC)
                 return True
-    else: return False
+    else:
+        return False
 
 
 if __name__ == "__main__":
@@ -87,7 +91,7 @@ if __name__ == "__main__":
         '--config-file', '-f', help='Config file', default='conf/config.txt')
     args = px_parser.parseArgs()
 
-    conf = px_parser.parseConfig(args.config_file)[4]
+    conf = px_parser.parseConfig(args.config_file)[3]
     # conf1 = px_parser.parseConfig(args.config_file)[1]
 
     tunnel = Tunnel(conf, proxy_client_handler)

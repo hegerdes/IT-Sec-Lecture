@@ -2,6 +2,7 @@
 
 import socket
 import struct
+import select
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
@@ -19,7 +20,6 @@ def proxy_serv_handler(self):
 
     if conn_flag != CONST.BIT_FLAG_MASK['CON_Flag'] or prot != CONST.PROT_ID:
         print(CL.RED + 'Invalid request. Closing...' + CL.NC)
-        print(len(data.decode()), data)
         self.request.sendall(struct.pack(
             '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
         self.request.close()
@@ -30,30 +30,28 @@ def proxy_serv_handler(self):
     url_length, port, url = struct.unpack(
         'IH' + str(url_length) + 's', dst_data[:4 + 2 + url_length])
 
-    # TCP Application request data
-    client_request_data = dst_data[4 + 2 + url_length:]
-
-    client_request_data_len = struct.unpack('L', client_request_data[:8])[0]
-    client_request = struct.unpack(str(
-        client_request_data_len) + 's', client_request_data[8: 8+client_request_data_len])[0]
-
     print('URL_Lenth', url_length, port, url)
-    print('client_request', client_request[:50], '...')
-
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dst_sock:
             dst_sock.connect((url, port))
-            print(CL.BLU + 'client ' + str(self.request.getpeername()) + ' requested ' + str((url,port)) + '. Connection to dst: OK' + CL.NC)
-            dst_sock.sendall(client_request)
-            dst_data = dst_sock.recv(CONST.REV_BUFFER)
-            # while data:
-            while dst_data:
-                self.request.sendall(dst_data)
-                dst_data = dst_sock.recv(CONST.REV_BUFFER)
-                # data = self.request.recv(CONST.REV_BUFFER)
-                # dst_sock.sendall(data)
-                # dst_data = dst_sock.recv(CONST.REV_BUFFER)
+            print(CL.BLU + 'client ' + str(self.request.getpeername()) +
+                  ' requested ' + str((url, port)) + '. Connection to dst: OK' + CL.NC)
 
+            self.request.sendall(struct.pack('5sb', CONST.PROT_ID,
+                                             CONST.BIT_FLAG_MASK['CON_ACK_Flag']))
+
+            while True:
+                r, w, x = select.select([self.request, dst_sock], [], [])
+                if self.request in r:
+                    data = self.request.recv(CONST.REV_BUFFER)
+                    if len(data) == 0:
+                        break
+                    dst_sock.send(data)
+                if dst_sock in r:
+                    data = dst_sock.recv(CONST.REV_BUFFER)
+                    if len(data) == 0:
+                        break
+                    self.request.send(data)
 
     except socket.error as e:
         print((CL.RED + 'Request from {}: Unable to connect to destination: ({},{})' +
@@ -104,7 +102,8 @@ if __name__ == "__main__":
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
         exit(1)
     except OSError as e:
-        print(CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+        print(
+            CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
         exit(1)
     ip, port = ('127.0.0.1', 8005)
     # client(ip, port, "Hello World 1")

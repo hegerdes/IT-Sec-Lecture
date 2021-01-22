@@ -21,7 +21,7 @@ class constants:
     FIXED_HEADER = 6
     BIT_FLAG_MASK = {
         'CON_Flag':             0b00000000,
-        'CON_ACK_Flag':         0b10000000,
+        'CON_ACK_Flag':         0b00000001,
         'DST_FAIL_Flag':        0b01000000,
         'LOC_FAIL_Flag':        0b11000000,
         'END_Flag':             0b00100000,
