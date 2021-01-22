@@ -17,10 +17,18 @@
 \pagestyle{plain}
 \pagenumbering{arabic}
 \maketitle
-\begin{abstract}
-    TODO
-\end{abstract}
+
 \section{Introduction}
+Im Rahmen der Klausurersatzleistung für das Modul IT-Sicherheit wurde eine Proxy Client-Server Architektur erstellt mit der TCP Verbindungen umgeleitet werden können, um z.B. Filterregeln einer Firewall zu umgehen. Blockierte Anwendungen können dann den ProxyClient verwenden um dennoch nutzbar zu sein. Der strukturelle Aufbau is in fig \ref{fig::arch} zu sehen.\newline
+Umgesetzt wurde diese Struktur indem Server und Client eine gemeinsame Tunnelklasse nutzen. Die Klasse Tunnel besteht aus einem \textit{SocketServer.TCPServer}, der bereits die unterliegenden sockets und den nicht blockierenden Programmablauf regelt sowie einem anwendungsspezifischen Handler der bei eintreffenden Anfragen aufgerufen wird. Server und Client haben jeweils einen eigenen Handler der die Kommunikation zwischen einander und zu den Endpunkten steuert. Es sind gleichzeitige Verbindungen möglich.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{structure.png}
+    \caption{Netzwerk-Architektur zur Firewall-Umgehung}
+    \label{fig::arch}
+\end{figure}
+
 \section{Security}
 \section{Evaluation}
 \end{document}
