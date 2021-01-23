@@ -71,26 +71,24 @@ def createSSHClient(conf, user, keyfile, force=False):
 
 
 def ssh_conn_handler(self):
-    # https://github.com/paramiko/paramiko/blob/master/demos/forward.py
+    peername = self.request.getpeername()
+
     try:
         chan = self.server.ssh_transport.open_channel(
             "direct-tcpip",
             (self.server.conf.dst['host'], self.server.conf.dst['port']),
-            self.request.getpeername(),
-        )
+            peername)
     except Exception as e:
-        print('Request to {}:{} failed: {}'.format(
-            self.server.conf.dst['host'], self.server.conf.dst['port'], str(e)))
+        print(CL.RED + 'Request to {}:{} failed: {}'.format(
+            self.server.conf.dst['host'], self.server.conf.dst['port'], str(e)), CL.NC)
         return
     if chan is None:
-        print('Incoming request to {}:{} was rejected.'.format(
+        print('Request to {}:{} was rejected.'.format(
             self.server.conf.dst['host'], self.server.conf.dst['port']))
         return
 
-    print(CL.BLU + 'Connected! Tunnel: {} => {} => {}'.format(
-        self.request.getpeername(),
-        chan.getpeername(),
-        (self.server.conf.dst['host'], self.server.conf.dst['port'])), CL.NC)
+    print(CL.BLU + 'Connected! Tunnel: {} => {} => {}'.format(peername,
+        chan.getpeername(), (self.server.conf.dst['host'], self.server.conf.dst['port'])), CL.NC)
 
     while True:
         r, w, x = select.select([self.request, chan], [], [])
@@ -105,7 +103,6 @@ def ssh_conn_handler(self):
                 break
             self.request.send(data)
 
-    peername = self.request.getpeername()
     chan.close()
     self.request.close()
     print(CL.GRY + 'Tunnel closed from', peername, CL.NC)
@@ -166,10 +163,10 @@ if __name__ == "__main__":
                 print(
                     CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
                 exit(0)
-            except OSError as e:
-                print(
-                    CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
-                exit(0)
+            # except OSError as e:
+            #     print(
+            #         CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+            #     exit(0)
 
             # Put main thread to sleep
             signal.pause()
