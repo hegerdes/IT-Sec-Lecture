@@ -89,12 +89,14 @@ if __name__ == "__main__":
     px_parser = ProxyParser()
     px_parser.parser.add_argument(
         '--config-file', '-f', help='Config file', default='conf/config.txt')
+    px_parser.parser.add_argument('--ca', '-C', help='CA certificate path', default=None)
     args = px_parser.parseArgs()
 
-    conf = px_parser.parseConfig(args.config_file)[3]
-    # conf1 = px_parser.parseConfig(args.config_file)[1]
+    confs = px_parser.parseConfig()
+    px_parser.setSSLConf()
 
-    tunnel = Tunnel(conf, proxy_client_handler)
+
+    tunnel = Tunnel(confs[3], proxy_client_handler)
     tunnel.run()
-    # tunnel1 = Tunnel(conf1, proxy_client_handler)
-    # tunnel1.run()
+    tunnel1 = Tunnel(confs[1], proxy_client_handler)
+    tunnel1.run()

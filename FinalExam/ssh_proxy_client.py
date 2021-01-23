@@ -137,25 +137,29 @@ if __name__ == "__main__":
             default=os.path.join(os.environ['HOME'], '.ssh', 'ITS'))  # TODO replace with .ssh/id_rsa
 
         args = px_parser.parseArgs()
-        conf = px_parser.parseConfig(args.config_file)[0]
+        confs = px_parser.parseConfig()
 
-        # Use subprocess
+        if args.certificate or args.key:
+            print(CL.YEL + 'Certs and Cert-keys are mot supported by this modul. Ignoring options!' + CL.NC)
+
+        conf = 0
+
         if args.use_subprocess:
-            subTunnel = SubProcessTunnel(conf, args.user, args.force)
+            # Use subprocess
+            subTunnel = SubProcessTunnel(confs[conf], args.user, args.force)
             subTunnel.start()
         else:
-            # Use paramiko lib
-
+            # Use paramiko ssh-lib
             # SSH Client
             try:
-                client = createSSHClient(conf, args.user, args.ssh_key, args.force)
+                client = createSSHClient(confs[conf], args.user, args.ssh_key, args.force)
             except socket.error as e:
                 print(CL.RED + 'SSHConnection Faild' + CL.NC)
                 exit(0)
 
             # TunnelServer
             try:
-                tunnel = Tunnel(conf, ssh_conn_handler)
+                tunnel = Tunnel(confs[conf], ssh_conn_handler)
                 addServerAtributes(tunnel.getServer(), client.get_transport())
                 tunnel.run(True)
             except PermissionError as e:

@@ -32,14 +32,18 @@ class constants:
 
 class Config:
 
-    def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de', remote_port=8001, listen_port=8000):
+    def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de', remote_port=8001, listen_port=8000, ssl_options=None):
         super().__init__()
-        self.dst = {'host':dst_host, 'port':int(dst_port)}
-        self.remote = {'host': remote_host, 'port':int(remote_port)}
-        self.local = {'host':'127.0.0.1', 'port':int(listen_port)}
+        self.dst = {'host': dst_host, 'port': int(dst_port)}
+        self.remote = {'host': remote_host, 'port': int(remote_port)}
+        self.local = {'host': '127.0.0.1', 'port': int(listen_port)}
+        self.ssl = ssl_options
 
     def __str__(self):
-        return 'Conf: dst={}, remote={}, local={}'.format(tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()))
+        return 'Conf: dst={}, remote={}, local={}, ssl={}'.format(tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl)
+
+    def setSSL(self, ssl_options):
+        self.ssl = ssl_options
 
 
 class ProxyParser:
@@ -48,8 +52,12 @@ class ProxyParser:
         self.versionCheck()
         self.parser = argparse.ArgumentParser(
             description='Lunches an argparser')
-        self.parser.add_argument('--certificate', '-c', help='Certificate path', default=None)
-        self.parser.add_argument('--key', '-k', help='Pvt key path', default=None)
+        self.parser.add_argument(
+            '--certificate', '-c', help='Certificate path', default=None)
+        self.parser.add_argument(
+            '--key', '-k', help='Pvt key path', default=None)
+        self.args = None
+        self.configs = None
 
     def versionCheck(self):
         if sys.version_info < (3, 8, 0):
@@ -57,10 +65,32 @@ class ProxyParser:
             sys.exit(1)
 
     def parseArgs(self):
-        return self.parser.parse_args()
+        self.args = self.parser.parse_args()
+        return self.args
 
-    def parseConfig(self, config_path):
-        configs = list()
+    def setSSLConf(self):
+        ssl_keys, ssl_options = ['certificate', 'key', 'ca'], {}
+
+        # Err check
+        if not self.configs:
+            self.parseConfig()
+
+        for k, v in dict(self.args._get_kwargs()).items():
+            ssl_options[k] = v if k in ssl_keys else k
+
+        [conf.setSSL(ssl_options) for conf in self.configs]
+        return self.configs
+
+    def parseConfig(self, config_path=None):
+        self.configs = list()
+
+        # Default
+        if not config_path:
+            # Err prevention
+            if not self.args:
+                self.parseArgs()
+            config_path = self.args.config_file
+
         with open(config_path, "r") as fr:
             line = fr.readline()
             while line:
@@ -70,7 +100,7 @@ class ProxyParser:
                     if (len(conf) != 5):
                         raise ValueError(
                             'Illigal length in confogfile: ' + config_path)
-                    configs.append(Config(*conf))
+                    self.configs.append(Config(*conf))
                 line = fr.readline()
-        [print(conf) for conf in configs]
-        return configs
+        [print(conf) for conf in self.configs]
+        return self.configs

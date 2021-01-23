@@ -92,7 +92,9 @@ if __name__ == "__main__":
     px_parser.parser.add_argument(
         '--port', '-p', help='port to run the proxy server', default=7622)
     args = px_parser.parseArgs()
-    conf = Config()
+
+    #Use config with overwritten options
+    conf = Config(ssl_options={'certificate':args.certificate, 'key':args.key})
     conf.local = {'host': args.host, 'port': args.port}
 
     try:
@@ -105,6 +107,8 @@ if __name__ == "__main__":
         print(
             CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
         exit(1)
+
+    #Testing
     ip, port = ('127.0.0.1', 8005)
     # client(ip, port, "Hello World 1")
     # client(ip, port, "Hello World 2")
