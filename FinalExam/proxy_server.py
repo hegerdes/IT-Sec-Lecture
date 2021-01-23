@@ -3,6 +3,7 @@
 import socket
 import struct
 import select
+import ssl
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
@@ -24,6 +25,8 @@ def proxy_serv_handler(self):
             '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
         self.request.close()
         return
+
+    print(self.request.getpeercert())
 
     # DST info
     url_length = struct.unpack('I', dst_data[:4])[0]
@@ -65,23 +68,31 @@ def proxy_serv_handler(self):
 
 
 def client(ip, port, message):
+    ctx = ssl.create_default_context()
+    ctx.verify_mode = ssl.CERT_REQUIRED
+    ctx.check_hostname = True
+    ctx.load_verify_locations("pki/certificates/ca.pem")
+    ctx.load_cert_chain('pki/certificates/client1.pem', 'pki/certificates/client1.key')
+
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.connect((ip, port))
-        send = struct.pack('5sb', CONST.PROT_ID,
-                           CONST.BIT_FLAG_MASK['CON_Flag'])
-        dst_host = 'icanhazip.com'
-        dst_port = 80
-        dst_payload = struct.pack(
-            'IH' + str(len(dst_host)) + 's', len(dst_host), dst_port, dst_host.encode())
+        with ctx.wrap_socket(sock, server_hostname='localhost') as ssock:
+            ssock.connect((ip, port))
+            send = struct.pack('5sb', CONST.PROT_ID,
+                            CONST.BIT_FLAG_MASK['CON_Flag'])
+            dst_host = 'icanhazip.com'
+            dst_port = 80
+            dst_payload = struct.pack(
+                'IH' + str(len(dst_host)) + 's', len(dst_host), dst_port, dst_host.encode())
 
-        app_payload = struct.pack(
-            'L' + str(len(example_request)) + 's', len(example_request), example_request.encode())
+            app_payload = struct.pack(
+                'L' + str(len(example_request)) + 's', len(example_request), example_request.encode())
 
-        sock.sendall(send + dst_payload + app_payload)
-        response = sock.recv(CONST.REV_BUFFER)
-        while response:
-            print(response)
-            response = sock.recv(CONST.REV_BUFFER)
+            ssock.sendall(send + dst_payload + app_payload)
+            response = ssock.recv(CONST.REV_BUFFER)
+            while response:
+                print(response)
+                response = ssock.recv(CONST.REV_BUFFER)
 
 
 if __name__ == "__main__":
@@ -90,7 +101,7 @@ if __name__ == "__main__":
     px_parser.parser.add_argument(
         '--host', '-l', help='host name', default='bones.informatik.uni-osnabrueck.de')
     px_parser.parser.add_argument(
-        '--port', '-p', help='port to run the proxy server', default=7622)
+        '--port', '-p', help='port to run the proxy server', default=8622, type=int)
     args = px_parser.parseArgs()
 
     #Use config with overwritten options
@@ -103,13 +114,13 @@ if __name__ == "__main__":
     except PermissionError as e:
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
         exit(1)
-    except OSError as e:
-        print(
-            CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
-        exit(1)
+    # except OSError as e:
+    #     print(
+    #         CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+    #     exit(1)
 
     #Testing
-    ip, port = ('127.0.0.1', 8005)
-    # client(ip, port, "Hello World 1")
+    ip, port = ('127.0.0.1', 8622)
+    client(ip, port, "Hello World 1")
     # client(ip, port, "Hello World 2")
     # client(ip, port, "Hello World 3")

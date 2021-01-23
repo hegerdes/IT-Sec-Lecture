@@ -3,6 +3,7 @@
 
 import sys
 import time
+import ssl
 import socket
 from threading import Thread
 import socketserver as SocketServer
@@ -15,11 +16,39 @@ class ForwardServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     daemon_threads = True
     allow_reuse_address = True
 
+    def __init__(self, conf, server_address, RequestHandler, bind_and_activate=True):
+        super().__init__(server_address, RequestHandler, False)
+
+        print(conf.ssl)
+        if conf.ssl and len(conf.ssl) > 1:
+            try:
+                ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+                ctx.verify_mode = ssl.CERT_REQUIRED
+                ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+
+                if 'ca' in conf.ssl and conf.ssl['ca']:
+                    ctx.load_verify_locations("CA")
+
+                self.socket = ctx.wrap_socket(self.socket, server_side=True)
+                print(CL.BLU + 'Using SSL' + CL.NC)
+            except FileNotFoundError:
+                print(CL.YEL + 'Cert or key not found. Using Proxy without SSL!' + CL.NC)
+        else:
+            print(CL.GRY + 'Not using SSL' + CL.NC)
+
+        if bind_and_activate:
+            try:
+                self.server_bind()
+                self.server_activate()
+            except:
+                self.server_close()
+                raise
+
 
 class Tunnel:
     def __init__(self, conf, handler):
         self.conf = conf
-        self.server = ForwardServer(tuple(conf.local.values()), self.Default_Handler)
+        self.server = ForwardServer(conf, tuple(conf.local.values()), self.Default_Handler)
         self.server.myhandler = handler
         self.server.conf = conf
         self.server_thread = None
@@ -125,19 +154,3 @@ def startProxies(proxies):
         proxy.start()
         break
 
-
-if __name__ == "__main__":
-    try:
-        parser = ProxyParser()
-        configs = parser.parseConfig(parser.parseArgs().config_file)
-        proxs = createProxyInstances(configs)
-        # proxs = createProxyInstances(parseConfig('FinalExam/config.txt'))
-
-        startProxies(proxs)
-        time.sleep(5)
-        print('Waited')
-
-    except KeyboardInterrupt:
-        print('Interuped received.')
-        [proxy.stop() for proxy in proxs]
-        print('Exit')
