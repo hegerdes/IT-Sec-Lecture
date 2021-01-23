@@ -5,6 +5,7 @@ NC='\033[0m'
 GRN='\033[0;32m'
 
 CA_FILE_NAME="ca"
+KEY_SIZE=4096
 DST_DIR="certificates"
 # Add aditional names for mor clients (seperated by space)
 EXAMPLES=(example)
@@ -27,7 +28,7 @@ fi
 
 # CA-key
 echo -e "${GRN}Creating CA key${NC}"
-openssl genrsa -out $DST_DIR/$CA_FILE_NAME.key 2048
+openssl genrsa -out $DST_DIR/$CA_FILE_NAME.key $KEY_SIZE
 # Err check
 if [ $? -ne 0 ]; then
     echo -e "${RED}Error in CA key generation${NC}"
@@ -46,7 +47,7 @@ fi
 for example in ${EXAMPLES[@]}; do
     # Example key and sign-request
     echo -e "${GRN}Creating ${example} key and sign request ${NC}"
-    openssl req -new -newkey rsa:2048 -nodes -keyout $DST_DIR/$example.key -days 3650 -batch -subj "/CN=user-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=Student/emailAddress=hegerdes@uos.de" -out $DST_DIR/$example.csr
+    openssl req -new -newkey rsa:$KEY_SIZE -nodes -keyout $DST_DIR/$example.key -batch -subj "/CN=user-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=Student/emailAddress=hegerdes@uos.de" -out $DST_DIR/$example.csr
 
     if [ $? -ne 0 ]; then
         echo -e "${RED}Error in example key/csr generation${NC}"
@@ -70,7 +71,7 @@ CLIENTS=(server client1 client2)
 
 for client in ${CLIENTS[@]}; do
     echo -e "${GRN}Creating ${client} key and sign request ${NC}"
-    openssl req -new -newkey rsa:2048 -nodes -keyout $DST_DIR/$client.key -days 365 -batch -out $DST_DIR/$client.csr -config openssl.conf -subj "/CN=${client}-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=${client}/emailAddress=${client}@uos.de"
+    openssl req -new -newkey rsa:$KEY_SIZE -nodes -keyout $DST_DIR/$client.key -batch -out $DST_DIR/$client.csr -config openssl.conf -subj "/CN=${client}-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=${client}/emailAddress=${client}@uos.de"
 
     if [ $? -ne 0 ]; then
         echo -e "${RED}Error in client key/csr generation${NC}"
