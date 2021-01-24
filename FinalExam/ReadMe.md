@@ -11,6 +11,12 @@ ssh -L 127.0.0.1:8000:icanhazip.com:80 my_user@bones.informatik.uni-osnabrueck.d
 ```
 This command gets wrapped in a python subprocess call.
 
+### Task 1.3 & 1.4
+Both server and client are using the *Tunnel* class form the *BaseProxy*. It creates a TCP socket-server that listens on the host:port provided by the config. *Tunnel* requieres a custem handler that gets called every time a request arrives at the server or client. These handlers are implemented in *proxy_client.py* and *proxy_server.py*.
+
+These handlers first exchange some flags to ensure compatility and sets up the rely logik on succsses. Else the connection is closed.
+
+
 ---
 ## Task 2
 ### Task 2.1
@@ -30,24 +36,23 @@ openssl x509 -req -days 365 -in example.csr -CA ca.pem -CAkey ca.key -CAcreatese
 ```
 
 ### Task 2.2
+**NOTE:** This is all done in the *initilise.sh* script
 ```bash
-# Server cert
+# Server and client certs
 
-#Does not work -_-
-openssl req -new -newkey rsa:2048 -nodes -keyout test.key -days 3650 -batch -subj "/CN=server-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=Student/emailAddress=hegerdes@uos.de" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf "\n[SAN]\nsubjectAltName=DNS:localhost,DNS:bones.informatik.uni-osnabrueck.de,DNS:diggory.informatik.uni-osnabrueck.de,IP:127.0.0.1,IP:131.173.33.209,IP:131.173.33.211")) -out test.csr
-
-# So use conf file
-openssl req -new -newkey rsa:2048 -nodes -keyout test.key -days 365 -batch -out test.csr -config openssl.conf -subj "/CN=server-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=Student/emailAddress=hegerdes@uos.de"
+# use conf file
+openssl req -new -newkey rsa:2048 -nodes -keyout test.key -batch -out test.csr -config openssl.conf -subj "/CN=server-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=Student/emailAddress=hegerdes@uos.de"
 
 #sign
-openssl x509 -req -days 365 -in test.csr -CA ca.pem -CAkey ca.key -CAcreateserial -set_serial 01 -out test.pem
+openssl x509 -req -days 365 -in test.csr -CA ca.pem -CAkey ca.key -CAcreateserial -set_serial 01 -out test.pem -extfile openssl.conf -extensions v3_req
 ```
 **Conf file for openssl (Server, Client)**
 ```Conf
 [ req ]
 default_bits       = 2048
 distinguished_name = req_distinguished_name
-req_extensions     = req_ext
+req_extensions     = v3_req
+promt              = no
 
 [ req_distinguished_name ]
 countryName                = DE
@@ -61,7 +66,9 @@ emailAddress                    = server@uos.de
 emailAddress_max                = 64
 emailAddress_default            = info@uos.de
 
-[ req_ext ]
+[ v3_req ]
+keyUsage = keyEncipherment, dataEncipherment, digitalSignature
+extendedKeyUsage = serverAuth, clientAuth
 subjectAltName = @alt_names
 
 [alt_names]
@@ -74,7 +81,48 @@ IP.1    =           131.173.33.209
 IP.2    =           131.173.33.211
 IP.3    =           127.0.0.1
 ```
+### Task 2.3 & 2.4
+**First:** Create certs that a signed with your CA, contain `extendedKeyUsage = serverAuth, clientAuth` and `subjectAltName=[LIST_OF_DNS_NAMES]`
 
+#### ServerSide
+For the server init ssl and wrap the socket with:
+```Python
+ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+
+# Wrap the socket
+self.socket = ctx.wrap_socket(self.socket, server_side=True)
+```
+After that you bind the socket.
+
+The client also inits with:
+```Python
+ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+ctx.verify_mode = ssl.CERT_REQUIRED
+ctx.check_hostname = True
+ctx.load_verify_locations(conf.ssl['ca'])
+ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+
+#And than wraps with:
+proxy_server_sock = ctx.wrap_socket(proxy_server_sock, server_hostname=conf.remote['host'])
+```
+
+#### ClientSide
+Is the some as Serverside but you need to add `Purpose.SERVER_AUTH` and `ctx.verify_mode = ssl.CERT_REQUIRED` as well as the CA-path:
+```Python
+ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
+# Client auth enabled
+if 'ca' in conf.ssl and conf.ssl['ca']:
+    ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    ctx.verify_mode = ssl.CERT_REQUIRED
+    ctx.load_verify_locations('pki/certificates/ca.pem')
+ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+
+# Wrap the socket
+self.socket = ctx.wrap_socket(self.socket, server_side=True)
+```
 
 ---
 ## Task 3
