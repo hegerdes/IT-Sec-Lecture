@@ -78,9 +78,9 @@ for client in ${CLIENTS[@]}; do
         exit
     fi
 
-    # Sign with CA
+    # Sign with CA & keep subject alatanative names
     echo -e "${GRN}Signing ${client} with CA ${NC}"
-    openssl x509 -req -days 365 -in $DST_DIR/$client.csr -CA $DST_DIR/$CA_FILE_NAME.pem -CAkey $DST_DIR/$CA_FILE_NAME.key -CAcreateserial -set_serial 01 -out $DST_DIR/$client.pem
+    openssl x509 -req -days 365 -in $DST_DIR/$client.csr -CA $DST_DIR/$CA_FILE_NAME.pem -CAkey $DST_DIR/$CA_FILE_NAME.key -CAcreateserial -set_serial 01 -out $DST_DIR/$client.pem -extfile openssl.conf -extensions v3_req
 
     if [ $? -ne 0 ]; then
         echo -e "${RED}Error at client sign${NC}"

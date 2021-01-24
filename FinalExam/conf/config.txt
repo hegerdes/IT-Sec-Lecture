@@ -2,7 +2,7 @@
 # Format:
 # DST_HOST:DST_PORT:PROXY_HOST:PORXY_PORT:LOCAL_LISTEN_PORT
 
-icanhazip.com:80:bones.informatik.uni-osnabrueck.de:22:8000
+sys.cs.uos.de:80:bones.informatik.uni-osnabrueck.de:22:8000
 icanhazip.com: 80 : bones.informatik.uni-osnabrueck.de:7622:8002
 sys.cs.uos.de: 80 : bones.informatik.uni-osnabrueck.de:7622:8001
 sys.cs.uos.de: 80 : 127.0.0.1:7622:8000
