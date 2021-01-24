@@ -53,11 +53,11 @@ class ProxyParser:
         self.parser = argparse.ArgumentParser(
             description='Lunches an argparser')
         self.parser.add_argument(
-            '--certificate', '-c', help='Certificate path', default=None)
-        self.parser.add_argument(
             '--key', '-k', help='Pvt key path', default=None)
         self.parser.add_argument(
             '--ca', '-C', help='CA certificate path', default=None)
+        self.parser.add_argument(
+            '--certificate', '-c', help='Certificate path', default=None)
         self.args = None
         self.configs = None
 

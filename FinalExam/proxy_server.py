@@ -16,7 +16,7 @@ example_request = 'GET / HTTP/1.1\r\nHost: localhost:8000\r\nConnection: keep-al
 def proxy_serv_handler(self):
     use_ssl = True
     try:
-        print('ClientCert',self.request.getpeercert(), self.request.version())
+        print('ClientCert', self.request.getpeercert(), self.request.version())
     except AttributeError:
         use_ssl = False
 
@@ -32,7 +32,6 @@ def proxy_serv_handler(self):
             '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
         self.request.close()
         return
-
 
     # DST info
     url_length = struct.unpack('I', dst_data[:4])[0]
@@ -78,14 +77,14 @@ def client(ip, port, message):
     ctx.verify_mode = ssl.CERT_REQUIRED
     ctx.check_hostname = True
     ctx.load_verify_locations("pki/certificates/ca.pem")
-    ctx.load_cert_chain('pki/certificates/client1.pem', 'pki/certificates/client1.key')
-
+    ctx.load_cert_chain('pki/certificates/client1.pem',
+                        'pki/certificates/client1.key')
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         with ctx.wrap_socket(sock, server_hostname='localhost') as ssock:
             ssock.connect((ip, port))
             send = struct.pack('5sb', CONST.PROT_ID,
-                            CONST.BIT_FLAG_MASK['CON_Flag'])
+                               CONST.BIT_FLAG_MASK['CON_Flag'])
             dst_host = 'icanhazip.com'
             dst_port = 80
             dst_payload = struct.pack(
@@ -94,8 +93,7 @@ def client(ip, port, message):
             app_payload = struct.pack(
                 'L' + str(len(example_request)) + 's', len(example_request), example_request.encode())
 
-            print('ServerCert',ssock.getpeercert())
-            # ssock.sendall(b"Hello form the other side")
+            print('ServerCert', ssock.getpeercert())
             ssock.sendall(send + dst_payload + app_payload)
             response = ssock.recv(CONST.REV_BUFFER)
             while response:
@@ -110,13 +108,17 @@ if __name__ == "__main__":
         '--host', '-l', help='host name', default='bones.informatik.uni-osnabrueck.de')
     px_parser.parser.add_argument(
         '--port', '-p', help='port to run the proxy server', default=7622, type=int)
+    px_parser.parser.add_argument(
+        '--acl', help='Access Control List-Filepath', default=None)
+    px_parser.parser.add_argument(
+        '--socks', '-s', help='Use the SOCCKS protocol', default=None)
     args = px_parser.parseArgs()
 
-    #Use config with overwritten options
+    # Use config with overwritten options
     conf = Config()
     conf.local = {'host': args.host, 'port': args.port}
     if args.certificate or args.key:
-        conf.setSSL({'certificate':args.certificate, 'key':args.key})
+        conf.setSSL({'certificate': args.certificate, 'key': args.key})
 
     try:
         tunnel = Tunnel(conf, proxy_serv_handler, True)
@@ -129,7 +131,7 @@ if __name__ == "__main__":
     #         CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
     #     exit(1)
 
-    #Testing
+    # Testing
     ip, port = ('127.0.0.1', 7622)
     # client(ip, port, "Hello World 1")
     # client(ip, port, "Hello World 2")
