@@ -3,6 +3,7 @@
 import socket
 import struct
 import select
+import ssl
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
@@ -13,10 +14,32 @@ from BaseProxy import Tunnel
 def proxy_client_handler(self):
     conf = self.server.conf
 
+    use_ssl = True
+    try:
+        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+        ctx.verify_mode = ssl.CERT_REQUIRED
+        ctx.check_hostname = True
+        ctx.load_verify_locations(conf.ssl['ca'])
+        ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+    except (TypeError, FileNotFoundError, KeyError) as e:
+        print(CL.GRY + 'Not using SSL' + CL.NC + '\nErr: ' + str(e))
+        use_ssl = False
+
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_server_sock:
+            if use_ssl:
+                proxy_server_sock = ctx.wrap_socket(
+                    proxy_server_sock, server_hostname=conf.remote['host'])
+
             print((CL.BLU + 'Connecting to {}' + CL.NC).format(conf.remote))
             proxy_server_sock.connect(tuple(conf.remote.values()))
+
+            try:
+                print('ServerCert', proxy_server_sock.getpeercert(), proxy_server_sock.version())
+            except AttributeError:
+                use_ssl = False
+
             send = struct.pack('5sb', CONST.PROT_ID,
                                CONST.BIT_FLAG_MASK['CON_Flag'])
             dst_payload = struct.pack(
@@ -89,12 +112,11 @@ if __name__ == "__main__":
     px_parser = ProxyParser()
     px_parser.parser.add_argument(
         '--config-file', '-f', help='Config file', default='conf/config.txt')
-    px_parser.parser.add_argument('--ca', '-C', help='CA certificate path', default=None)
     args = px_parser.parseArgs()
 
     confs = px_parser.parseConfig()
     px_parser.setSSLConf()
-
+    [print(conf) for conf in confs]
 
     tunnel = Tunnel(confs[3], proxy_client_handler)
     tunnel.run()

@@ -16,24 +16,26 @@ class ForwardServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     daemon_threads = True
     allow_reuse_address = True
 
-    def __init__(self, conf, server_address, RequestHandler, bind_and_activate=True):
+    def __init__(self, conf, server_address, RequestHandler, isServer=True, bind_and_activate=True):
         super().__init__(server_address, RequestHandler, False)
 
-        print(conf.ssl)
-        if conf.ssl and len(conf.ssl) > 1:
+        if isServer and conf.ssl and len(conf.ssl) > 0:
             try:
-                ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-                ctx.verify_mode = ssl.CERT_REQUIRED
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
+                # Client auth enabled
+                if 'ca' in conf.ssl and conf.ssl['ca']:
+                    ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+                    ctx.verify_mode = ssl.CERT_REQUIRED
+                    ctx.load_verify_locations('pki/certificates/ca.pem')
                 ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
 
-                if 'ca' in conf.ssl and conf.ssl['ca']:
-                    ctx.load_verify_locations("CA")
-
+                # Wrap the socket
                 self.socket = ctx.wrap_socket(self.socket, server_side=True)
                 print(CL.BLU + 'Using SSL' + CL.NC)
-            except FileNotFoundError:
-                print(CL.YEL + 'Cert or key not found. Using Proxy without SSL!' + CL.NC)
-        else:
+            except (FileNotFoundError, TypeError, KeyError) as e:
+                print(CL.YEL + 'Cert or key not found. Using Proxy without SSL!' + CL.NC + '\n' + str(e))
+        elif isServer:
             print(CL.GRY + 'Not using SSL' + CL.NC)
 
         if bind_and_activate:
@@ -46,9 +48,9 @@ class ForwardServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 
 
 class Tunnel:
-    def __init__(self, conf, handler):
+    def __init__(self, conf, handler, isServer=False):
         self.conf = conf
-        self.server = ForwardServer(conf, tuple(conf.local.values()), self.Default_Handler)
+        self.server = ForwardServer(conf, tuple(conf.local.values()), self.Default_Handler, isServer)
         self.server.myhandler = handler
         self.server.conf = conf
         self.server_thread = None

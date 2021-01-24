@@ -14,11 +14,18 @@ example_request = 'GET / HTTP/1.1\r\nHost: localhost:8000\r\nConnection: keep-al
 
 
 def proxy_serv_handler(self):
+    use_ssl = True
+    try:
+        print('ClientCert',self.request.getpeercert(), self.request.version())
+    except AttributeError:
+        use_ssl = False
+
     data = self.request.recv(CONST.REV_BUFFER)
     fixed_header = data[:CONST.FIXED_HEADER]
     dst_data = data[CONST.FIXED_HEADER:]
     prot, conn_flag = struct.unpack('5sb', fixed_header)
 
+    # Check proxy protocol
     if conn_flag != CONST.BIT_FLAG_MASK['CON_Flag'] or prot != CONST.PROT_ID:
         print(CL.RED + 'Invalid request. Closing...' + CL.NC)
         self.request.sendall(struct.pack(
@@ -26,7 +33,6 @@ def proxy_serv_handler(self):
         self.request.close()
         return
 
-    print(self.request.getpeercert())
 
     # DST info
     url_length = struct.unpack('I', dst_data[:4])[0]
@@ -88,6 +94,8 @@ def client(ip, port, message):
             app_payload = struct.pack(
                 'L' + str(len(example_request)) + 's', len(example_request), example_request.encode())
 
+            print('ServerCert',ssock.getpeercert())
+            # ssock.sendall(b"Hello form the other side")
             ssock.sendall(send + dst_payload + app_payload)
             response = ssock.recv(CONST.REV_BUFFER)
             while response:
@@ -101,15 +109,17 @@ if __name__ == "__main__":
     px_parser.parser.add_argument(
         '--host', '-l', help='host name', default='bones.informatik.uni-osnabrueck.de')
     px_parser.parser.add_argument(
-        '--port', '-p', help='port to run the proxy server', default=8622, type=int)
+        '--port', '-p', help='port to run the proxy server', default=7622, type=int)
     args = px_parser.parseArgs()
 
     #Use config with overwritten options
-    conf = Config(ssl_options={'certificate':args.certificate, 'key':args.key})
+    conf = Config()
     conf.local = {'host': args.host, 'port': args.port}
+    if args.certificate or args.key:
+        conf.setSSL({'certificate':args.certificate, 'key':args.key})
 
     try:
-        tunnel = Tunnel(conf, proxy_serv_handler)
+        tunnel = Tunnel(conf, proxy_serv_handler, True)
         tunnel.run(False)
     except PermissionError as e:
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
@@ -120,7 +130,7 @@ if __name__ == "__main__":
     #     exit(1)
 
     #Testing
-    ip, port = ('127.0.0.1', 8622)
-    client(ip, port, "Hello World 1")
+    ip, port = ('127.0.0.1', 7622)
+    # client(ip, port, "Hello World 1")
     # client(ip, port, "Hello World 2")
     # client(ip, port, "Hello World 3")
