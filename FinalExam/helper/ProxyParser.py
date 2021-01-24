@@ -56,6 +56,8 @@ class ProxyParser:
             '--certificate', '-c', help='Certificate path', default=None)
         self.parser.add_argument(
             '--key', '-k', help='Pvt key path', default=None)
+        self.parser.add_argument(
+            '--ca', '-C', help='CA certificate path', default=None)
         self.args = None
         self.configs = None
 
@@ -76,7 +78,8 @@ class ProxyParser:
             self.parseConfig()
 
         for k, v in dict(self.args._get_kwargs()).items():
-            ssl_options[k] = v if k in ssl_keys else k
+            if k in ssl_keys and v:
+                ssl_options[k] = v
 
         [conf.setSSL(ssl_options) for conf in self.configs]
         return self.configs
@@ -102,5 +105,4 @@ class ProxyParser:
                             'Illigal length in confogfile: ' + config_path)
                     self.configs.append(Config(*conf))
                 line = fr.readline()
-        [print(conf) for conf in self.configs]
         return self.configs

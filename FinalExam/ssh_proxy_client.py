@@ -135,9 +135,10 @@ if __name__ == "__main__":
 
         args = px_parser.parseArgs()
         confs = px_parser.parseConfig()
+        [print(conf) for conf in confs]
 
-        if args.certificate or args.key:
-            print(CL.YEL + 'Certs and Cert-keys are mot supported by this modul. Ignoring options!' + CL.NC)
+        if args.certificate or args.key or args.ca:
+            print(CL.YEL + 'Certs, Cert-keys and CA are mot supported by this modul. Ignoring options!' + CL.NC)
 
         conf = 0
 
@@ -163,10 +164,10 @@ if __name__ == "__main__":
                 print(
                     CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
                 exit(0)
-            # except OSError as e:
-            #     print(
-            #         CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
-            #     exit(0)
+            except OSError as e:
+                print(
+                    CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+                exit(0)
 
             # Put main thread to sleep
             signal.pause()
