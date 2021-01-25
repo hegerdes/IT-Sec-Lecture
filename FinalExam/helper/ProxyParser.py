@@ -17,6 +17,8 @@ class color:
 class constants:
     REV_BUFFER = 4096
 
+    SOCKS_VERSION = 4
+
     PROT_ID = b'YPROX'
     FIXED_HEADER = 6
     BIT_FLAG_MASK = {
