@@ -25,14 +25,17 @@ class ForwardServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 
                 # Client auth enabled
                 if 'ca' in conf.ssl and conf.ssl['ca']:
-                    ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+                    ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
                     ctx.verify_mode = ssl.CERT_REQUIRED
                     ctx.load_verify_locations('pki/certificates/ca.pem')
+                    print(CL.BLU + 'Using SSL Server & Client auth' + CL.NC, conf.ssl)
+                else:
+                    print(CL.BLU + 'Using SSL Server auth' + CL.NC, conf.ssl)
+
                 ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
 
                 # Wrap the socket
                 self.socket = ctx.wrap_socket(self.socket, server_side=True)
-                print(CL.BLU + 'Using SSL' + CL.NC)
             except (FileNotFoundError, TypeError, KeyError) as e:
                 print(CL.YEL + 'Cert or key not found. Using Proxy without SSL!' + CL.NC + '\n' + str(e))
         elif isServer:

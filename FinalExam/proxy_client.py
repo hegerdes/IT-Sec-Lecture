@@ -16,18 +16,24 @@ def proxy_client_handler(self):
 
     use_ssl = True
     try:
-        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-        ctx.verify_mode = ssl.CERT_REQUIRED
-        ctx.check_hostname = True
-        ctx.load_verify_locations(conf.ssl['ca'])
-        ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+        if conf.ssl:
+            ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+            ctx.verify_mode = ssl.CERT_REQUIRED
+            ctx.check_hostname = True
+            ctx.load_verify_locations(conf.ssl['ca'])
+            ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+            print(CL.BLU + 'Using SSL' + CL.NC)
+        else:
+            use_ssl = False
     except (TypeError, FileNotFoundError, KeyError) as e:
-        print(CL.GRY + 'Not using SSL' + CL.NC + '\nErr: ' + str(e))
+        print(CL.YEL + 'Err in SSL setup!\n Not using SSL' + CL.NC + '\nErr:', e)
         use_ssl = False
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_server_sock:
+
+            # SSL wrap
             if use_ssl:
                 proxy_server_sock = ctx.wrap_socket(
                     proxy_server_sock, server_hostname=conf.remote['host'])
@@ -36,7 +42,8 @@ def proxy_client_handler(self):
             proxy_server_sock.connect(tuple(conf.remote.values()))
 
             try:
-                print('ServerCert', proxy_server_sock.getpeercert(), proxy_server_sock.version())
+                print(CL.GRY + 'ServerCertSubject:\n', CL.NC,
+                      proxy_server_sock.getpeercert()['subject'], proxy_server_sock.version())
             except AttributeError:
                 use_ssl = False
 
@@ -53,7 +60,13 @@ def proxy_client_handler(self):
 
             prot, status = struct.unpack('5sb', data[:6])
             if status != CONST.BIT_FLAG_MASK['CON_ACK_Flag']:
-                print('Prot ERR')
+                if status == CONST.BIT_FLAG_MASK['DST_FAIL_Flag']:
+                    print(CL.RED + 'Destination not reachable. Closing Socket' + CL.NC)
+                    self.request.send(b'Destination not reachable')
+                proxy_server_sock.close()
+                self.request.close()
+                print(CL.RED + 'Protocol ERROR. Closing' + CL.NC)
+                return
 
             print(CL.GRN + 'Connected! Tunnel: {} => {} => {}'.format(
                 self.request.getpeername(),
@@ -71,41 +84,24 @@ def proxy_client_handler(self):
                 if proxy_server_sock in r:
                     data = proxy_server_sock.recv(CONST.REV_BUFFER)
                     if len(data) == 0:
-                        break
-                    self.request.send(data)
+                        pass
+                    if len(data) != 0:
+                        self.request.send(data)
 
+            # Send End_Flag and autoclose socket
+            proxy_server_sock.send(struct.pack(
+                '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['END_Flag']))
+
+    except ssl.SSLError as e:
+        print(CL.RED + 'Server dinied access. Error in SSL communication. Make sure both systems use SSL and certs are valid!' +
+              CL.NC + '\nErrMsg: ' + str(e))
+        self.request.close()
+        return
     except socket.error as e:
         print(CL.RED + 'Unable to connect to proxy. Err: ' + str(e) + CL.NC)
+        self.request.close()
         return
     print(CL.GRY + 'Tunnel closed from', self.request.getpeername(), CL.NC)
-
-
-def handleErr(client, proxy, msg=b'proxy responded with an error'):
-    proxy.close()
-    client.sendall(msg)
-    client.close()
-    return
-
-
-def errCheck(response):
-    if response and len(response) >= 6:
-        # print(response)
-        prot, status = struct.unpack('5sb', response[:6])
-        if prot == CONST.PROT_ID:
-            if status == CONST.BIT_FLAG_MASK['PROT_ERR_Flag']:
-                print(
-                    CL.RED + 'Protocoll error! ProxyServer rejeted this request' + CL.NC)
-                return True
-            if status == CONST.BIT_FLAG_MASK['DST_FAIL_Flag']:
-                print(
-                    CL.RED + 'Connection error! ProxyServer can\'t reach the destination server: ' + str(conf.dst) + CL.NC)
-                return True
-            if status == CONST.BIT_FLAG_MASK['END_Flag']:
-                print(
-                    CL.RED + 'Proxy closed connection! Proxy:' + str(conf.dst) + CL.NC)
-                return True
-    else:
-        return False
 
 
 if __name__ == "__main__":
