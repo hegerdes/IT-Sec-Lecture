@@ -4,42 +4,15 @@ import socket
 import struct
 import select
 import ssl
+import signal
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
 from helper.ProxyParser import constants as CONST
 from helper.ProxyParser import ParseACL
+from MySOCKS import socks_handler
+from MySOCKS import TestSocks
 from BaseProxy import Tunnel
-
-
-def checkACL(conf, cert):
-    if not conf.acl:
-        return True
-
-    if cert is None:
-        return False
-
-    for subj in cert['subject']:
-        for part in subj:
-            if 'commonName' in part and part[1] in conf.acl:
-                return True
-    return False
-
-
-def checkEnd(data):
-    if len(data) > 5 and struct.unpack('5s', data[:5])[0] == CONST.PROT_ID:
-        if struct.unpack('b', data[5:6])[0] == CONST.BIT_FLAG_MASK['END_Flag']:
-            return True
-    return False
-
-def socks_handler(context):
-    data = context.request.recv(CONST.REV_BUFFER)
-    if len(data) < 9:
-        print('Error')
-        return
-    vn, cn, port, ip1, ip2, ip3, ip4 = struct.unpack('bbhbbbb', data[:8])
-    print(struct.unpack('bbhbbbb', data[:8]))
-    pass
 
 
 def proxy_serv_handler(context):
@@ -61,7 +34,7 @@ def proxy_serv_handler(context):
             if client_cert:
                 print('His cert:\n', client_cert['subject'])
             context.request.send(struct.pack('5sb', CONST.PROT_ID,
-                                          CONST.BIT_FLAG_MASK['ACL_FAIL_FLAG']))
+                                             CONST.BIT_FLAG_MASK['ACL_FAIL_FLAG']))
             context.request.close()
             return
 
@@ -93,14 +66,12 @@ def proxy_serv_handler(context):
                   ' requested ' + str((url, port)) + '. Connection to dst: OK' + CL.NC)
 
             context.request.sendall(struct.pack('5sb', CONST.PROT_ID,
-                                             CONST.BIT_FLAG_MASK['CON_ACK_Flag']))
+                                                CONST.BIT_FLAG_MASK['CON_ACK_Flag']))
 
             while True:
                 r, w, x = select.select([context.request, dst_sock], [], [])
                 if context.request in r:
                     data = context.request.recv(CONST.REV_BUFFER)
-                    if checkEnd(data):
-                        break
                     if len(data) == 0:
                         break
                     dst_sock.send(data)
@@ -117,8 +88,30 @@ def proxy_serv_handler(context):
         context.request.close()
         return
 
-    print(CL.GRY + 'Connection closed from', context.request.getpeername(), CL.NC)
+    print(CL.GRY + 'Connection closed from',
+          context.request.getpeername(), CL.NC)
     context.request.close
+
+
+def checkACL(conf, cert):
+    if not conf.acl:
+        return True
+
+    if cert is None:
+        return False
+
+    for subj in cert['subject']:
+        for part in subj:
+            if 'commonName' in part and part[1] in conf.acl:
+                return True
+    return False
+
+
+def checkEnd(data):
+    if len(data) > 5 and struct.unpack('5s', data[:5])[0] == CONST.PROT_ID:
+        if struct.unpack('b', data[5:6])[0] == CONST.BIT_FLAG_MASK['END_Flag']:
+            return True
+    return False
 
 
 def TestClient(ip, port, message, setup_ssl=False):
@@ -167,7 +160,7 @@ if __name__ == "__main__":
     px_parser.parser.add_argument(
         '--acl', help='Access Control List-Filepath', default=None)
     px_parser.parser.add_argument(
-        '--socks', '-s', help='Use the SOCCKS protocol', default=None)
+        '--socks', '-s', help='Use the SOCCKS protocol', action='store_true', default=False)
     args = px_parser.parseArgs()
 
     # Use config with overwritten options
@@ -182,20 +175,28 @@ if __name__ == "__main__":
     # Add ACL to config
     if args.acl:
         conf.acl = ParseACL(args.acl)
+    if args.socks:
+        conf.socks = True
 
     try:
         tunnel = Tunnel(conf, proxy_serv_handler, True)
-        tunnel.run(False)
+        tunnel.run(True)
+        signal.pause()
     except PermissionError as e:
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
-        exit(1)
+        exit(0)
     except OSError as e:
         print(
             CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
-        exit(1)
+        exit(0)
+    except KeyboardInterrupt:
+        print('Interruped received. Closing')
+        tunnel.stop()
+        exit(0)
 
     # Testing
     ip, port = ('127.0.0.1', 7622)
     # TestClient(ip, port, "Hello World 1", False)
     # TestClient(ip, port, "Hello World 2")
     # TestClient(ip, port, "Hello World 3")
+    # TestSocks(ip, port, destination=("icanhazip.com", 80))
