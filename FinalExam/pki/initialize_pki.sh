@@ -67,7 +67,7 @@ done
 
 
 # Task 2.2 & Task 2.3
-CLIENTS=(server client1 client2)
+CLIENTS=(server client1 client2 client3)
 
 for client in ${CLIENTS[@]}; do
     echo -e "${GRN}Creating ${client} key and sign request ${NC}"
@@ -87,5 +87,22 @@ for client in ${CLIENTS[@]}; do
         exit
     fi
 done
+
+# Not signed server
+echo -e "${GRN}Not signed server${NC}"
+openssl genrsa -out $DST_DIR/NoSignedServer.key $KEY_SIZE
+openssl req -new -key $DST_DIR/NoSignedServer.key -x509 -days 3650 -batch -subj "/CN=NoSignServer-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=StudentSigner/emailAddress=hegerdes@uos.de" -out $DST_DIR/NoSignedServer.pem
+
+# Not signed server
+echo -e "${GRN}Not signed client${NC}"
+openssl genrsa -out $DST_DIR/NoSignedClient.key $KEY_SIZE
+openssl req -new -key $DST_DIR/NoSignedClient.key -x509 -days 3650 -batch -subj "/CN=NoSignClient-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=StudentSigner/emailAddress=hegerdes@uos.de" -out $DST_DIR/NoSignedClient.pem
+
+# Bad SubjectAltNames
+echo -e "${GRN}Bad SAN${NC}"
+openssl req -new -newkey rsa:$KEY_SIZE -nodes -keyout $DST_DIR/badSAN.key -batch -out $DST_DIR/badSAN.csr -config openssl.conf -subj "/CN=${client}-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=${client}/emailAddress=${client}@uos.de"
+
+# Sign with CA & keep subject alatanative names
+openssl x509 -req -days 365 -in $DST_DIR/badSAN.csr -CA $DST_DIR/$CA_FILE_NAME.pem -CAkey $DST_DIR/$CA_FILE_NAME.key -CAcreateserial -set_serial 01 -out $DST_DIR/badSAN.pem -extfile openssl_bad.conf -extensions v3_req
 
 echo -e "${GRN}Everything generated succsesfully${NC}"

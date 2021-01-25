@@ -27,6 +27,7 @@ class constants:
         'END_Flag':             0b00100000,
         'RPL_RADY_Flag':        0b10100000,
         'PROT_ERR_Flag':        0b01100000,
+        'ACL_FAIL_FLAG':        0b00000010,
     }
 
 
@@ -38,6 +39,7 @@ class Config:
         self.remote = {'host': remote_host, 'port': int(remote_port)}
         self.local = {'host': '127.0.0.1', 'port': int(listen_port)}
         self.ssl = ssl_options
+        self.acl = None
 
     def __str__(self):
         return 'Conf: dst={}, remote={}, local={}, ssl={}'.format(tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl)
@@ -106,3 +108,13 @@ class ProxyParser:
                     self.configs.append(Config(*conf))
                 line = fr.readline()
         return self.configs
+
+def ParseACL(path):
+    allowed_users = list()
+    with open(path, "r") as fr:
+            line = fr.readline()
+            while line:
+                if line[0] != '#' and len(line) != 1:
+                    allowed_users.append(line.strip())
+                line = fr.readline()
+    return allowed_users
