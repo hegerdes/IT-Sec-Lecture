@@ -30,5 +30,47 @@ Umgesetzt wurde diese Struktur indem Server und Client eine gemeinsame Tunnelkla
 \end{figure}
 
 \section{Security}
+Nach Abschluss der Aufgabe 1 besteht eine funktionstüchtige Client-Server-Proxy Architektur. Diese unterliegt jedoch bestimmten Einschränkung hinsichtlich sicherer Nutzung. Diese Einschränkungen werden nachfolgend bearbeitet.
+\subsection{Entitäten}
+Die Nutzung kann auf folgende Entitäten aufgeteilt werden:
+\begin{itemize}
+    \item Anwender:
+    \begin{itemize}
+        \item Anwendung
+        \item ProxyClient
+    \end{itemize}
+    \item Proxy-Betreiber
+    \begin{itemize}
+        \item ProxyServer
+    \end{itemize}
+    \item Inhaltsanbieter
+    \begin{itemize}
+        \item E-Mail
+        \item WebDienste
+        \item PrivateDienste
+        \item \ldots
+    \end{itemize}
+\end{itemize}
+Der nachfolgende Paragraph beschäftigt sich mit der Beziehung zwischen Anwender und Proxy-Betreiber
+\subsection{Verletzte Grundprinzipien}
+\paragraph{Anwender \& Betreiber:}
+\noindent Der ProxyServer ist frei aus dem Internet erreichbar und nimmt von jedem anfragendem Dienst Datenpakete entgegen. Dabei kann der Server nicht Verifizieren, dass der anfragende Dienst tatsächlich der von Server erwartete ProxyClient ist. Dies verstößt gegen den Grundsatz der \textbf{Authentication}.\newline
+Die Kommunikation zwischen ProxyClient und ProxyServer läuft über fremde Kommunikationswege. Jeder der Zugriff auf einen Teil dieses Kommunikationsweges hat kann die übertragenen Informationen mit Programmen wie Wireshark mitschneiden und möglicherweise gegen die Kommunikationspartner verwenden. Die Möglichkeit zum belauschen und lesen der Kommunikation verstößt gegen die \textbf{Confidentiality}.\newline
+Neben dem mitlesen können die übertragenden Informationen auch verändert werden was gegen die \textbf{Integrity} verstößt.
+\paragraph{Betreiber \& Inhaltsanbieter:}
+Der ProxyServer Anbieter ermöglicht es fremden Entitäten seine Dienste zu nutzen sowie durch diese fremden Entitäten Anfragen an Dritte zu richten. Dabei trägt der ProxyServer Anbieter die Verantwortung für Angriffe oder andere Illegale Handlungen die über seine Infrastruktur gegenüber Dritte getätigt werden.\newline
+Auch die eigene Infrastruktur kann Ziel eines Angriffs werden, indem z.B. Angreifer so viele Anfragen an der Proxy stellen, dass dieser zusammenbricht und nicht mehr durch andere genutzt werden kann, wie bei einem klassischen \ac{DoS} angriff.
+\subsection{Lösungsansetze}
 \section{Evaluation}
+
+
+% Anhang
+\newpage
+\renewcommand{\thesubsection}{\Alph{subsection}}
+\pagenumbering{Roman}
+\setcounter{page}{\value{lastroman}}
+\section*{Appendix}
+\addcontentsline{toc}{section}{Appendix}
+%Abkürzungsverzeichnis
+\input{inc/shorts.inc}
 \end{document}
