@@ -11,10 +11,12 @@ ssh -L 127.0.0.1:8000:icanhazip.com:80 my_user@bones.informatik.uni-osnabrueck.d
 ```
 This command gets wrapped in a python subprocess call.
 
-### Task 1.3 & 1.4
-Both server and client are using the *Tunnel* class form the *BaseProxy*. It creates a TCP socket-server that listens on the host:port provided by the config. *Tunnel* requieres a custem handler that gets called every time a request arrives at the server or client. These handlers are implemented in *proxy_client.py* and *proxy_server.py*.
+**Alternative:** Usage of ssh lib paramiko. This creates *one* ssh connection and shares it with all ProxyClients. Gives more control and is more elegant
 
-These handlers first exchange some flags to ensure compatility and sets up the rely logik on succsses. Else the connection is closed.
+### Task 1.3 & 1.4
+Both server and client are using the *Tunnel* class form the *BaseProxy*. It creates a TCP socket-server that listens on the host:port provided by the config. *Tunnel* requires a custom handler that gets called every time a request arrives at the server or client. These handlers are implemented in *proxy_client.py* and *proxy_server.py*.
+
+These handlers first exchange some flags to ensure combability and sets up the rely logic on successes. Else the connection is closed.
 
 
 ---
@@ -32,10 +34,10 @@ openssl req -new -newkey rsa:2048 -nodes -keyout example.key -days 3650 -batch -
 
 # Sign with CA
 openssl x509 -req -days 365 -in example.csr -CA ca.pem -CAkey ca.key -CAcreateserial -set_serial 01 -out example.pem
-
 ```
+More options and generation for other keys are in the *initilize.sh* script
 
-### Task 2.2
+### Task 2.2 - Certs
 **NOTE:** This is all done in the *initilise.sh* script
 ```bash
 # Server and client certs
@@ -81,7 +83,7 @@ IP.1    =           131.173.33.209
 IP.2    =           131.173.33.211
 IP.3    =           127.0.0.1
 ```
-### Task 2.3 & 2.4
+### Task 2.2 & 2.2 - Implement
 **First:** Create certs that a signed with your CA, contain `extendedKeyUsage = serverAuth, clientAuth` and `subjectAltName=[LIST_OF_DNS_NAMES]`
 
 #### ServerSide
@@ -109,7 +111,7 @@ proxy_server_sock = ctx.wrap_socket(proxy_server_sock, server_hostname=conf.remo
 ```
 
 #### ClientSide
-Is the some as Serverside but you need to add `Purpose.SERVER_AUTH` and `ctx.verify_mode = ssl.CERT_REQUIRED` as well as the CA-path:
+Is the some as ServerSide but you need to add `Purpose.SERVER_AUTH` and `ctx.verify_mode = ssl.CERT_REQUIRED` as well as the CA-path:
 ```Python
 ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
@@ -123,6 +125,8 @@ ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
 # Wrap the socket
 self.socket = ctx.wrap_socket(self.socket, server_side=True)
 ```
+### Task 2.4
+All configurations where testet on a local socket on on the bones server.
 
 ---
 ## Task 3
@@ -132,11 +136,11 @@ self.socket = ctx.wrap_socket(self.socket, server_side=True)
 ## Questions
 ### Task 1
  * Retry logic?
- * Webbrowser creates multible requests
+ * Webbrowser creates multiple requests
  * How long should connection stay open
 
 ### Task 2
  * What encryption to use? Key size
- * Script should automake all keys and certs?
+ * Script should auto make all keys and certs?
  * libs or subprosess allowed?
 
