@@ -17,6 +17,8 @@ class color:
 class constants:
     REV_BUFFER = 4096
 
+    SOCKS_VERSION = 4
+
     PROT_ID = b'YPROX'
     FIXED_HEADER = 6
     BIT_FLAG_MASK = {
@@ -30,6 +32,8 @@ class constants:
         'ACL_FAIL_FLAG':        0b00000010,
     }
 
+    EXAMPLE_REQ = 'GET / HTTP/1.1\r\nHost: localhost:8000\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-User: ?1\r\nSec-Fetch-Dest: document\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,de;q=0.8\r\n\r\n'
+
 
 class Config:
 
@@ -40,6 +44,7 @@ class Config:
         self.local = {'host': '127.0.0.1', 'port': int(listen_port)}
         self.ssl = ssl_options
         self.acl = None
+        self.socks = None
 
     def __str__(self):
         return 'Conf: dst={}, remote={}, local={}, ssl={}'.format(tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl)

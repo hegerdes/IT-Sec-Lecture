@@ -76,11 +76,14 @@ class Tunnel:
         if self.server_thread:
             self.server.shutdown()
             self.server_thread.join()
+        else:
+            self.server.shutdown()
 
     def getServer(self):
         return self.server
 
-# Old stuff
+
+# Old unused stuff
 #
 #
 class BaseProxyClient (Thread):
@@ -152,10 +155,3 @@ def createProxyInstances(confs):
     proxies = list()
     [proxies.append(BaseProxyClient(*conf)) for conf in confs]
     return proxies
-
-
-def startProxies(proxies):
-    for proxy in proxies:
-        proxy.start()
-        break
-

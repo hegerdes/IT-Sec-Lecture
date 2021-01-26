@@ -11,8 +11,8 @@ from helper.ProxyParser import constants as CONST
 from BaseProxy import Tunnel
 
 
-def proxy_client_handler(self):
-    conf = self.server.conf
+def proxy_client_handler(context):
+    conf = context.server.conf
 
     use_ssl = True
     try:
@@ -62,22 +62,22 @@ def proxy_client_handler(self):
             if status != CONST.BIT_FLAG_MASK['CON_ACK_Flag']:
                 if status == CONST.BIT_FLAG_MASK['DST_FAIL_Flag']:
                     print(CL.RED + 'Destination not reachable. Closing Socket' + CL.NC)
-                    self.request.send(b'Destination not reachable')
+                    context.request.send(b'Destination not reachable')
                 proxy_server_sock.close()
-                self.request.close()
+                context.request.close()
                 print(CL.RED + 'Protocol ERROR. Closing' + CL.NC)
                 return
 
             print(CL.GRN + 'Connected! Tunnel: {} => {} => {}'.format(
-                self.request.getpeername(),
+                context.request.getpeername(),
                 proxy_server_sock.getpeername(),
-                (self.server.conf.dst['host'], self.server.conf.dst['port'])) + CL.NC)
+                (context.server.conf.dst['host'], context.server.conf.dst['port'])) + CL.NC)
 
             while True:
                 r, w, x = select.select(
-                    [self.request, proxy_server_sock], [], [])
-                if self.request in r:
-                    data = self.request.recv(CONST.REV_BUFFER)
+                    [context.request, proxy_server_sock], [], [])
+                if context.request in r:
+                    data = context.request.recv(CONST.REV_BUFFER)
                     if len(data) == 0:
                         break
                     proxy_server_sock.send(data)
@@ -86,7 +86,7 @@ def proxy_client_handler(self):
                     if len(data) == 0:
                         pass
                     if len(data) != 0:
-                        self.request.send(data)
+                        context.request.send(data)
 
             # Send End_Flag and autoclose socket
             proxy_server_sock.send(struct.pack(
@@ -95,13 +95,13 @@ def proxy_client_handler(self):
     except ssl.SSLError as e:
         print(CL.RED + 'Server dinied access. Error in SSL communication. Make sure both systems use SSL and certs are valid!' +
               CL.NC + '\nErrMsg: ' + str(e))
-        self.request.close()
+        context.request.close()
         return
     except socket.error as e:
         print(CL.RED + 'Unable to connect to proxy. Err: ' + str(e) + CL.NC)
-        self.request.close()
+        context.request.close()
         return
-    print(CL.GRY + 'Tunnel closed from', self.request.getpeername(), CL.NC)
+    print(CL.GRY + 'Tunnel closed from', context.request.getpeername(), CL.NC)
 
 
 if __name__ == "__main__":
