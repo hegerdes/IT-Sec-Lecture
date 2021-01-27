@@ -18,9 +18,9 @@
 \pagenumbering{arabic}
 \maketitle
 
-\section{Introduction}
-Im Rahmen der Klausurersatzleistung für das Modul IT-Sicherheit wurde eine Proxy Client-Server Architektur erstellt mit der TCP Verbindungen umgeleitet werden können, um z.B. Filterregeln einer Firewall zu umgehen. Blockierte Anwendungen können dann den ProxyClient verwenden um dennoch nutzbar zu sein. Der strukturelle Aufbau is in fig \ref{fig::arch} zu sehen.\newline
-Umgesetzt wurde diese Struktur indem Server und Client eine gemeinsame Tunnelklasse nutzen. Die Klasse Tunnel besteht aus einem \textit{SocketServer.TCPServer}, der bereits die unterliegenden sockets und den nicht blockierenden Programmablauf regelt sowie einem anwendungsspezifischen Handler der bei eintreffenden Anfragen aufgerufen wird. Server und Client haben jeweils einen eigenen Handler der die Kommunikation zwischen einander und zu den Endpunkten steuert. Es sind gleichzeitige Verbindungen möglich.
+\section{Einleitung}
+Im Rahmen der Klausurersatzleistung für das Modul IT-Sicherheit wurde eine Proxy Client-Server Architektur erstellt, mit der TCP Verbindungen umgeleitet werden können, um z.B. Filterregeln einer Firewall zu umgehen und blockierte Anwendungen dennoch zu nutzen. Der strukturelle Aufbau ist in fig \ref{fig::arch} zu sehen.\newline
+Die Client-Server Architektur nutzt eine gemeinsame Tunnelklasse. Diese besteht aus einem \textit{SocketServer.TCPServer}, der bereits die unterliegenden sockets und den nicht blockierenden Programmablauf regelt, sowie einem anwendungsspezifischen Handler der bei eintreffenden Anfragen aufgerufen wird. Server und Client haben jeweils einen eigenen Handler, der die Kommunikation zwischen einander und zu den Endpunkten steuert. Es sind gleichzeitige Verbindungen möglich.
 
 \begin{figure}[H]
     \centering
@@ -63,25 +63,25 @@ Die Nutzung kann auf folgende Entitäten aufgeteilt werden:
     \end{subfigure}
 \end{figure}
 
-Der nachfolgende Paragraph beschäftigt sich mit der Beziehung zwischen Anwender und Proxy-Betreiber
+Der nachfolgende Absatz beschäftigt sich mit der Beziehung zwischen Anwender und Proxy-Betreiber
 \subsection{Sicherheitsanfälligkeiten und Einschränkungen}
 \paragraph{Anwender \& Betreiber:}\label{ssec::anwender}
-\noindent Der ProxyServer ist frei aus dem Internet erreichbar und nimmt von jedem anfragendem Dienst Datenpakete entgegen. Dabei kann der Server nicht Verifizieren, dass der anfragende Dienst tatsächlich der von Server erwartete ProxyClient ist. Dies verstößt gegen den Grundsatz der \textbf{Authentication}.\newline
-Die Kommunikation zwischen ProxyClient und ProxyServer läuft über fremde Kommunikationswege. Jeder der Zugriff auf einen Teil dieses Kommunikationsweges hat kann die übertragenen Informationen mit Programmen wie Wireshark mitschneiden und möglicherweise gegen die Kommunikationspartner verwenden. Die Möglichkeit zum belauschen und lesen der Kommunikation verstößt gegen die \textbf{Confidentiality}.\newline
-Neben dem mitlesen können die übertragenden Informationen auch verändert werden was gegen die \textbf{Integrity} verstößt.
+\noindent Der ProxyServer ist frei aus dem Internet erreichbar und nimmt von jedem anfragendem Dienst Datenpakete entgegen. Dabei kann der Server nicht verifizieren, dass der anfragende Dienst tatsächlich der von dem Server erwartete ProxyClient ist. Das gleiche gilt für die Authentizität des Servers gegenüber des Clients. Beides verstößt gegen den Grundsatz der \textbf{Authentication}.\newline
+Die Kommunikation zwischen ProxyClient und ProxyServer läuft über fremde Kommunikationswege. Jeder der Zugriff auf einen Teil dieses Kommunikationsweges hat, kann die übertragenen Informationen mitschneiden und möglicherweise gegen die Kommunikationspartner verwenden. Die Möglichkeit zum Belauschen und Lesen der Kommunikation verstößt gegen die \textbf{Confidentiality}.\newline
+Neben dem Mitlesen können die übertragenden Informationen auch verändert werden, was wiederum gegen die \textbf{Integrity} verstößt.
 \paragraph{Betreiber \& Inhaltsanbieter:}
-Der ProxyServer Anbieter ermöglicht es fremden Entitäten seine Dienste zu nutzen sowie durch diese fremden Entitäten Anfragen an Dritte zu richten. Dabei trägt der ProxyServer Anbieter die Verantwortung für Angriffe oder andere Illegale Handlungen die über seine Infrastruktur gegenüber Dritte getätigt werden.\newline
+Der ProxyServer Anbieter ermöglicht es fremden Entitäten seine Dienste zu nutzen, sowie durch diese fremden Entitäten Anfragen an Dritte zu richten. Dabei trägt der Server Anbieter die Verantwortung für Angriffe oder andere illegale Handlungen, die über seine Infrastruktur gegenüber Dritte getätigt werden.\newline
 Auch die eigene Infrastruktur kann Ziel eines Angriffs werden, indem z.B. Angreifer so viele Anfragen an der Proxy stellen, dass dieser zusammenbricht und nicht mehr durch andere genutzt werden kann, wie bei einem klassischen \ac{DoS} angriff.
 \paragraph{Anwender \& Inhaltsanbieter:}
-Wie oben in \ref{ssec::anwender} bereits erwähnt ist das Prinzip der Vertraulichkeit bei der aktuellen Konfiguration zwischen keinem der Entitäten gegeben. Technisch ist dies dadurch bedingt das der Proxy zu diesem Zeitpunkt keine sockets unterstützt, die das \ac{TLS}-Protokoll für TCP Verbindungen nutzen. Aufgrund dessen schlägt die Authentifizierung, sowie der Schlüsselaustausch für nachfolgende Verschlüsselung, mit dem WebServers gegenüber des Proxys und somit auch der Anwendung (Browser) fehl. Anwendungen sind somit auf nicht verschlüsselte Dienste, wie \acs{HTTP} beschränkt.
+Wie oben in \ref{ssec::anwender} bereits erwähnt, ist das Prinzip der Vertraulichkeit bei der aktuellen Konfiguration zwischen keinen der Entitäten gegeben. Technisch ist dies dadurch bedingt, dass der Proxy zu diesem Zeitpunkt keine sockets unterstützt, die das \ac{TLS}-Protokoll für TCP Verbindungen nutzen. Aufgrund dessen schlägt die Authentifizierung, sowie der Schlüsselaustausch für nachfolgende Verschlüsselung mit dem WebServers gegenüber des Proxys und somit auch der Anwendung (Browser) fehl. Anwendungen sind somit auf nicht verschlüsselte Dienste, wie \acs{HTTP} beschränkt.
 \subsection{Lösungsansetze}
 \paragraph{Vertraulichkeit, Integrität und Authentizität}
-Damit Anwender sich sicher sein können, dass sie sich zu einem vertrauenswürdigen ProxyServer verbinden kann man eine Server Authentifizierung einführen bei der sich der Server mit einem Zertifikat ausweist und der Client dieses Zertifikat Zertifikat überprüft. Dies löst das Problem der \textbf{Authentication} bezüglich des Servers gegenüber des Clients. Gleiches kann Client gegenüber des Servers machen. Organisatorisch wäre dafür notwendig, dass der Server alle CA-Zertifikate hat mit denen die Clients signiert wurde, was in der realen Welt eine unvorstellbare logistische Herausforderung bedeuten würde.\newline
-Technisch gesehen würden diese Zertifikate während des \ac{TLS}-Handshakes ausgetauscht werden. Ebenfalls möglich ist es mittels \ac{TLS} Nachrichten zu verschlüsseln um dessen \textbf{Confidentiality} sicherzustellen. Die genauen Verschlüsselungsverfahren hängen von der genutzten Version und Erweiterungen von \ac{TLS} ab.\newline
-Um die \textbf{Integrity} einer Nachricht sicherzustellen wird über die Nachricht ein Hash berechnet und anschließend ebenfalls verschlüsselt und als Signatur angehängt. Der Empfänger kann den selbst berechneten Hash mit dem entschlüsseltem Hash aus der Signatur vergleichen um dessen Integrität zu überprüfen.\newline
+Damit Anwender sich sicher sein können, dass sie sich mit einem vertrauenswürdigen ProxyServer verbinden, kann man eine Server Authentifizierung einführen, bei der sich der Server mit einem Zertifikat ausweist und der Client dieses Zertifikat Zertifikat überprüft. Dies löst das Problem der \textbf{Authentication} des Servers gegenüber des Clients. Gleiches kann der Client gegenüber dem Servers machen. Organisatorisch wäre dafür notwendig, dass der Server alle CA-Zertifikate besitzt, mit denen die Clients signiert wurden, was in der realen Welt eine unvorstellbare logistische Herausforderung bedeuten würde.\newline
+Technisch gesehen würden diese Zertifikate während des \ac{TLS}-Handshakes ausgetauscht werden. Ebenfalls möglich ist es mittels \ac{TLS} Nachrichten zu verschlüsseln, um dessen \textbf{Confidentiality} sicherzustellen. Die genauen Verschlüsselungsverfahren hängen von der genutzten Version und Erweiterungen von \ac{TLS} ab.\newline
+Um die \textbf{Integrity} einer Nachricht sicherzustellen wird über die Nachricht ein Hash berechnet, anschließend ebenfalls verschlüsselt und als Signatur angehängt. Der Empfänger kann den selbst berechneten Hash mit dem entschlüsseltem Hash aus der Signatur vergleichen, um dessen Integrität zu überprüfen.\newline
 Die technische Umsetzung ist mit dem \code{ssl}-Modul möglich, welches das \ac{TLS}-Protokoll vollständig implementiert.
 \paragraph{Verfügbarkeit und Missbrauchsschutz}
-Neben der Sicherheit der Kommunikation ist auch die Verfügbarkeit sowie die Nutzung des Proxys für ausschließlich legale Zwecke sicherzustellen. Dies kann zusätzlich zu der Eingrenzung auf bestimmte Nutzer durch Filter sichergestellt werden. Der Proxy kann bestimme Dienste blockieren sowie Ressourcen wie Datennutzung, Anzahl der Anfragen und Rechenleistung limitieren.
+Neben der Sicherheit der Kommunikation ist auch die Verfügbarkeit, sowie die Nutzung des Proxys für ausschließlich legale Zwecke sicherzustellen. Dies kann zusätzlich zu der Eingrenzung auf bestimmte Nutzer durch Filter sichergestellt werden. Der Proxy kann bestimme Dienste blockieren, sowie Ressourcen wie Datennutzung, Anzahl der Anfragen und Rechenleistung limitieren.
 \section{Evaluation}
 
 
@@ -94,4 +94,5 @@ Neben der Sicherheit der Kommunikation ist auch die Verfügbarkeit sowie die Nut
 \addcontentsline{toc}{section}{Appendix}
 %Abkürzungsverzeichnis
 \input{inc/shorts.inc}
+\include{inc/ensure.inc}
 \end{document}
