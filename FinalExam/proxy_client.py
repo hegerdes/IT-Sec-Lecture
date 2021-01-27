@@ -4,6 +4,7 @@ import socket
 import struct
 import select
 import ssl
+import signal
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
@@ -32,6 +33,7 @@ def proxy_client_handler(context):
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_server_sock:
+            proxy_server_sock.settimeout(30)
 
             # SSL wrap
             if use_ssl:
@@ -95,8 +97,14 @@ def proxy_client_handler(context):
     except ssl.SSLError as e:
         print(CL.RED + 'Server dinied access. Error in SSL communication. Make sure both systems use SSL and certs are valid!' +
               CL.NC + '\nErrMsg: ' + str(e))
+        context.request.send(b'ProxyServerAccsessDinied')
         context.request.close()
         return
+    except TimeoutError as e:
+        print(CL.RED + 'Timeout! ProxyServer did not answer.' +
+              CL.NC + '\nErrMsg: ' + str(e))
+        context.request.send(b'ProxyServerTimeout')
+        context.close()
     except socket.error as e:
         print(CL.RED + 'Unable to connect to proxy. Err: ' + str(e) + CL.NC)
         context.request.close()
@@ -105,16 +113,27 @@ def proxy_client_handler(context):
 
 
 if __name__ == "__main__":
-    px_parser = ProxyParser()
-    px_parser.parser.add_argument(
-        '--config-file', '-f', help='Config file', default='conf/config.txt')
-    args = px_parser.parseArgs()
+    try:
+        px_parser = ProxyParser()
+        px_parser.parser.add_argument(
+            '--config-file', '-f', help='Config file', default='conf/config.txt')
+        args = px_parser.parseArgs()
 
-    confs = px_parser.parseConfig()
-    px_parser.setSSLConf()
-    [print(conf) for conf in confs]
+        confs = px_parser.parseConfig()
+        px_parser.setSSLConf()
+        [print(conf) for conf in confs]
 
-    tunnel = Tunnel(confs[3], proxy_client_handler)
-    tunnel.run()
-    # tunnel1 = Tunnel(confs[1], proxy_client_handler)
-    # tunnel1.run()
+        tunnel = Tunnel(confs[0], proxy_client_handler)
+        tunnel.run()
+
+        tunnels = list()
+        # [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
+        # [tunnel.run(True) for tunnel in tunnels]
+
+        signal.pause()
+    except OSError as e:
+        print(CL.RED + 'Coud not start one ore more ProxyClients. Make sure every Client has its own free port!\n' + CL.NC + 'ErrMsg: ' + str(e))
+        exit(0)
+    except KeyboardInterrupt:
+        print('Interruped received. Closing')
+        [tunnel.stop() for tunnel in tunnels]

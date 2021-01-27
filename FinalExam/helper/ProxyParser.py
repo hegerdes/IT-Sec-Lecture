@@ -47,7 +47,7 @@ class Config:
         self.socks = None
 
     def __str__(self):
-        return 'Conf: dst={}, remote={}, local={}, ssl={}'.format(tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl)
+        return color.BLU + 'Conf:{} dst={}, remote={}, local={}, ssl={}'.format(color.NC, tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl)
 
     def setSSL(self, ssl_options):
         self.ssl = ssl_options

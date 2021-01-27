@@ -81,8 +81,8 @@ def proxy_serv_handler(context):
                         context.request.send(data)
 
     except socket.error as e:
-        print((CL.RED + 'Request from {}: Unable to connect to destination: ({},{})' +
-               CL.NC).format(context.request.getpeername(), url, port))
+        print((CL.RED + 'Request from {}: Unable to connect to destination: ({},{})\nErrMsg:{}' +
+               CL.NC).format(context.request.getpeername(), url, port, e))
         context.request.sendall(struct.pack(
             '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['DST_FAIL_Flag']))
         context.request.close()
@@ -181,7 +181,6 @@ if __name__ == "__main__":
     try:
         tunnel = Tunnel(conf, proxy_serv_handler, True)
         tunnel.run(True)
-        signal.pause()
     except PermissionError as e:
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
         exit(0)
@@ -194,9 +193,10 @@ if __name__ == "__main__":
         tunnel.stop()
         exit(0)
 
+    signal.pause()
     # Testing
     ip, port = ('127.0.0.1', 7622)
-    # TestClient(ip, port, "Hello World 1", False)
+    # TestClient(ip, port, "Hello World 1", True)
     # TestClient(ip, port, "Hello World 2")
     # TestClient(ip, port, "Hello World 3")
     # TestSocks(ip, port, destination=("icanhazip.com", 80))
