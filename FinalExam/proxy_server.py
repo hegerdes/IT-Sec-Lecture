@@ -203,8 +203,9 @@ if __name__ == "__main__":
     try:
         # Iperf-test
         if args.test:
-            [print(conf) for conf in TestConfsIperf([6622, 7622, 8622, 9622])]
-            [servers.append(Tunnel(testconf, proxy_serv_handler, True)) for testconf in TestConfsIperf(args.host, [6622, 7622, 8622, 9622])]
+            testports = [6622, 7622, 8622, 9622]
+            [print(conf) for conf in TestConfsIperf(args.host, testports)]
+            [servers.append(Tunnel(testconf, proxy_serv_handler, True)) for testconf in TestConfsIperf(args.host, testports)]
         else:
             servers.append(Tunnel(conf, proxy_serv_handler, True))
         [server.run(True) for server in servers]

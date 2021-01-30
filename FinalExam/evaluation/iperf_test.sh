@@ -6,7 +6,7 @@ NC='\033[0m'
 GRN='\033[0;32m'
 
 ITERATIONS=1
-LOG_FILE='iperf.log'
+LOG_FILE='iperf_bones.log'
 
 #Set CWD
 cd "$(dirname "$0")"
