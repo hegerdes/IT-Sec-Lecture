@@ -112,6 +112,16 @@ def proxy_client_handler(context):
     print(CL.GRY + 'Tunnel closed from', context.request.getpeername(), CL.NC)
 
 
+def TestConfsIperf(confs):
+
+    confs[1].setSSL({'certificate': 'pki/certificates/client1.pem', 'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+
+    confs[2].setSSL({'certificate': 'pki/certificates/client1.pem', 'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+
+    confs[3].setSSL({'certificate': 'pki/certificates/client1.pem', 'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+
+    return confs
+
 if __name__ == "__main__":
     try:
         px_parser = ProxyParser()
@@ -121,14 +131,16 @@ if __name__ == "__main__":
 
         confs = px_parser.parseConfig()
         px_parser.setSSLConf()
+
+        confs = TestConfsIperf(confs)
         [print(conf) for conf in confs]
 
-        tunnel = Tunnel(confs[0], proxy_client_handler)
-        tunnel.run()
+        # tunnel = Tunnel(confs[0], proxy_client_handler)
+        # tunnel.run()
 
         tunnels = list()
-        # [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
-        # [tunnel.run(True) for tunnel in tunnels]
+        [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
+        [tunnel.run(True) for tunnel in tunnels]
 
         signal.pause()
     except OSError as e:

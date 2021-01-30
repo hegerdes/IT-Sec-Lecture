@@ -150,6 +150,26 @@ def TestClient(ip, port, message, setup_ssl=False):
             response = None
 
 
+# For eval
+def TestConfsIperf(ports):
+    conf1 = Config()
+    conf1.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[0]}
+
+    conf2 = Config()
+    conf2.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[1]}
+    conf2.setSSL({'certificate': 'pki/certificates/server.pem', 'key': 'pki/certificates/server.key'})
+
+    conf3 = Config()
+    conf3.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[2]}
+    conf3.setSSL({'certificate': 'pki/certificates/server.pem', 'key': 'pki/certificates/server.key', 'ca': 'pki/certificates/ca.pem'})
+
+    conf4 = Config()
+    conf4.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[3]}
+    conf4.acl = ParseACL('conf/acl.txt')
+    conf4.setSSL({'certificate': 'pki/certificates/server.pem', 'key': 'pki/certificates/server.key', 'ca': 'pki/certificates/ca.pem'})
+
+    return (conf1,conf2,conf3, conf4)
+
 if __name__ == "__main__":
 
     px_parser = ProxyParser()
@@ -172,6 +192,9 @@ if __name__ == "__main__":
             ssl_conf['ca'] = args.ca
         conf.setSSL(ssl_conf)
 
+    to_open_ports = [6622, 7622, 8622, 9622]
+    tunnels = []
+
     # Add ACL to config
     if args.acl:
         conf.acl = ParseACL(args.acl)
@@ -179,8 +202,12 @@ if __name__ == "__main__":
         conf.socks = True
 
     try:
-        tunnel = Tunnel(conf, proxy_serv_handler, True)
-        tunnel.run(True)
+        [tunnels.append(Tunnel(testconf, proxy_serv_handler, True)) for testconf in TestConfs(to_open_ports)]
+        [testtunnel.run(True) for testtunnel in tunnels]
+
+        # tunnel = Tunnel(conf, proxy_serv_handler, True)
+        # tunnel.run(True)
+        signal.pause()
     except PermissionError as e:
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
         exit(0)
@@ -190,13 +217,13 @@ if __name__ == "__main__":
         exit(0)
     except KeyboardInterrupt:
         print('Interruped received. Closing')
-        tunnel.stop()
+        [testtunnel.stop() for testtunnel in tunnels]
+        # tunnel.stop()
         exit(0)
 
-    signal.pause()
     # Testing
     ip, port = ('127.0.0.1', 7622)
-    # TestClient(ip, port, "Hello World 1", True)
+    # TestClient(ip, port, "Hello World 1", False)
     # TestClient(ip, port, "Hello World 2")
     # TestClient(ip, port, "Hello World 3")
     # TestSocks(ip, port, destination=("icanhazip.com", 80))
