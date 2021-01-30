@@ -91,6 +91,7 @@ done
 
 # Task 2.2 & Task 2.3
 CLIENTS=(server client1 client2 client3)
+# client3 is not i ACL
 
 for client in ${CLIENTS[@]}; do
     echo -e "${GRN}Creating ${client} key and sign request ${NC}"
@@ -123,7 +124,7 @@ openssl req -new -key $DST_DIR/NoSignedClient.key -x509 -days 3650 -batch -subj 
 
 # Bad SubjectAltNames
 echo -e "${GRN}Bad SAN${NC}"
-openssl req -new -newkey rsa:$KEY_SIZE -nodes -keyout $DST_DIR/badSAN.key -batch -out $DST_DIR/badSAN.csr -config openssl.conf -subj "/CN=${client}-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=${client}/emailAddress=${client}@uos.de"
+openssl req -new -newkey rsa:$KEY_SIZE -nodes -keyout $DST_DIR/badSAN.key -batch -out $DST_DIR/badSAN.csr -config openssl_bad.conf -subj "/CN=${client}-969272/C=DE/ST=LowerSaxony/L=Osnabrueck/O=UNI/OU=${client}/emailAddress=${client}@uos.de"
 
 # Sign with CA & keep subject alatanative names
 openssl x509 -req -days 365 -in $DST_DIR/badSAN.csr -CA $DST_DIR/$CA_FILE_NAME.pem -CAkey $DST_DIR/$CA_FILE_NAME.key -CAcreateserial -set_serial 01 -out $DST_DIR/badSAN.pem -extfile openssl_bad.conf -extensions v3_req

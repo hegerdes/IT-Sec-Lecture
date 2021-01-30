@@ -103,6 +103,7 @@ def checkACL(conf, cert):
     for subj in cert['subject']:
         for part in subj:
             if 'commonName' in part and part[1] in conf.acl:
+                print(CL.GRN + 'User {} in ACL succesfuly connected!{}'.format(part[1], CL.NC) )
                 return True
     return False
 
