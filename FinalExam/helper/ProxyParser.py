@@ -47,7 +47,7 @@ class Config:
         self.socks = None
 
     def __str__(self):
-        return color.BLU + 'Conf:{} dst={}, remote={}, local={}, ssl={}'.format(color.NC, tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl)
+        return color.BLU + 'Conf:{} dst={}, remote={}, local={}, ssl={}, ACL={}'.format(color.NC, tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl, self.acl)
 
     def setSSL(self, ssl_options):
         self.ssl = ssl_options
@@ -65,6 +65,8 @@ class ProxyParser:
             '--ca', '-C', help='CA certificate path', default=None)
         self.parser.add_argument(
             '--certificate', '-c', help='Certificate path', default=None)
+        self.parser.add_argument(
+        '--test', '-t', help='Go in evaluation mode', action='store_true', default=False)
         self.args = None
         self.configs = None
 

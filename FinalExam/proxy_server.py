@@ -151,24 +151,25 @@ def TestClient(ip, port, message, setup_ssl=False):
 
 
 # For eval
-def TestConfsIperf(ports):
-    conf1 = Config()
-    conf1.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[0]}
+def TestConfsIperf(host, ports):
+    confs = list()
+    for i in range(4):
+        conf = Config()
+        conf.local = {
+            'host': host, 'port': ports[i]}
+        confs.append(conf)
 
-    conf2 = Config()
-    conf2.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[1]}
-    conf2.setSSL({'certificate': 'pki/certificates/server.pem', 'key': 'pki/certificates/server.key'})
-
-    conf3 = Config()
-    conf3.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[2]}
-    conf3.setSSL({'certificate': 'pki/certificates/server.pem', 'key': 'pki/certificates/server.key', 'ca': 'pki/certificates/ca.pem'})
-
-    conf4 = Config()
-    conf4.local = {'host':'bones.informatik.uni-osnabrueck.de', 'port': ports[3]}
+    conf1, conf2, conf3, conf4 = confs
+    conf2.setSSL({'certificate': 'pki/certificates/server.pem',
+                  'key': 'pki/certificates/server.key'})
+    conf3.setSSL({'certificate': 'pki/certificates/server.pem',
+                  'key': 'pki/certificates/server.key', 'ca': 'pki/certificates/ca.pem'})
+    conf4.setSSL({'certificate': 'pki/certificates/server.pem',
+                  'key': 'pki/certificates/server.key', 'ca': 'pki/certificates/ca.pem'})
     conf4.acl = ParseACL('conf/acl.txt')
-    conf4.setSSL({'certificate': 'pki/certificates/server.pem', 'key': 'pki/certificates/server.key', 'ca': 'pki/certificates/ca.pem'})
 
-    return (conf1,conf2,conf3, conf4)
+    return (conf1, conf2, conf3, conf4)
+
 
 if __name__ == "__main__":
 
@@ -192,21 +193,21 @@ if __name__ == "__main__":
             ssl_conf['ca'] = args.ca
         conf.setSSL(ssl_conf)
 
-    to_open_ports = [6622, 7622, 8622, 9622]
-    tunnels = []
-
     # Add ACL to config
     if args.acl:
         conf.acl = ParseACL(args.acl)
     if args.socks:
         conf.socks = True
 
+    servers = []
     try:
-        [tunnels.append(Tunnel(testconf, proxy_serv_handler, True)) for testconf in TestConfs(to_open_ports)]
-        [testtunnel.run(True) for testtunnel in tunnels]
-
-        # tunnel = Tunnel(conf, proxy_serv_handler, True)
-        # tunnel.run(True)
+        # Iperf-test
+        if args.test:
+            [print(conf) for conf in TestConfsIperf([6622, 7622, 8622, 9622])]
+            [servers.append(Tunnel(testconf, proxy_serv_handler, True)) for testconf in TestConfsIperf(args.host, [6622, 7622, 8622, 9622])]
+        else:
+            servers.append(Tunnel(conf, proxy_serv_handler, True))
+        [server.run(True) for server in servers]
         signal.pause()
     except PermissionError as e:
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
@@ -217,8 +218,7 @@ if __name__ == "__main__":
         exit(0)
     except KeyboardInterrupt:
         print('Interruped received. Closing')
-        [testtunnel.stop() for testtunnel in tunnels]
-        # tunnel.stop()
+        [server.stop() for server in servers]
         exit(0)
 
     # Testing

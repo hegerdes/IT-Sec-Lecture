@@ -112,15 +112,17 @@ def proxy_client_handler(context):
     print(CL.GRY + 'Tunnel closed from', context.request.getpeername(), CL.NC)
 
 
+# Iperf-eval settings
 def TestConfsIperf(confs):
-
-    confs[1].setSSL({'certificate': 'pki/certificates/client1.pem', 'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
-
-    confs[2].setSSL({'certificate': 'pki/certificates/client1.pem', 'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
-
-    confs[3].setSSL({'certificate': 'pki/certificates/client1.pem', 'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+    confs[1].setSSL({'certificate': 'pki/certificates/client1.pem',
+                     'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+    confs[2].setSSL({'certificate': 'pki/certificates/client1.pem',
+                     'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+    confs[3].setSSL({'certificate': 'pki/certificates/client1.pem',
+                     'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
 
     return confs
+
 
 if __name__ == "__main__":
     try:
@@ -132,19 +134,22 @@ if __name__ == "__main__":
         confs = px_parser.parseConfig()
         px_parser.setSSLConf()
 
-        confs = TestConfsIperf(confs)
+        tunnels = list()
+
+        # Iperf eval
+        if args.test:
+            confs = TestConfsIperf(confs)
         [print(conf) for conf in confs]
 
-        # tunnel = Tunnel(confs[0], proxy_client_handler)
-        # tunnel.run()
+        # tunnels.append(Tunnel(confs[0], proxy_client_handler))
 
-        tunnels = list()
         [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
         [tunnel.run(True) for tunnel in tunnels]
 
         signal.pause()
     except OSError as e:
-        print(CL.RED + 'Coud not start one ore more ProxyClients. Make sure every Client has its own free port!\n' + CL.NC + 'ErrMsg: ' + str(e))
+        print(CL.RED + 'Coud not start one ore more ProxyClients. Make sure every Client has its own free port!\n' +
+              CL.NC + 'ErrMsg: ' + str(e))
         exit(0)
     except KeyboardInterrupt:
         print('Interruped received. Closing')
