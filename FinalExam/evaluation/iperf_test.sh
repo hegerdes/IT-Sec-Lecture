@@ -5,9 +5,9 @@ RED='\033[0;31m'
 NC='\033[0m'
 GRN='\033[0;32m'
 
-ITERATIONS=5
+ITERATIONS=15
 PACKAGE_SIZE=32MB
-SERVER="diggory"
+SERVER="bones"
 LOG_FILE="iperf_${SERVER}.log"
 
 #Set CWD

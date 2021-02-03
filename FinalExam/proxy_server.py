@@ -198,6 +198,7 @@ if __name__ == "__main__":
     if args.acl:
         conf.acl = ParseACL(args.acl)
     if args.socks:
+        print(CL.BLU + 'Using SOCKSv4' + CL.NC)
         conf.socks = True
 
     servers = []
