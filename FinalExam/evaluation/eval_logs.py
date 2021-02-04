@@ -14,11 +14,9 @@ def parse(file_path):
     with open(file_path, 'r') as fr:
         line = fr.readline().strip()
         while line:
-            print('inter')
             if line in header:
                 tmp = []
                 test_type = line
-                print('New')
                 for i in range(7): line = fr.readline().strip()
 
                 while line not in header:
