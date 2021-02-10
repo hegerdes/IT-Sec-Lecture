@@ -18,39 +18,41 @@
 \pagenumbering{arabic}
 \maketitle
 
-\section{Einleitung}
-Im Rahmen der Klausurersatzleistung für das Modul IT-Sicherheit wurde eine Proxy Client-Server Architektur erstellt, mit der TCP Verbindungen umgeleitet werden können, um z.B. Filterregeln einer Firewall zu umgehen und blockierte Anwendungen dennoch zu nutzen. Der strukturelle Aufbau ist in fig \ref{fig::arch} zu sehen.\newline
-Die Client-Server Architektur nutzt eine gemeinsame Tunnelklasse. Diese besteht aus einem \textit{SocketServer.TCPServer}, der bereits die unterliegenden sockets und den nicht blockierenden Programmablauf regelt, sowie einem anwendungsspezifischen Handler der bei eintreffenden Anfragen aufgerufen wird. Server und Client haben jeweils einen eigenen Handler, der die Kommunikation zwischen einander und zu den Endpunkten steuert. Es sind gleichzeitige Verbindungen möglich.
+\section{Introduction}
+Part of the IT security lecture was to create a proxy client-server system that redirects TCP connections to bypass filter rules of firewalls and hide personal informational of the clients. The structure is displayed in fig \ref{fig::arch}. \newline
+Server and client both use a common tunneling class. It is based of a \textit{SocketServer.TCPServer}, which already handles the underlaying socket connection and does not block. Each base-tunnel instance can have a custom handler that implements the required logic and gets called every request. These handlers handle the initial handshake between client and server Server and on success switches to redirect mode. Both, server and client can handle multible requests at the same time.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{structure.png}
-    \caption{Netzwerk-Architektur zur Firewall-Umgehung}
+    \caption{Netzwerk-Architektur to bypass a firewall}
     \label{fig::arch}
 \end{figure}
 
+\newpage
 \section{Security}
-Nach Abschluss der Aufgabe 1 besteht eine funktionstüchtige Client-Server-Proxy Architektur. Diese unterliegt jedoch bestimmten Einschränkung hinsichtlich sicherer Nutzung. Diese Einschränkungen werden nachfolgend bearbeitet.
-\subsection{Entitäten}
-Die Nutzung kann auf folgende Entitäten aufgeteilt werden:
+At the end of task 1 the proxy system parses a configuration file, accepts multiple requests at a time and in general is fully functional. Nerveless it still lacks some basic requirements in terms of security and availability. The following section discusses these and all involved entities.
+
+\subsection{Entities}
+The following entities are involved by using the proxy:
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.45\textwidth}
         \begin{itemize}
-            \item Anwender:
+            \item User:
             \begin{itemize}
-                \item Anwendung
+                \item Application
                 \item ProxyClient
             \end{itemize}
-            \item Proxy-Betreiber
+            \item Proxy-Provider
             \begin{itemize}
                 \item ProxyServer
             \end{itemize}
-            \item Inhaltsanbieter
+            \item Content-Providers
             \begin{itemize}
                 \item E-Mail
-                \item WebDienste
-                \item PrivateDienste
+                \item WebServices
+                \item PrivateServices
                 \item \ldots
             \end{itemize}
         \end{itemize}
@@ -63,7 +65,7 @@ Die Nutzung kann auf folgende Entitäten aufgeteilt werden:
     \end{subfigure}
 \end{figure}
 
-\noindent Der nachfolgende Absatz beschäftigt sich mit der Beziehung zwischen Anwender und Proxy-Betreiber
+\noindent The following section discusses the relation between these entities as well as the security risks that exists in-between them.
 \subsection{Sicherheitsanfälligkeiten und Einschränkungen}
 \paragraph{Anwender \& Betreiber:}\label{ssec::anwender}
 \noindent Der ProxyServer ist frei aus dem Internet erreichbar und nimmt von jedem anfragendem Dienst Datenpakete entgegen. Dabei kann der Server nicht verifizieren, dass der anfragende Dienst tatsächlich der von dem Server erwartete ProxyClient ist. Das gleiche gilt für die Authentizität des Servers gegenüber des Clients. Beides verstößt gegen den Grundsatz der \textbf{Authentication}.\newline

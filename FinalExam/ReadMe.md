@@ -131,16 +131,20 @@ All configurations where testet on a local socket on on the bones server.
 ---
 ## Task 3
 
+```bash
+#Gerneral:
+# Iperf-server
+iperf -s -i 0.5 -l 8KB -p 2622
+
+#Iperf-client
+iperf -c bones.informatik.uni-osnabrueck.de -i 0.5 -l 8KB -p 2622 -n 64MB
+
+#capture
+sudo tcpdump -s 96 -n -e -i eth0 -w evaluation.pcap port 2622 or port 6622 or port 7622 or port 8622 or port 9622
+```
+To run Test run the *iperf_test.sh* file. Proxy must run with the config_iperf_bones.txt and the *-t* flag
+
 
 ---
 ## Questions
-### Task 1
- * Retry logic?
- * Webbrowser creates multiple requests
- * How long should connection stay open
-
-### Task 2
- * What encryption to use? Key size
- * Script should auto make all keys and certs?
- * libs or subprosess allowed?
-
+*NONE*
