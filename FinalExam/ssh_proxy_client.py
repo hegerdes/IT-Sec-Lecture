@@ -38,6 +38,7 @@ class SubProcessTunnel(Thread):
 
         except Exception as e:
             print('Stopping SSH-Tunnel:' + str(e))
+            raise socket.error('SSHTunnelFail')
     def stop(self):
         print(CL.GRY + 'Stopping process' + CL.NC)
         self.ps.kill()
@@ -81,6 +82,7 @@ def ssh_conn_handler(self):
     except Exception as e:
         print(CL.RED + 'Request to {}:{} failed: {}'.format(
             self.server.conf.dst['host'], self.server.conf.dst['port'], str(e)), CL.NC)
+        self.request.send(b'Coud not connect to dest')
         return
     if chan is None:
         print('Request to {}:{} was rejected.'.format(
@@ -129,7 +131,7 @@ if __name__ == "__main__":
         px_parser.parser.add_argument(
             '--use-subprocess', '-s', action='store_true', default=False)
         px_parser.parser.add_argument(
-            '--user', '-u', help='username', default='hegerdes')
+            '--user', '-u', help='username', default='hegerdes') # TODO replace with os.getlogin()
         px_parser.parser.add_argument('--ssh-key', '-K', help='ssh key file',
             default=os.path.join(os.environ['HOME'], '.ssh', 'ITS'))  # TODO replace with .ssh/id_rsa
 
@@ -137,8 +139,8 @@ if __name__ == "__main__":
         confs = px_parser.parseConfig()
         [print(conf) for conf in confs]
 
-        if args.certificate or args.key or args.ca:
-            print(CL.YEL + 'Certs, Cert-keys and CA are mot supported by this modul. Ignoring options!' + CL.NC)
+        if args.certificate or args.key or args.ca or args.test:
+            print(CL.YEL + 'Certs, Cert-keys, CA and testMode are mot supported by this modul. Ignoring options!' + CL.NC)
 
         conf = 0
 
@@ -171,6 +173,9 @@ if __name__ == "__main__":
 
             # Put main thread to sleep
             signal.pause()
+    except socket.error:
+        print(CL.RED + 'Comminication error. Please check settings!' + CL.NC)
+        exit(0)
     except KeyboardInterrupt:
         print('KeybordInterrupt. Shutting down...')
         if args.use_subprocess:

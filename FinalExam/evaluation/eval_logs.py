@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-header=['NoProxy', 'ProxyNoSSL', 'ProxyServerSSL', 'ProxyServerClientSSL', 'ProxyServerClientSSLACL']
+header=['NoProxy', 'ProxyNoSSL', 'ProxyServerSSL', 'ProxyServerClientSSL', 'ProxyServerClientSSLACL', 'SSHTunnel']
 def parse(file_path):
     test_type = ''
     res = []
@@ -21,7 +21,7 @@ def parse(file_path):
 
                 while line not in header:
                     if not line: break
-                    print(test_type, line)
+                    # print(test_type, line)
                     tmp.append(evalLogLine(line))
                     line = fr.readline().strip()
                 res.append(tmp)
@@ -29,28 +29,31 @@ def parse(file_path):
                 line = fr.readline().strip()
 
     for i in range(len(res)):
-        if i%5 == 0:
+        print(res[i])
+        if i%len(header) == 0:
             if 'NoProxy' not in results:
                 results['NoProxy'] = []
             results['NoProxy'].append(list(res[i]))
-        if i%5 == 1:
+        if i%len(header) == 1:
             if 'ProxyNoSSL' not in results:
                 results['ProxyNoSSL'] = []
             results['ProxyNoSSL'].append(list(res[i]))
-        if i%5 == 2:
+        if i%len(header) == 2:
             if 'ProxyServerSSL' not in results:
                 results['ProxyServerSSL'] = []
             results['ProxyServerSSL'].append(list(res[i]))
-        if i%5 == 3:
+        if i%len(header) == 3:
             if 'ProxyServerClientSSL' not in results:
                 results['ProxyServerClientSSL'] = []
             results['ProxyServerClientSSL'].append(list(res[i]))
-        if i%5 == 4:
+        if i%len(header) == 4:
             if 'ProxyServerClientSSLACL' not in results:
                 results['ProxyServerClientSSLACL'] = []
             results['ProxyServerClientSSLACL'].append(list(res[i]))
-
-    print(results)
+        if i%len(header) == 5:
+            if 'SSHTunnel' not in results:
+                results['SSHTunnel'] = []
+            results['SSHTunnel'].append(list(res[i]))
 
     plot(checkAVG(results))
 
@@ -80,7 +83,7 @@ def plot(data):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Lunches an iperf logparser')
-    parser.add_argument('--file', '-f', help='Path to logfile', default='evaluation/iperf_bones.log',required=False)
+    parser.add_argument('--file', '-f', help='Path to logfile', default='evaluation/iperf_diggory.log',required=False)
 
     args = parser.parse_args()
     parse(args.file)

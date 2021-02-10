@@ -28,4 +28,7 @@ for iteration in $(seq 1 $ITERATIONS); do
 
     echo "ProxyServerClientSSLACL" >> $LOG_FILE
     iperf -c 127.0.0.1 -i 0.5 -p 8003 -n $PACKAGE_SIZE -N >> $LOG_FILE
+
+    echo "SSHTunnel" >> $LOG_FILE
+    iperf -c 127.0.0.1 -i 0.5 -p 2222 -n $PACKAGE_SIZE -N >> $LOG_FILE
 done

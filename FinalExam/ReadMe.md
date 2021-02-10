@@ -131,20 +131,30 @@ All configurations where testet on a local socket on on the bones server.
 ---
 ## Task 3
 
+I used iperf server on one testserver (diggory) and the proxy server on another (bones). The local iperf client connected to a local proxy-client and performd its task. The general commands:
+
 ```bash
 #Gerneral:
 # Iperf-server
-iperf -s -i 0.5 -l 8KB -p 2622
+iperf -s -i 0.5 -N -p 2622
 
 #Iperf-client
-iperf -c bones.informatik.uni-osnabrueck.de -i 0.5 -l 8KB -p 2622 -n 64MB
+iperf -c bones.informatik.uni-osnabrueck.de -i 0.5 -p 2622 -N -n 16MB
 
+# -i for updat intervall
+# -N to disale Nagle's Algorithm (Package buffering)
+# -n size of files to transmit
+# -p Port
+```
+I also captured the data (no payload only header) between the iperf instances with tcpdump:
+```bash
 #capture
-sudo tcpdump -s 96 -n -e -i eth0 -w evaluation.pcap port 2622 or port 6622 or port 7622 or port 8622 or port 9622
+sudo tcpdump -s 96 -n -e -i eth0 -w evaluation.pcap port 2622 or port 6622 or port 7622 or port 8622 or port 9622 or port 2222
 ```
 To run Test run the *iperf_test.sh* file. Proxy must run with the config_iperf_bones.txt and the *-t* flag
 
+**Restrictions:**
+No bidirectiona because it needs reverse route and that does not work if client is behind NAT. iperf3 fixes that.
 
----
 ## Questions
 *NONE*
