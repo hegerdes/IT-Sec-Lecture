@@ -88,6 +88,12 @@ Neben der Sicherheit der Kommunikation ist auch die Verfügbarkeit, sowie die Nu
 \section{Evaluation}
 Im Rahmen dieser Evaluation wird nur der Datendurchsatz des Proxys betrachtet, andere Metriken wie Delay und Paketverlust werden vernachlässigt.
 \subsection{Testaufbau}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\linewidth]{TestSetup.png}
+    \caption{Bandbreiten Testaufbau}
+    \label{fig::test}
+\end{figure}
 Für die Durchführung der Durchsatzmessungen wurde auf das Werkzeug \code{iperf} zurückgegriffen. Dieses erlaubt es mittels einer Client-Server Architektur den Datendurchsatz zwischen Endpunkten zu bestimmen.\newline
 Alle Rechner (Client(Vogon), TestServer1(diggory), TestServer2(bones)) werden mit KaliLinux betrieben und nutzen Version 2.0.14a von \code{iperf} auf dem Client und Version 2.0.5 auf dem Server. Abseits der standard Konfiguration wurde auf die einheitliche Testdauer von 10s verzichtet und stattdessen eine Datenmenge von 16MB für die Übertragung festgelegt. So kann z.B. einfach die Übertragungsdauer bestimmter WebSeiten abschätzen werden. Aufgrund des natürlichen Einschätzungsvermögen für Zeit sind die Ergebnisse so auch für Leser ohne technischem Hintergrund einfacher einzuschätzen. Zusätzlich wurde das Logging-interval auf 0.5s gesetzt um genauer Intervalle extrahieren zu können. Es wurde nur der Download vom Server gemessen, ein bidirektionaler Test war Aufgrund der nicht öffentlich zugänglichen IP des Clients nicht möglich.\newline
 Als Basisfall wurde ein direkte Messung ohne Proxy zu einem der System diggory durchgeführt. Um einem realistischem Einsatz zu simulieren, wurde anschließend der ProxyServer auf dem zweitem Testrechner (bones) gestartet, welcher dann eine Verbindung zur iperf Instanz auf diggory herstellt. So erhält man eine Topologie von drei Rechnern, dem Client, der ProxyServer und der Zielserver, wie sie auch in der Realität anzufinden wäre.\newline
