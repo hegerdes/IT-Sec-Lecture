@@ -75,6 +75,7 @@ def ssh_conn_handler(self):
     peername = self.request.getpeername()
 
     try:
+        # New channel for connection
         chan = self.server.ssh_transport.open_channel(
             "direct-tcpip",
             (self.server.conf.dst['host'], self.server.conf.dst['port']),
@@ -142,26 +143,28 @@ if __name__ == "__main__":
         if args.certificate or args.key or args.ca or args.test:
             print(CL.YEL + 'Certs, Cert-keys, CA and testMode are mot supported by this modul. Ignoring options!' + CL.NC)
 
-        conf = 0
-
+        connections = []
         if args.use_subprocess:
             # Use subprocess
-            subTunnel = SubProcessTunnel(confs[conf], args.user, args.force)
-            subTunnel.start()
+            [connections.append(SubProcessTunnel(conf, args.user, args.force)) for conf in confs]
+            [conn.start() for conn in connections]
+
         else:
             # Use paramiko ssh-lib
             # SSH Client
             try:
-                client = createSSHClient(confs[conf], args.user, args.ssh_key, args.force)
+                client = createSSHClient(confs[0], args.user, args.ssh_key, args.force)
             except socket.error as e:
                 print(CL.RED + 'SSHConnection Faild' + CL.NC)
                 exit(0)
 
             # TunnelServer
             try:
-                tunnel = Tunnel(confs[conf], ssh_conn_handler)
-                addServerAtributes(tunnel.getServer(), client.get_transport())
-                tunnel.run(True)
+                for conf in confs:
+                    tunnel = Tunnel(conf, ssh_conn_handler)
+                    addServerAtributes(tunnel.getServer(), client.get_transport())
+                    tunnel.run(True)
+                    connections.append(tunnel)
             except PermissionError as e:
                 print(
                     CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
@@ -179,8 +182,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print('KeybordInterrupt. Shutting down...')
         if args.use_subprocess:
-            subTunnel.stop()
-            subTunnel.join()
+            [conn.stop() for conn in connections]
+            [conn.join() for conn in connections]
         else:
-            tunnel.stop()
+            [conn.stop() for conn in connections]
             client.close()
