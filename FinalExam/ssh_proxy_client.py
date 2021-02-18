@@ -32,7 +32,7 @@ class SubProcessTunnel(Thread):
         try:
             print(CL.GRN + 'Executing: ' + self.cmd + CL.NC)
             self.ps = subprocess.Popen(
-                self.cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                self.cmd, shell=True, stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
             self.ps.wait()
             # self.output = self.ps.communicate()
 

@@ -30,21 +30,24 @@ class constants:
         'RPL_RADY_Flag':        0b10100000,
         'PROT_ERR_Flag':        0b01100000,
         'ACL_FAIL_FLAG':        0b00000010,
+        'SSL_FAIL_FLAG':        0b00000011,
     }
 
-    EXAMPLE_REQ = 'GET / HTTP/1.1\r\nHost: localhost:8000\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-User: ?1\r\nSec-Fetch-Dest: document\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,de;q=0.8\r\n\r\n'
+    EXAMPLE_REQ = 'GET / HTTP/1.1\r\nHost: sys.cs.uos.de:80\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-User: ?1\r\nSec-Fetch-Dest: document\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,de;q=0.8\r\n\r\n'
 
 
 class Config:
 
-    def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de', remote_port=8001, listen_port=8000, ssl_options=None):
+    def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de',
+        remote_port=8001, listen_port=8000, ssl_options=None, acl=None, socks=False):
+
         super().__init__()
         self.dst = {'host': dst_host, 'port': int(dst_port)}
         self.remote = {'host': remote_host, 'port': int(remote_port)}
         self.local = {'host': '127.0.0.1', 'port': int(listen_port)}
         self.ssl = ssl_options
-        self.acl = None
-        self.socks = None
+        self.acl = acl
+        self.socks = socks
 
     def __str__(self):
         return color.BLU + 'Conf:{} dst={}, remote={}, local={}, ssl={}, ACL={}'.format(color.NC, tuple(self.dst.values()), tuple(self.remote.values()), tuple(self.local.values()), self.ssl, self.acl)
@@ -119,9 +122,9 @@ class ProxyParser:
 def ParseACL(path):
     allowed_users = list()
     with open(path, "r") as fr:
+        line = fr.readline()
+        while line:
+            if line[0] != '#' and len(line) != 1:
+                allowed_users.append(line.strip())
             line = fr.readline()
-            while line:
-                if line[0] != '#' and len(line) != 1:
-                    allowed_users.append(line.strip())
-                line = fr.readline()
     return allowed_users
