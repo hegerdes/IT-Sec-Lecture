@@ -18,10 +18,10 @@ from BaseProxy import Tunnel
 def proxy_serv_handler(context):
     conf = context.server.conf
 
+    # Use SOCKS
     if conf.socks:
         return socks_handler(context)
 
-    use_ssl = True
     try:
         client_cert = context.request.getpeercert()
         if client_cert:
@@ -39,25 +39,35 @@ def proxy_serv_handler(context):
             return
 
     except AttributeError:
-        use_ssl = False
-
-    data = context.request.recv(CONST.REV_BUFFER)
-    fixed_header = data[:CONST.FIXED_HEADER]
-    dst_data = data[CONST.FIXED_HEADER:]
-    prot, conn_flag = struct.unpack('5sb', fixed_header)
-
-    # Check proxy protocol
-    if conn_flag != CONST.BIT_FLAG_MASK['CON_Flag'] or prot != CONST.PROT_ID:
-        print(CL.RED + 'Invalid request. Closing...' + CL.NC)
-        context.request.sendall(struct.pack(
-            '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
+        print(CL.RED + 'SSL/ACL Fail. Requested rejected' + CL.NC)
+        context.request.send(struct.pack('5sb', CONST.PROT_ID,
+                                         CONST.BIT_FLAG_MASK['SSL_FAIL_FLAG']))
         context.request.close()
         return
 
-    # DST info
-    url_length = struct.unpack('I', dst_data[:4])[0]
-    url_length, port, url = struct.unpack(
-        'IH' + str(url_length) + 's', dst_data[:4 + 2 + url_length])
+    try:
+        data = context.request.recv(CONST.REV_BUFFER)
+        fixed_header = data[:CONST.FIXED_HEADER]
+        dst_data = data[CONST.FIXED_HEADER:]
+        prot, conn_flag = struct.unpack('5sb', fixed_header)
+
+        # Check proxy protocol
+        if conn_flag != CONST.BIT_FLAG_MASK['CON_Flag'] or prot != CONST.PROT_ID:
+            print(CL.RED + 'Invalid request. Closing...' + CL.NC)
+            context.request.sendall(struct.pack(
+                '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
+            context.request.close()
+            return
+
+        # DST info
+        url_length = struct.unpack('I', dst_data[:4])[0]
+        url_length, port, url = struct.unpack(
+            'IH' + str(url_length) + 's', dst_data[:4 + 2 + url_length])
+    except struct.error:
+        print((CL.RED + 'Request from {}: Proto error! Request rejected!' +
+               CL.NC).format(context.request.getpeername()))
+        context.request.close()
+        return
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dst_sock:
@@ -88,8 +98,7 @@ def proxy_serv_handler(context):
         context.request.close()
         return
 
-    print(CL.GRY + 'Connection closed from',
-          context.request.getpeername(), CL.NC)
+    print(CL.GRY + 'Connection closed from', context.request.getpeername(), CL.NC)
     context.request.close
 
 
@@ -103,7 +112,7 @@ def checkACL(conf, cert):
     for subj in cert['subject']:
         for part in subj:
             if 'commonName' in part and part[1] in conf.acl:
-                print(CL.GRN + 'User {} in ACL succesfuly connected!{}'.format(part[1], CL.NC) )
+                print(CL.GRN + 'User {} in ACL succesfuly connected!{}'.format(part[1], CL.NC))
                 return True
     return False
 
@@ -207,10 +216,13 @@ if __name__ == "__main__":
         if args.test:
             testports = [6622, 7622, 8622, 9622]
             [print(conf) for conf in TestConfsIperf(args.host, testports)]
-            [servers.append(Tunnel(testconf, proxy_serv_handler, True)) for testconf in TestConfsIperf(args.host, testports)]
+            [servers.append(Tunnel(testconf, proxy_serv_handler, True))
+             for testconf in TestConfsIperf(args.host, testports)]
         else:
             servers.append(Tunnel(conf, proxy_serv_handler, True))
         [server.run(True) for server in servers]
+
+        #Pause main thread
         signal.pause()
     except PermissionError as e:
         print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)

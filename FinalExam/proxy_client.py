@@ -133,19 +133,17 @@ if __name__ == "__main__":
 
         confs = px_parser.parseConfig()
         px_parser.setSSLConf()
-
-        tunnels = list()
+        tunnels = []
 
         # Iperf eval
         if args.test:
             confs = TestConfsIperf(confs)
         [print(conf) for conf in confs]
 
-        # tunnels.append(Tunnel(confs[0], proxy_client_handler))
-
         [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
         [tunnel.run(True) for tunnel in tunnels]
 
+        #Pause main thread
         signal.pause()
     except OSError as e:
         print(CL.RED + 'Coud not start one ore more ProxyClients. Make sure every Client has its own free port!\n' +

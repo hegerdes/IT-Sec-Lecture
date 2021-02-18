@@ -70,6 +70,7 @@ def socks_handler(context):
         print(CL.RED + 'Error in the dst connection!' +
               CL.NC + '\nErrMSG: ' + str(e))
 
+
 def getProtInfo(data):
     if len(data) < 9:
         print('Error')
