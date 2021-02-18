@@ -71,32 +71,32 @@ def createSSHClient(conf, user, keyfile, force=False):
     return client
 
 
-def ssh_conn_handler(self):
-    peername = self.request.getpeername()
+def ssh_conn_handler(context):
+    peername = context.request.getpeername()
 
     try:
         # New channel for connection
-        chan = self.server.ssh_transport.open_channel(
+        chan = context.server.ssh_transport.open_channel(
             "direct-tcpip",
-            (self.server.conf.dst['host'], self.server.conf.dst['port']),
+            (context.server.conf.dst['host'], context.server.conf.dst['port']),
             peername)
     except Exception as e:
         print(CL.RED + 'Request to {}:{} failed: {}'.format(
-            self.server.conf.dst['host'], self.server.conf.dst['port'], str(e)), CL.NC)
-        self.request.send(b'Coud not connect to dest')
+            context.server.conf.dst['host'], context.server.conf.dst['port'], str(e)), CL.NC)
+        context.request.send(b'Coud not connect to dest')
         return
     if chan is None:
         print('Request to {}:{} was rejected.'.format(
-            self.server.conf.dst['host'], self.server.conf.dst['port']))
+            context.server.conf.dst['host'], context.server.conf.dst['port']))
         return
 
     print(CL.BLU + 'Connected! Tunnel: {} => {} => {}'.format(peername,
-        chan.getpeername(), (self.server.conf.dst['host'], self.server.conf.dst['port'])), CL.NC)
+        chan.getpeername(), (context.server.conf.dst['host'], context.server.conf.dst['port'])), CL.NC)
 
     while True:
-        r, w, x = select.select([self.request, chan], [], [])
-        if self.request in r:
-            data = self.request.recv(CONST.REV_BUFFER)
+        r, w, x = select.select([context.request, chan], [], [])
+        if context.request in r:
+            data = context.request.recv(CONST.REV_BUFFER)
             if len(data) == 0:
                 break
             chan.send(data)
@@ -104,10 +104,10 @@ def ssh_conn_handler(self):
             data = chan.recv(CONST.REV_BUFFER)
             if len(data) == 0:
                 break
-            self.request.send(data)
+            context.request.send(data)
 
     chan.close()
-    self.request.close()
+    context.request.close()
     print(CL.GRY + 'Tunnel closed from', peername, CL.NC)
 
 
