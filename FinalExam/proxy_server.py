@@ -22,6 +22,7 @@ def proxy_serv_handler(context):
     if conf.socks:
         return socks_handler(context)
 
+    use_ssl = True
     try:
         client_cert = context.request.getpeercert()
         if client_cert:
@@ -39,11 +40,7 @@ def proxy_serv_handler(context):
             return
 
     except AttributeError:
-        print(CL.RED + 'SSL/ACL Fail. Requested rejected' + CL.NC)
-        context.request.send(struct.pack('5sb', CONST.PROT_ID,
-                                         CONST.BIT_FLAG_MASK['SSL_FAIL_FLAG']))
-        context.request.close()
-        return
+        use_ssl = False
 
     try:
         data = context.request.recv(CONST.REV_BUFFER)
@@ -73,7 +70,7 @@ def proxy_serv_handler(context):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dst_sock:
             dst_sock.connect((url, port))
             print(CL.BLU + 'client ' + str(context.request.getpeername()) +
-                  ' requested ' + str((url, port)) + '. Connection to dst: OK' + CL.NC)
+                  ' requested ' + str((url, port)) + '; SSL=' + str(use_ssl) + '. Connection to dst: OK' + CL.NC)
 
             context.request.sendall(struct.pack('5sb', CONST.PROT_ID,
                                                 CONST.BIT_FLAG_MASK['CON_ACK_Flag']))
