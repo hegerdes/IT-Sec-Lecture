@@ -103,7 +103,7 @@ def proxy_serv_handler(context):
 
 
 def checkACL(conf, cert):
-    if not conf.acl:
+    if conf.acl is None:
         return True
 
     if cert is None:
