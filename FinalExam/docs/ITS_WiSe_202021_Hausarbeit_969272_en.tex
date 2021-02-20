@@ -20,7 +20,7 @@
 
 \section{Introduction}
 Part of the IT security lecture was to create a proxy client-server system that redirects TCP connections to bypass filter rules of firewalls and hide personal informational of the clients. The structure is displayed in fig \ref{fig::arch}. \newline
-Server and client both use a common tunneling class. It is based of a \textit{SocketServer.TCPServer}, which already handles the underlaying socket connection and does not block. Each base-tunnel instance can have a custom handler that implements the required logic and gets called every request. These handlers handle the initial handshake between client and server Server and on success switches to redirect mode. Both, server and client can handle multible requests at the same time.
+Server and client both use a common tunneling class. It is based of a \textit{SocketServer.TCPServer}, which already handles the underlaying socket connection and does not block. Each base-tunnel instance can have a custom handler that implements the required logic and gets called every request. These handlers handle the initial handshake between client and server Server and on success switches to redirect mode. Both, server and client can handle multiple requests at the same time.
 
 \begin{figure}[H]
     \centering
@@ -59,8 +59,8 @@ The following entities are involved by using the proxy:
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{structure.png}
-        \caption{PlACEHOLDER}
+        \includegraphics[width=\linewidth]{entities.jpg}
+        \caption{Entities of the proxy client-server setup}
         \label{fig::enti}
     \end{subfigure}
 \end{figure}
@@ -72,35 +72,35 @@ The following entities are involved by using the proxy:
 Some parts of the communication infrastructure are owned by third party entities. Every one that has access to a part of the communication infrastructure can capture all confidential information on that infrastructure and use it against the recipient. This violates the principle of \textbf{Confidentiality}.\newline
 Beside capturing information it is also possible to alter the information wich violates the principle of \textbf{Integrity}.
 \paragraph{ProxyProvider \& Content-Providers:}
-Der ProxyServer Anbieter ermöglicht es fremden Entitäten seine Dienste zu nutzen, sowie durch diese fremden Entitäten Anfragen an Dritte zu richten. Dabei trägt der Server Anbieter die Verantwortung für Angriffe oder andere illegale Handlungen, die über seine Infrastruktur gegenüber Dritte getätigt werden.\newline
-Auch die eigene Infrastruktur kann Ziel eines Angriffs werden, indem z.B. Angreifer so viele Anfragen an der Proxy stellen, dass dieser zusammenbricht und nicht mehr durch andere genutzt werden kann, wie bei einem klassischen \ac{DoS} angriff.
+The proxy server provide allows strangers to access his services and also redirects any request to other services. So the server provide may be responsible for attacks on third-party services that are caused by abusive usage of his server.\newline
+The proxy infrastructure itself can be a potential target. Too many request or bad requests (like a \ac{DoS} attack) could crash the proxy server and make it unavailable for all users.
 \paragraph{User \& Content-Providers:}
-Wie oben in \ref{ssec::user} bereits erwähnt, ist das Prinzip der Vertraulichkeit bei der aktuellen Konfiguration zwischen keinen der Entitäten gegeben. Technisch ist dies dadurch bedingt, dass der Proxy zu diesem Zeitpunkt keine sockets unterstützt, die das \ac{TLS}-Protokoll für TCP Verbindungen nutzen. Aufgrund dessen schlägt die Authentifizierung, sowie der Schlüsselaustausch für nachfolgende Verschlüsselung mit dem WebServers gegenüber des Proxys und somit auch der Anwendung (Browser) fehl. Anwendungen sind somit auf nicht verschlüsselte Dienste, wie \acs{HTTP} beschränkt.
-\subsection{Lösungsansetze}
-\paragraph{Vertraulichkeit, Integrität und Authentizität}
-Damit Anwender sich sicher sein können, dass sie sich mit einem vertrauenswürdigen ProxyServer verbinden, kann man eine Server Authentifizierung einführen, bei der sich der Server mit einem Zertifikat ausweist und der Client dieses Zertifikat Zertifikat überprüft. Dies löst das Problem der \textbf{Authentication} des Servers gegenüber des Clients. Gleiches kann der Client gegenüber dem Servers machen. Organisatorisch wäre dafür notwendig, dass der Server alle CA-Zertifikate besitzt, mit denen die Clients signiert wurden, was in der realen Welt eine unvorstellbare logistische Herausforderung bedeuten würde.\newline
-Technisch gesehen würden diese Zertifikate während des \ac{TLS}-Handshakes ausgetauscht werden. Ebenfalls möglich ist es mittels \ac{TLS} Nachrichten zu verschlüsseln, um dessen \textbf{Confidentiality} sicherzustellen. Die genauen Verschlüsselungsverfahren hängen von der genutzten Version und Erweiterungen von \ac{TLS} ab.\newline
-Um die \textbf{Integrity} einer Nachricht sicherzustellen wird über die Nachricht ein Hash berechnet, anschließend ebenfalls verschlüsselt und als Signatur angehängt. Der Empfänger kann den selbst berechneten Hash mit dem entschlüsseltem Hash aus der Signatur vergleichen, um dessen Integrität zu überprüfen.\newline
-Die technische Umsetzung ist mit dem \code{ssl}-Modul möglich, welches das \ac{TLS}-Protokoll vollständig implementiert.
-\paragraph{Verfügbarkeit und Missbrauchsschutz}
-Neben der Sicherheit der Kommunikation ist auch die Verfügbarkeit, sowie die Nutzung des Proxys für ausschließlich legale Zwecke sicherzustellen. Dies kann eben einer Eingrenzung der Nutzer durch Filter gewährleistet werden, die bestimme Dienste blockieren und Ressourcen wie Datennutzung, Anzahl der Anfragen und Rechenleistung limitieren. Loadbalancer und Backup-Systeme würden die Verfügbarkeit zusätzlich steigern.
+As already described in \@\ref{ssec::user}, in the current configuration there is no confidentiality between any of the entities. The technical cause for that is that the currently used sockets don't support the \ac{TLS} protocol. Even if the application or the destination support \ac{TLS} it doesn't work because the authentication and key exchange between proxy and endpoint fails. With this restriction the user is limited to unencrypted services such as \acs{HTTP}.
+\subsection{Possible solutions}
+\paragraph{Confidentiality, Integrity and Authentication}
+To ensure that the user connects to a valid proxy server one could introduce certificates for authentication. The server identifies itself with a certificate that is verifiable by the client. This solves the previously nonexistent \textbf{Authentication}. The same principle could be be applied to also allow the authentication of the client to the server. For this the server must own all CA-certificate that signed to clients certificates or all clients must be distributed with progenerated certificates.\newline
+The certificate exchange and technical authentication would happen within the \ac{TLS} handshake. With the certificate and their keys it is also possible to encrypt messenges with \ac{TLS}. This would ensure the \textbf{Confidentiality} of any message. The encryption algorithm depends on the version and configuration of \ac{TLS}.\newline
+To ensure \textbf{Integrity} it is possible to hash the message, encrypt the hash and append it to message as signature. The recipient can compare the hash he calculated with the decrypted hash of the sender. If both hashes match it guarantees the integrity of the message.\newline
+The technical implementation is also done in the \ac{TLS} python module.
+\paragraph{Availability and abuse protection}
+In addition to the security of communication, the availability of the services must also be ensured. This is feasible with a access control to specific user or resource limits for requests and compute time. Loadbalancers and backup systems could improve availability even further.\newline
+These actions and an additional blacklist for specific services could also help to protect the server against abusive or illegal usage.
 
 \section{Evaluation}
-Im Rahmen dieser Evaluation wird nur der Datendurchsatz des Proxys betrachtet, andere Metriken wie Delay und Paketverlust werden vernachlässigt.
-\subsection{Testaufbau}
+In the context of this evaluation, only the throughput of the proxy is considered, other metrics such as delay and packet loss are neglected.
+\subsection{Testsetup}
 \begin{figure}
     \centering
     \includegraphics[width=0.45\linewidth]{TestSetup.png}
-    \caption{Bandbreiten Testaufbau}
-    \label{fig::test}
+    \caption{Throughput test setup}\label{fig::test}
 \end{figure}
-Für die Durchführung der Durchsatzmessungen wurde auf das Werkzeug \code{iperf} zurückgegriffen. Dieses erlaubt es mittels einer Client-Server Architektur den Datendurchsatz zwischen Endpunkten zu bestimmen.\newline
-Alle Rechner (Client(Vogon), TestServer1(diggory), TestServer2(bones)) werden mit KaliLinux betrieben und nutzen Version 2.0.14a von \code{iperf} auf dem Client und Version 2.0.5 auf dem Server. Abseits der standard Konfiguration wurde auf die einheitliche Testdauer von 10s verzichtet und stattdessen eine Datenmenge von 16MB für die Übertragung festgelegt. So kann z.B. einfach die Übertragungsdauer bestimmter WebSeiten abschätzen werden. Aufgrund des natürlichen Einschätzungsvermögen für Zeit sind die Ergebnisse so auch für Leser ohne technischem Hintergrund einfacher einzuschätzen. Zusätzlich wurde das Logging-interval auf 0.5s gesetzt um genauer Intervalle extrahieren zu können. Es wurde nur der Download vom Server gemessen, ein bidirektionaler Test war Aufgrund der nicht öffentlich zugänglichen IP des Clients nicht möglich.\newline
-Als Basisfall wurde ein direkte Messung ohne Proxy zu einem der System diggory durchgeführt. Um einem realistischem Einsatz zu simulieren, wurde anschließend der ProxyServer auf dem zweitem Testrechner (bones) gestartet, welcher dann eine Verbindung zur iperf Instanz auf diggory herstellt. So erhält man eine Topologie von drei Rechnern, dem Client, der ProxyServer und der Zielserver, wie sie auch in der Realität anzufinden wäre.\newline
-Der ProxyServer wurde dann in den Konfiguration KeinSSL, ServerAuthentification, ClientServerAthentification und ClientServerAthentificationACL getestet. Ein Testlauf besteht aus 15 Iterationen über diese Konfigurationen. Insgesamt wurden 4 Testläufe zu unterschiedlichen Uhrzeiten, alle neun Stunden, durchgeführt. Ein automatisiertes Script befindet sich im Anhang.
-\subsection{Analyse der Ergebnisse}
-Die generierten Log-Dateien wurden mit dem beiliegendem Script ausgelesen und erzeugen alle nachfolgenden Grafiken.
-\subsection{Fazit}
+The throughput measurements where made with the \code{iperf} tool. All nodes (client(Vogon), TestServer1(diggory), TestServer2(bones)) are running KaliLinux and are running version 2.0.14a of \code{iperf} on the client and  version 2.0.5 on the server. Iperf server and client are running mostly in standard configuration except for more verbose logging (0.5s interval) and a fixed amount of data to transmit instead of a fixed test duration of 10 seconds. An exemplary call for client and server can be found in listing \ref{code::iperf}. Results with the fixed data setting makes it easier to approximate download times for in use cases and is also easier interpretable for non technical readers.\newline
+The test only covers the download throughput. Because the client is behind a NAT and has now way to expose its IP it was not possible to perform a bidirektional test.\newline
+The baseline throughput test is a direct connection between the iperf client (Vogon) to diggory without any proxy. Now diggory runs the proxy server and Vogon starts the porxy client. Iperf now connects to the proxy client which redirects the connection to bones and for there to the destination iperf server on diggory. This setup with these three nodes represent a realistic usage of the proxy in production. A systematic structure of this setup is shown in fig.\@\ref{fig::test}.\newline
+The proxy was tested with a SSHProxy, noSSL, server-authentication, client-server-authentication and client-server-authentication configuration with \ac{ACL}. Each test runs 15 iterations of every configuration. In total the test was performed eight times each with 6 hours interval. The script for the exact test can be found with the resources of this paper.
+\subsection{Analysis of the results}
+Each generated log was parsed with a custom script wich also generated the following grafics.
+\subsection{Conclusion}
 
 % Anhang
 \newpage
@@ -111,5 +111,10 @@ Die generierten Log-Dateien wurden mit dem beiliegendem Script ausgelesen und er
 \addcontentsline{toc}{section}{Appendix}
 %Abkürzungsverzeichnis
 \input{inc/shorts.inc}
+%Code
+\input{inc/iperf.inc}
+\newpage
+\listoffigures
 \include{inc/ensure.inc}
+
 \end{document}
