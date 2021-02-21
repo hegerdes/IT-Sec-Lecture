@@ -5,6 +5,7 @@ import struct
 import select
 import ssl
 import signal
+import os
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
@@ -76,6 +77,7 @@ def proxy_client_handler(context):
                 (context.server.conf.dst['host'], context.server.conf.dst['port'])) + CL.NC)
 
             while True:
+                #Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
                 r, w, x = select.select(
                     [context.request, proxy_server_sock], [], [])
                 if context.request in r:
@@ -114,6 +116,8 @@ def proxy_client_handler(context):
 
 # Iperf-eval settings
 def TestConfsIperf(confs):
+    #Set CWD
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     confs[1].setSSL({'certificate': 'pki/certificates/client1.pem',
                      'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
     confs[2].setSSL({'certificate': 'pki/certificates/client1.pem',

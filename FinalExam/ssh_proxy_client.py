@@ -94,6 +94,7 @@ def ssh_conn_handler(context):
         chan.getpeername(), (context.server.conf.dst['host'], context.server.conf.dst['port'])), CL.NC)
 
     while True:
+        #Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
         r, w, x = select.select([context.request, chan], [], [])
         if context.request in r:
             data = context.request.recv(CONST.REV_BUFFER)
@@ -150,8 +151,9 @@ if __name__ == "__main__":
             [conn.start() for conn in connections]
 
         else:
-            # Use paramiko ssh-lib
             # SSH Client
+            # Use paramiko ssh-lib.
+            # Shares ONE ssh connection between all client instances
             try:
                 client = createSSHClient(confs[0], args.user, args.ssh_key, args.force)
             except socket.error as e:

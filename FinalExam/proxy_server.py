@@ -4,6 +4,7 @@ import socket
 import struct
 import select
 import ssl
+import os
 import signal
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
@@ -76,6 +77,7 @@ def proxy_serv_handler(context):
                                                 CONST.BIT_FLAG_MASK['CON_ACK_Flag']))
 
             while True:
+                #Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
                 r, w, x = select.select([context.request, dst_sock], [], [])
                 if context.request in r:
                     data = context.request.recv(CONST.REV_BUFFER)
@@ -159,6 +161,9 @@ def TestClient(ip, port, message, setup_ssl=False):
 
 # For eval
 def TestConfsIperf(host, ports):
+    #Set CWD
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
     confs = list()
     for i in range(4):
         conf = Config()
