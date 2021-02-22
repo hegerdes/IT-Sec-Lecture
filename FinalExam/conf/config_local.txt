@@ -1,0 +1,20 @@
+# Config file for porxy servers
+# Format:
+# DST_HOST:DST_PORT:PROXY_HOST:PORXY_PORT:LOCAL_LISTEN_PORT
+
+#sys.cs.uos.de:80:bones.informatik.uni-osnabrueck.de:22:8000
+#icanhazip.com: 80 : bones.informatik.uni-osnabrueck.de:7622:8002
+sys.cs.uos.de: 80 : 127.0.0.1:7622:8000
+#sys.cs.uos.de: 80 : 127.0.0.1:7622:8000
+#apache.org: 80 : 127.0.0.1:7622:8001
+
+#Iperf
+#bones.informatik.uni-osnabrueck.de:2622:bones.informatik.uni-osnabrueck.de:7622:2222
+
+# This is a comment
+#193.173.639.133 : 154 : 723.243.242.21 : 934 : 872
+#132.173.639.134 : 155 : 723.243.242.21 : 934 : 872
+
+#193.173.639.135 : 156 : 723.243.242.21 : 934 : 872
+#192.173.639.136 : 157 : 723.243.242.21 : 934 : 872
+

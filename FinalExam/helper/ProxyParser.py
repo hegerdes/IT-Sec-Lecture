@@ -17,6 +17,8 @@ class color:
 class constants:
     REV_BUFFER = 4096
 
+    VERBOSE = True
+
     SOCKS_VERSION = 4
 
     PROT_ID = b'YPROX'
@@ -70,6 +72,8 @@ class ProxyParser:
             '--certificate', '-c', help='Certificate path', default=None)
         self.parser.add_argument(
         '--test', '-t', help='Go in evaluation mode', action='store_true', default=False)
+        self.parser.add_argument(
+        '--verbose', '-v', help='Go in evaluation mode', action='store_true', default=False)
         self.args = None
         self.configs = None
 
@@ -80,6 +84,7 @@ class ProxyParser:
 
     def parseArgs(self):
         self.args = self.parser.parse_args()
+        constants.VERBOSE = self.args.verbose
         return self.args
 
     def setSSLConf(self):
@@ -97,7 +102,7 @@ class ProxyParser:
         return self.configs
 
     def parseConfig(self, config_path=None):
-        self.configs = list()
+        self.configs = []
 
         # Default
         if not config_path:
@@ -117,6 +122,9 @@ class ProxyParser:
                             'Illigal length in confogfile: ' + config_path)
                     self.configs.append(Config(*conf))
                 line = fr.readline()
+        if len(self.configs) < 1:
+            print(color.RED + 'No config entry provided! Exit' + color.NC)
+            exit(0)
         return self.configs
 
 def ParseACL(path):

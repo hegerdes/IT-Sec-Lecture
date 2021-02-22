@@ -29,7 +29,8 @@ def proxy_client_handler(context):
         else:
             use_ssl = False
     except (TypeError, FileNotFoundError, KeyError) as e:
-        print(CL.YEL + 'Err in SSL setup!\n Not using SSL' + CL.NC + '\nErr:', e)
+        print(CL.YEL + 'Err in SSL setup! Check paths.\nNot using SSL. ' +
+              CL.NC + 'ErrMsg:', str(e))
         use_ssl = False
 
     try:
@@ -45,8 +46,9 @@ def proxy_client_handler(context):
             proxy_server_sock.connect(tuple(conf.remote.values()))
 
             try:
-                print(CL.GRY + 'ServerCertSubject:\n', CL.NC,
-                      proxy_server_sock.getpeercert()['subject'], proxy_server_sock.version())
+                if CONST.VERBOSE:
+                    print(CL.GRY + 'ServerCertSubject:\n', CL.NC,
+                          proxy_server_sock.getpeercert()['subject'], proxy_server_sock.version())
             except AttributeError:
                 use_ssl = False
 
@@ -77,7 +79,7 @@ def proxy_client_handler(context):
                 (context.server.conf.dst['host'], context.server.conf.dst['port'])) + CL.NC)
 
             while True:
-                #Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
+                # Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
                 r, w, x = select.select(
                     [context.request, proxy_server_sock], [], [])
                 if context.request in r:
@@ -96,11 +98,14 @@ def proxy_client_handler(context):
             proxy_server_sock.send(struct.pack(
                 '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['END_Flag']))
 
+    except struct.error:
+        print(CL.RED + 'Protocol error! Proibly a SSL related handshake fail' + CL.NC)
     except ssl.SSLError as e:
         print(CL.RED + 'Server dinied access. Error in SSL communication. Make sure both systems use SSL and certs are valid!' +
               CL.NC + '\nErrMsg: ' + str(e))
         context.request.send(b'ProxyServerAccsessDinied')
         context.request.close()
+        print(CL.GRY + 'Tunnel closed' + CL.NC)
         return
     except TimeoutError as e:
         print(CL.RED + 'Timeout! ProxyServer did not answer.' +
@@ -116,7 +121,7 @@ def proxy_client_handler(context):
 
 # Iperf-eval settings
 def TestConfsIperf(confs):
-    #Set CWD
+    # Set CWD
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     confs[1].setSSL({'certificate': 'pki/certificates/client1.pem',
                      'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
@@ -142,15 +147,16 @@ if __name__ == "__main__":
         # Iperf eval
         if args.test:
             confs = TestConfsIperf(confs)
-        [print(conf) for conf in confs]
+        if CONST.VERBOSE:
+            [print(conf) for conf in confs]
 
         [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
         [tunnel.run(True) for tunnel in tunnels]
 
-        #Pause main thread
+        # Pause main thread
         signal.pause()
     except OSError as e:
-        print(CL.RED + 'Coud not start one ore more ProxyClients. Make sure every Client has its own free port!\n' +
+        print(CL.RED + 'Coud not start one ore more ProxyClients. Make sure the config exists, valid and every Client has its own free port!\n' +
               CL.NC + 'ErrMsg: ' + str(e))
         exit(0)
     except KeyboardInterrupt:

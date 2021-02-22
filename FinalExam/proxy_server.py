@@ -25,8 +25,10 @@ def proxy_serv_handler(context):
 
     use_ssl = True
     try:
+        if conf.ssl:
+            context.request.do_handshake()
         client_cert = context.request.getpeercert()
-        if client_cert:
+        if client_cert and CONST.VERBOSE:
             print(CL.GRY + 'ClientCertSubject' + CL.NC,
                   client_cert['subject'], context.request.version())
 
@@ -40,6 +42,9 @@ def proxy_serv_handler(context):
             context.request.close()
             return
 
+    except ssl.SSLError as e:
+        print(CL.RED + 'Unothorized connection attampt form {}. Rejected! ErrMsg: {}'.format(context.request.getpeername(), e) + CL.NC)
+        return
     except AttributeError:
         use_ssl = False
 
@@ -231,7 +236,7 @@ if __name__ == "__main__":
         exit(0)
     except OSError as e:
         print(
-            CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+            CL.RED + 'OSError. Probably the port is already used or a filepath is wrong.\nErrMSG: ' + str(e) + CL.NC)
         exit(0)
     except KeyboardInterrupt:
         print('Interruped received. Closing')
