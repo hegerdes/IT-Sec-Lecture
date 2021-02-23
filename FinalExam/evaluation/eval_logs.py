@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 
 
 header=['NoProxy', 'ProxyNoSSL', 'ProxyServerSSL', 'ProxyServerClientSSL', 'ProxyServerClientSSLACL', 'SSHTunnel']
-def parse(file_path):
+
+def parseLogs(file_path):
     test_type = ''
     res = []
     results = {}
@@ -73,11 +74,13 @@ def checkAVG(data):
     return out
 
 def plot(data):
+    plt.rcParams['ytick.labelsize'] = "small"
     ax = plt.figure(figsize=(12.5, 8.5), dpi=150).add_subplot()
     ax.boxplot(list(data.values()), notch=True, vert=False, meanline=True)
 
     ax.set_yticklabels(data.keys())
     # ax.set_xscale('log')
+    plt.savefig('docs/fig/boxplot.pdf')
     plt.show()
 
 
@@ -86,4 +89,4 @@ if __name__ == "__main__":
     parser.add_argument('--file', '-f', help='Path to logfile', default='evaluation/iperf_diggory.log',required=False)
 
     args = parser.parse_args()
-    parse(args.file)
+    parseLogs(args.file)
