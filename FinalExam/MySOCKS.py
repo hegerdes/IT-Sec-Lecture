@@ -86,6 +86,12 @@ def equalDST(info1, info2):
     return isEqual
 
 
+def isHost(ip):
+    if ip[0] == 0 and ip[1] == 0 and ip[2] == 0 and ip[3] != 0:
+        return True
+    return False
+
+
 def TestSocks(host, port, destination=("icanhazip.com", 80)):
     import socks
 
@@ -100,9 +106,3 @@ def TestSocks(host, port, destination=("icanhazip.com", 80)):
         s.send(struct.pack('5sb', CONST.PROT_ID,
                            CONST.BIT_FLAG_MASK['END_Flag']))
         response = None
-
-
-def isHost(ip):
-    if ip[0] == 0 and ip[1] == 0 and ip[2] == 0 and ip[3] != 0:
-        return True
-    return False
