@@ -139,7 +139,8 @@ if __name__ == "__main__":
 
         args = px_parser.parseArgs()
         confs = px_parser.parseConfig()
-        [print(conf) for conf in confs]
+        if CONST.VERBOSE:
+            [print(conf) for conf in confs]
 
         if args.certificate or args.key or args.ca or args.test:
             print(CL.YEL + 'Certs, Cert-keys, CA and testMode are mot supported by this modul. Ignoring options!' + CL.NC)

@@ -28,22 +28,23 @@ def proxy_serv_handler(context):
         if conf.ssl:
             context.request.do_handshake()
         client_cert = context.request.getpeercert()
-        if client_cert and CONST.VERBOSE:
-            print(CL.GRY + 'ClientCertSubject' + CL.NC,
-                  client_cert['subject'], context.request.version())
+        if client_cert:
+            CONST.LOGGER.log('ClientCertSubject', CL.GRY,
+                  (client_cert['subject'], context.request.version()), CONST.VERBOSE )
 
         # User not in ACL
         if 'ca' in conf.ssl and not checkACL(conf, client_cert):
-            print(CL.RED + 'A unautorised user tried to use the Proxy!' + CL.NC)
+            CONST.LOGGER.log('A unautorised user tried to use the Proxy!', CL.RED)
             if client_cert:
-                print('His cert:\n', client_cert['subject'])
+                CONST.LOGGER.log('His cert:\n', CL.RED, client_cert['subject'])
             context.request.send(struct.pack('5sb', CONST.PROT_ID,
                                              CONST.BIT_FLAG_MASK['ACL_FAIL_FLAG']))
             context.request.close()
             return
 
     except ssl.SSLError as e:
-        print(CL.RED + 'Unothorized connection attampt form {}. Rejected! ErrMsg: {}'.format(context.request.getpeername(), e) + CL.NC)
+        CONST.LOGGER.log('Unothorized connection attampt form {}. Rejected! ErrMsg: {}'
+            .format(context.request.getpeername(), e), CL.RED)
         return
     except AttributeError:
         use_ssl = False
@@ -56,7 +57,7 @@ def proxy_serv_handler(context):
 
         # Check proxy protocol
         if conn_flag != CONST.BIT_FLAG_MASK['CON_Flag'] or prot != CONST.PROT_ID:
-            print(CL.RED + 'Invalid request. Closing...' + CL.NC)
+            CONST.LOGGER.log('Invalid request. Closing...', CL.RED)
             context.request.sendall(struct.pack(
                 '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
             context.request.close()
@@ -67,16 +68,16 @@ def proxy_serv_handler(context):
         url_length, port, url = struct.unpack(
             'IH' + str(url_length) + 's', dst_data[:4 + 2 + url_length])
     except struct.error:
-        print((CL.RED + 'Request from {}: Proto error! Request rejected!' +
-               CL.NC).format(context.request.getpeername()))
+        CONST.LOGGER.log('Request from {}: Proto error! Request rejected!'
+            .format(context.request.getpeername()), CL.RED)
         context.request.close()
         return
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dst_sock:
             dst_sock.connect((url, port))
-            print(CL.BLU + 'client ' + str(context.request.getpeername()) +
-                  ' requested ' + str((url, port)) + '; SSL=' + str(use_ssl) + '. Connection to dst: OK' + CL.NC)
+            CONST.LOGGER.log('Client {} requested {}; SSL={}. Connection to dst: OK'
+                .format(context.request.getpeername(), (url, port), use_ssl), CL.BLU)
 
             context.request.sendall(struct.pack('5sb', CONST.PROT_ID,
                                                 CONST.BIT_FLAG_MASK['CON_ACK_Flag']))
@@ -95,14 +96,14 @@ def proxy_serv_handler(context):
                         context.request.send(data)
 
     except socket.error as e:
-        print((CL.RED + 'Request from {}: Unable to connect to destination: ({},{})\nErrMsg:{}' +
-               CL.NC).format(context.request.getpeername(), url, port, e))
+        CONST.LOGGER.log('Request from {}: Unable to connect to destination: ({},{})\nErrMsg:{}'
+            .format(context.request.getpeername(), url, port, e), CL.RED)
         context.request.sendall(struct.pack(
             '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['DST_FAIL_Flag']))
         context.request.close()
         return
 
-    print(CL.GRY + 'Connection closed from', context.request.getpeername(), CL.NC)
+    CONST.LOGGER.log('Connection closed from' + str(context.request.getpeername()), CL.GRY)
     context.request.close
 
 
@@ -116,7 +117,7 @@ def checkACL(conf, cert):
     for subj in cert['subject']:
         for part in subj:
             if 'commonName' in part and part[1] in conf.acl:
-                print(CL.GRN + 'User {} in ACL succesfuly connected!{}'.format(part[1], CL.NC))
+                CONST.LOGGER.log('User {} in ACL succesfuly connected!'.format(part[1]), CL.GRN)
                 return True
     return False
 
@@ -214,7 +215,7 @@ if __name__ == "__main__":
     if args.acl:
         conf.acl = ParseACL(args.acl)
     if args.socks:
-        print(CL.BLU + 'Using SOCKSv4' + CL.NC)
+        CONST.LOGGER.log('Using SOCKSv4', CL.BLU)
         conf.socks = True
 
     servers = []
@@ -222,7 +223,7 @@ if __name__ == "__main__":
         # Iperf-test
         if args.test:
             testports = [6622, 7622, 8622, 9622]
-            [print(conf) for conf in TestConfsIperf(args.host, testports)]
+            [CONST.LOGGER.log(conf) for conf in TestConfsIperf(args.host, testports)]
             [servers.append(Tunnel(testconf, proxy_serv_handler, True))
              for testconf in TestConfsIperf(args.host, testports)]
         else:
@@ -232,14 +233,13 @@ if __name__ == "__main__":
         #Pause main thread
         signal.pause()
     except PermissionError as e:
-        print(CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
+        CONST.LOGGER.log('Permission error. Action not allowed. ErrMSG: ' + str(e), CL.RED)
         exit(0)
     except OSError as e:
-        print(
-            CL.RED + 'OSError. Probably the port is already used or a filepath is wrong.\nErrMSG: ' + str(e) + CL.NC)
+        CONST.LOGGER.log('OSError. Probably the port is already used or a filepath is wrong.\nErrMSG: ' + str(e), CL.RED)
         exit(0)
     except KeyboardInterrupt:
-        print('Interruped received. Closing')
+        CONST.LOGGER.log('Interruped received. Closing')
         [server.stop() for server in servers]
         exit(0)
 

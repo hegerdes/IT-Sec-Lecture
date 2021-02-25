@@ -16,9 +16,11 @@ class ForwardServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     daemon_threads = True
     allow_reuse_address = True
 
-    def __init__(self, conf, server_address, RequestHandler, isServer=True, bind_and_activate=True):
+    def __init__(self, conf, server_address, RequestHandler, isServer=False, bind_and_activate=True):
+        # Super constructor without bind to allow changes to the socket
         super().__init__(server_address, RequestHandler, False)
 
+        #Just serverside stuff
         if isServer and conf.ssl and len(conf.ssl) > 0:
             try:
                 ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
@@ -28,18 +30,18 @@ class ForwardServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
                     ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
                     ctx.verify_mode = ssl.CERT_REQUIRED
                     ctx.load_verify_locations('pki/certificates/ca.pem')
-                    if CONST.VERBOSE: print(CL.BLU + 'Using SSL Server & Client auth' + CL.NC, conf.ssl)
+                    CONST.LOGGER.log('Using SSL Server & Client auth', CL.BLU, conf.ssl, CONST.VERBOSE)
                 else:
-                    if CONST.VERBOSE: print(CL.BLU + 'Using SSL Server auth' + CL.NC, conf.ssl)
+                    CONST.LOGGER.log('Using SSL Server auth', CL.BLU, conf.ssl, CONST.VERBOSE)
 
                 ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
 
                 # Wrap the socket
                 self.socket = ctx.wrap_socket(self.socket, server_side=True, do_handshake_on_connect=False)
             except (FileNotFoundError, TypeError, KeyError) as e:
-                print(CL.YEL + 'Cert or key not found. Using Proxy without SSL!' + CL.NC + '\n' + str(e))
+                CONST.LOGGER.log('Cert or key not found. Using Proxy without SSL!', CL.YEL, str(e))
         elif isServer:
-            print(CL.GRY + 'Not using SSL' + CL.NC)
+            CONST.LOGGER.log('Not using SSL', CL.GRY)
 
         if bind_and_activate:
             try:
@@ -68,8 +70,7 @@ class Tunnel:
         if daemon:
             # Easy exit the server thread with main thread
             self.server_thread.daemon = True
-        print((CL.GRN + 'Start listening ({}:{})...' +
-               CL.NC).format(self.server.conf.local['host'], self.server.conf.local['port']))
+        CONST.LOGGER.log('Start listening ({}:{})...'.format(self.server.conf.local['host'], self.server.conf.local['port']), CL.GRN)
         self.server_thread.start()
 
     def stop(self):
@@ -81,4 +82,3 @@ class Tunnel:
 
     def getServer(self):
         return self.server
-
