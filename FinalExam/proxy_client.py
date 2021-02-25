@@ -144,9 +144,8 @@ if __name__ == "__main__":
         # Iperf eval
         if args.test:
             confs = TestConfsIperf(confs)
-        if CONST.VERBOSE:
-            [CONST.LOGGER.log(conf) for conf in confs]
 
+        [CONST.LOGGER.log(conf, print_to_console=CONST.VERBOSE) for conf in confs]
         [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
         [tunnel.run(True) for tunnel in tunnels]
 

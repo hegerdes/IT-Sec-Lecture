@@ -16,7 +16,7 @@ def socks_handler(context):
 
     if cn != 1 and vn != 2:
         # Bind is handeld by the SocketServer TCP
-        print(CL.RED + 'Unsuported SOCKS request' + CL.NC)
+        CONST.LOGGER.log('Unsuported SOCKS request', CL.RED)
         context.request.send(struct.pack(
             '!BBHBBBB', 0, 91, port, ip1, ip2, ip3, ip4))
         return
@@ -38,8 +38,8 @@ def socks_handler(context):
                                 data[9: len(data) - 1])[0]
     else:
         address = socket.inet_ntoa(data[4:8])
-    print((CL.BLU + '{} requestet {}:{}' +
-           CL.NC).format(context.request.getpeername(), address, port))
+    CONST.LOGGER.log('{} requestet {}:{}'.format(context.request.getpeername(), address, port),
+        CL.BLU)
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dst_socket:
@@ -67,13 +67,12 @@ def socks_handler(context):
     except socket.error as e:
         context.request.send(struct.pack(
             '!BBHBBBB', 0, 92, port, ip1, ip2, ip3, ip4))
-        print(CL.RED + 'Error in the dst connection!' +
-              CL.NC + '\nErrMSG: ' + str(e))
+        CONST.LOGGER.log('Error in the dst connection!', CL.RED, '\nErrMSG: ' + str(e))
 
 
 def getProtInfo(data):
     if len(data) < 9:
-        print('Error')
+        CONST.LOGGER.log('Error! Not enough data', CL.RED)
         return None
 
     return struct.unpack('!BBHBBBB', data[:8])
