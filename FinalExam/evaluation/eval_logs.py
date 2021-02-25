@@ -1,15 +1,16 @@
 #!/usr/bin/python3
+import os
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 header=['NoProxy', 'ProxyNoSSL', 'ProxyServerSSL', 'ProxyServerClientSSL', 'ProxyServerClientSSLACL', 'SSHTunnel']
-def parse(file_path):
+
+def parseLogs(file_path):
     test_type = ''
     res = []
     results = {}
-    counter = 0
 
     with open(file_path, 'r') as fr:
         line = fr.readline().strip()
@@ -55,7 +56,7 @@ def parse(file_path):
                 results['SSHTunnel'] = []
             results['SSHTunnel'].append(list(res[i]))
 
-    plot(checkAVG(results))
+    return results
 
 def evalLogLine(log_line):
     return float(log_line.split()[6])
@@ -73,17 +74,27 @@ def checkAVG(data):
     return out
 
 def plot(data):
+    plt.rcParams['ytick.labelsize'] = "small"
     ax = plt.figure(figsize=(12.5, 8.5), dpi=150).add_subplot()
+    ax.set_title('Proxy throughput results')
     ax.boxplot(list(data.values()), notch=True, vert=False, meanline=True)
 
     ax.set_yticklabels(data.keys())
+    ax.set_xlabel('Mbits')
     # ax.set_xscale('log')
+    plt.savefig('docs/fig/boxplot.pdf')
     plt.show()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Lunches an iperf logparser')
-    parser.add_argument('--file', '-f', help='Path to logfile', default='evaluation/iperf_diggory.log',required=False)
+    parser.add_argument('--file', '-f', help='Path to logfile', default='evaluation/iperf_diggory.log',required=False, nargs='+')
 
     args = parser.parse_args()
-    parse(args.file)
+    print(args.file)
+    res = dict(zip(header, [[] for i in range(len(header))]))
+
+    for log_path in args.file:
+        [res[k].extend(v) for k, v in checkAVG(parseLogs(log_path)).items()]
+    print(res)
+    plot(res)

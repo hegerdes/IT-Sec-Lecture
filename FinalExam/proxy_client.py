@@ -20,16 +20,16 @@ def proxy_client_handler(context):
     try:
         if conf.ssl:
             ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-            ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
             ctx.verify_mode = ssl.CERT_REQUIRED
             ctx.check_hostname = True
             ctx.load_verify_locations(conf.ssl['ca'])
-            ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
-            print(CL.BLU + 'Using SSL' + CL.NC)
+            if useClintAuth(conf):
+                ctx.load_cert_chain(conf.ssl['certificate'], conf.ssl['key'])
+            CONST.LOGGER.log('Using SSL', CL.BLU)
         else:
             use_ssl = False
-    except (TypeError, FileNotFoundError, KeyError) as e:
-        print(CL.YEL + 'Err in SSL setup!\n Not using SSL' + CL.NC + '\nErr:', e)
+    except (TypeError, FileNotFoundError, KeyError, ssl.SSLError) as e:
+        CONST.LOGGER.log('Err in SSL setup! Check paths.\nNot using SSL. ', CL.YEL, 'ErrMsg: ' + str(e))
         use_ssl = False
 
     try:
@@ -38,15 +38,14 @@ def proxy_client_handler(context):
 
             # SSL wrap
             if use_ssl:
-                proxy_server_sock = ctx.wrap_socket(
-                    proxy_server_sock, server_hostname=conf.remote['host'])
+                proxy_server_sock = ctx.wrap_socket(proxy_server_sock, server_hostname=conf.remote['host'])
 
-            print((CL.BLU + 'Connecting to {}' + CL.NC).format(conf.remote))
+            CONST.LOGGER.log('Connecting to {}'.format(conf.remote), CL.BLU)
             proxy_server_sock.connect(tuple(conf.remote.values()))
 
             try:
-                print(CL.GRY + 'ServerCertSubject:\n', CL.NC,
-                      proxy_server_sock.getpeercert()['subject'], proxy_server_sock.version())
+                CONST.LOGGER.log('ServerCertSubject:\n', CL.GRY,
+                    (proxy_server_sock.getpeercert()['subject'], proxy_server_sock.version()), CONST.VERBOSE)
             except AttributeError:
                 use_ssl = False
 
@@ -59,27 +58,26 @@ def proxy_client_handler(context):
             data = proxy_server_sock.recv(CONST.REV_BUFFER)
 
             if not data or len(data) < 6:
-                print('empty or invalid')
+                raise struct.error('Invalid response')
 
             prot, status = struct.unpack('5sb', data[:6])
             if status != CONST.BIT_FLAG_MASK['CON_ACK_Flag']:
                 if status == CONST.BIT_FLAG_MASK['DST_FAIL_Flag']:
-                    print(CL.RED + 'Destination not reachable. Closing Socket' + CL.NC)
+                    CONST.LOGGER.log('Destination not reachable. Closing Socket', CL.RED)
                     context.request.send(b'Destination not reachable')
                 proxy_server_sock.close()
                 context.request.close()
-                print(CL.RED + 'Protocol ERROR. Closing' + CL.NC)
+                CONST.LOGGER.log('Protocol ERROR. Closing', CL.RED)
                 return
 
-            print(CL.GRN + 'Connected! Tunnel: {} => {} => {}'.format(
+            CONST.LOGGER.log('Connected! Tunnel: {} => {} => {}'.format(
                 context.request.getpeername(),
                 proxy_server_sock.getpeername(),
-                (context.server.conf.dst['host'], context.server.conf.dst['port'])) + CL.NC)
+                (context.server.conf.dst['host'], context.server.conf.dst['port'])), CL.GRN)
 
             while True:
-                #Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
-                r, w, x = select.select(
-                    [context.request, proxy_server_sock], [], [])
+                # Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
+                r, w, x = select.select([context.request, proxy_server_sock], [], [])
                 if context.request in r:
                     data = context.request.recv(CONST.REV_BUFFER)
                     if len(data) == 0:
@@ -96,30 +94,34 @@ def proxy_client_handler(context):
             proxy_server_sock.send(struct.pack(
                 '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['END_Flag']))
 
+    except struct.error:
+        CONST.LOGGER.log('Protocol error! Proibly a SSL related handshake fail', CL.RED)
     except ssl.SSLError as e:
-        print(CL.RED + 'Server dinied access. Error in SSL communication. Make sure both systems use SSL and certs are valid!' +
-              CL.NC + '\nErrMsg: ' + str(e))
+        CONST.LOGGER.log('Server dinied access. Error in SSL communication. Make sure both systems use SSL and certs are valid!', CL.   RED, '\nErrMsg: ' + str(e))
         context.request.send(b'ProxyServerAccsessDinied')
         context.request.close()
+        CONST.LOGGER.log('Tunnel closed' + CL.GRY)
         return
     except TimeoutError as e:
-        print(CL.RED + 'Timeout! ProxyServer did not answer.' +
-              CL.NC + '\nErrMsg: ' + str(e))
+        CONST.LOGGER.log('Timeout! ProxyServer did not answer.', CL.RED, '\nErrMsg: ' + str(e))
         context.request.send(b'ProxyServerTimeout')
         context.close()
     except socket.error as e:
-        print(CL.RED + 'Unable to connect to proxy. Err: ' + str(e) + CL.NC)
+        CONST.LOGGER.log('Unable to connect to proxy. Err: ' + str(e), CL.RED)
         context.request.close()
         return
-    print(CL.GRY + 'Tunnel closed from', context.request.getpeername(), CL.NC)
+    CONST.LOGGER.log('Tunnel closed from ' + str(context.request.getpeername()), CL.GRY)
+
+
+def useClintAuth(conf):
+    return 'certificate' in conf.ssl and conf.ssl['certificate'] and 'key' in conf.ssl and conf.ssl['key']
 
 
 # Iperf-eval settings
 def TestConfsIperf(confs):
-    #Set CWD
+    # Set CWD
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    confs[1].setSSL({'certificate': 'pki/certificates/client1.pem',
-                     'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+    confs[1].setSSL({'ca': 'pki/certificates/ca.pem'})
     confs[2].setSSL({'certificate': 'pki/certificates/client1.pem',
                      'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
     confs[3].setSSL({'certificate': 'pki/certificates/client1.pem',
@@ -142,17 +144,17 @@ if __name__ == "__main__":
         # Iperf eval
         if args.test:
             confs = TestConfsIperf(confs)
-        [print(conf) for conf in confs]
+        if CONST.VERBOSE:
+            [CONST.LOGGER.log(conf) for conf in confs]
 
         [tunnels.append(Tunnel(conf, proxy_client_handler)) for conf in confs]
         [tunnel.run(True) for tunnel in tunnels]
 
-        #Pause main thread
+        # Pause main thread
         signal.pause()
     except OSError as e:
-        print(CL.RED + 'Coud not start one ore more ProxyClients. Make sure every Client has its own free port!\n' +
-              CL.NC + 'ErrMsg: ' + str(e))
+        CONST.LOGGER.log('Coud not start one ore more ProxyClients. Make sure the config exists, valid and every Client has its own free port!', CL.RED, '\nErrMsg: ' + str(e))
         exit(0)
     except KeyboardInterrupt:
-        print('Interruped received. Closing')
+        CONST.LOGGER.log('Interruped received. Closing')
         [tunnel.stop() for tunnel in tunnels]

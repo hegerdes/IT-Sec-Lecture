@@ -1,5 +1,10 @@
 # Final Task ITS
 
+**Disclaimer:**
+Some of the libs on bones/diggory are pretty old. Please considure this while running our code.
+
+I added a *requirements.txt* file form kali with exact version numbers that matches the kali VM setup.
+
 ## Task 1
 ### Task 1.1
 All reusable code can be found in *ProxyParser* and *BaseProxy*.

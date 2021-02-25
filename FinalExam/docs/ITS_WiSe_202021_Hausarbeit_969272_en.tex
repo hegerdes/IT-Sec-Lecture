@@ -100,6 +100,13 @@ The baseline throughput test is a direct connection between the iperf client (Vo
 The proxy was tested with a SSHProxy, noSSL, server-authentication, client-server-authentication and client-server-authentication configuration with \ac{ACL}. Each test runs 15 iterations of every configuration. In total the test was performed eight times each with 6 hours interval. The script for the exact test can be found with the resources of this paper.
 \subsection{Analysis of the results}
 Each generated log was parsed with a custom script wich also generated the following grafics.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{boxplot.pdf}
+    \caption{Throughput test results}\label{fig::boxres}
+\end{figure}
+
 \subsection{Conclusion}
 
 % Anhang

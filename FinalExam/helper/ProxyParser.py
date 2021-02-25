@@ -2,7 +2,7 @@
 
 import argparse
 import sys
-
+import logging
 
 class color:
     # Nice formatting
@@ -16,7 +16,8 @@ class color:
 
 class constants:
     REV_BUFFER = 4096
-
+    VERBOSE = True
+    LOGGER = None
     SOCKS_VERSION = 4
 
     PROT_ID = b'YPROX'
@@ -35,12 +36,36 @@ class constants:
 
     EXAMPLE_REQ = 'GET / HTTP/1.1\r\nHost: sys.cs.uos.de:80\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-User: ?1\r\nSec-Fetch-Dest: document\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,de;q=0.8\r\n\r\n'
 
+class Logger:
+    def __init__(self, file_path, print_to_console=True, level=logging.DEBUG):
+        self.logging = logging.basicConfig(filename=file_path, level=level)
+        #encoding='utf-8' does not work because bones/diggory libs are too old
+        self.print_to_console = print_to_console
+        constants.LOGGER = self
+
+    def log(self, msg, level=color.BLU, msg2='', print_to_console=True):
+        con_print = (self.print_to_console or print_to_console) and print_to_console
+        if level == color.YEL:
+            logging.warning(str(msg) + ' ' + str(msg2))
+            if con_print:
+                print(color.YEL + str(msg) + color.NC, msg2)
+            return
+        if level == color.RED:
+            logging.error(str(msg) + ' ' + str(msg2))
+            if con_print:
+                print(color.RED + str(msg) + color.NC, msg2)
+            return
+
+        logging.info(str(msg) + ' ' + str(msg2))
+        if con_print:
+            print(level + str(msg) + color.NC, msg2)
+        return
+
 
 class Config:
 
     def __init__(self, dst_host='icanhazip.com', dst_port=80, remote_host='bones.informatik.uni-osnabrueck.de',
         remote_port=8001, listen_port=8000, ssl_options=None, acl=None, socks=False):
-
         super().__init__()
         self.dst = {'host': dst_host, 'port': int(dst_port)}
         self.remote = {'host': remote_host, 'port': int(remote_port)}
@@ -60,6 +85,8 @@ class ProxyParser:
 
     def __init__(self):
         self.versionCheck()
+        self.logger = Logger('proxy.log')
+
         self.parser = argparse.ArgumentParser(
             description='Lunches an argparser')
         self.parser.add_argument(
@@ -70,6 +97,8 @@ class ProxyParser:
             '--certificate', '-c', help='Certificate path', default=None)
         self.parser.add_argument(
         '--test', '-t', help='Go in evaluation mode', action='store_true', default=False)
+        self.parser.add_argument(
+        '--verbose', '-v', help='More verbose logging', action='store_true', default=False)
         self.args = None
         self.configs = None
 
@@ -80,6 +109,7 @@ class ProxyParser:
 
     def parseArgs(self):
         self.args = self.parser.parse_args()
+        constants.VERBOSE = self.args.verbose
         return self.args
 
     def setSSLConf(self):
@@ -97,7 +127,7 @@ class ProxyParser:
         return self.configs
 
     def parseConfig(self, config_path=None):
-        self.configs = list()
+        self.configs = []
 
         # Default
         if not config_path:
@@ -117,6 +147,9 @@ class ProxyParser:
                             'Illigal length in confogfile: ' + config_path)
                     self.configs.append(Config(*conf))
                 line = fr.readline()
+        if len(self.configs) < 1:
+            constants.LOGGER.log('No config entry provided! Exit', level=color.RED)
+            exit(0)
         return self.configs
 
 def ParseACL(path):
