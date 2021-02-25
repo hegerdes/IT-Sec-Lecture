@@ -121,8 +121,7 @@ def useClintAuth(conf):
 def TestConfsIperf(confs):
     # Set CWD
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    confs[1].setSSL({'certificate': 'pki/certificates/client1.pem',
-                     'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
+    confs[1].setSSL({'ca': 'pki/certificates/ca.pem'})
     confs[2].setSSL({'certificate': 'pki/certificates/client1.pem',
                      'key': 'pki/certificates/client1.key', 'ca': 'pki/certificates/ca.pem'})
     confs[3].setSSL({'certificate': 'pki/certificates/client1.pem',

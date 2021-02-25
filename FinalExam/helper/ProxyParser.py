@@ -38,7 +38,8 @@ class constants:
 
 class Logger:
     def __init__(self, file_path, print_to_console=True, level=logging.DEBUG):
-        self.logging = logging.basicConfig(filename=file_path, encoding='utf-8', level=level)
+        self.logging = logging.basicConfig(filename=file_path, level=level)
+        #encoding='utf-8' does not work because bones/diggory libs are too old
         self.print_to_console = print_to_console
         constants.LOGGER = self
 
@@ -97,7 +98,7 @@ class ProxyParser:
         self.parser.add_argument(
         '--test', '-t', help='Go in evaluation mode', action='store_true', default=False)
         self.parser.add_argument(
-        '--verbose', '-v', help='More verbose logging', action='store_true', default=True)
+        '--verbose', '-v', help='More verbose logging', action='store_true', default=False)
         self.args = None
         self.configs = None
 
