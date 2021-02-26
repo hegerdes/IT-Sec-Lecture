@@ -207,8 +207,7 @@ if __name__ == "__main__":
     conf.local = {'host': args.host, 'port': args.port}
     if args.certificate or args.key:
         ssl_conf = {'certificate': args.certificate, 'key': args.key}
-        if args.ca:
-            ssl_conf['ca'] = args.ca
+        if args.ca: ssl_conf['ca'] = args.ca
         conf.setSSL(ssl_conf)
 
     # Add ACL to config

@@ -30,17 +30,18 @@ class SubProcessTunnel(Thread):
 
     def run(self):
         try:
-            print(CL.GRN + 'Executing: ' + self.cmd + CL.NC)
+            CONST.LOGGER.log('Executing: ' + self.cmd, CL.GRN)
             self.ps = subprocess.Popen(
                 self.cmd, shell=True, stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
             self.ps.wait()
             # self.output = self.ps.communicate()
 
         except Exception as e:
-            print('Stopping SSH-Tunnel:' + str(e))
+            CONST.LOGGER.log('Stopping SSH-Tunnel:' + str(e), CL.RED)
             raise socket.error('SSHTunnelFail')
+
     def stop(self):
-        print(CL.GRY + 'Stopping process' + CL.NC)
+        CONST.LOGGER.log('Stopping process', CL.GRY)
         self.ps.kill()
 
 # Solution with paramiko. More elegant though
@@ -54,19 +55,19 @@ def createSSHClient(conf, user, keyfile, force=False):
     # Port check for ssh dst
     checkDstPort(conf, force)
 
-    print("*** Connecting...")
+    CONST.LOGGER.log("*** Connecting SSHTunnel...", CL.GRN)
     try:
         client.connect(*tuple(conf.remote.values()), user, pkey=key)
     except paramiko.PasswordRequiredException:
-        print(CL.RED + 'FAILD: Please log in with user and password' + CL.NC)
+        CONST.LOGGER.log('FAILD: Please log in with user and password', CL.RED)
         password = getpass.getpass(
             "Password for %s@%s: " % (user, conf.remote['host']))
         client.connect(*tuple(conf.remote.values()), user, password)
     except Exception as e:
-        print(CL.RED + 'ConnectionFail; Please check arguments\n' + CL.NC + str(e))
+        CONST.LOGGER.log('ConnectionFail; Please check arguments\n', CL.RED, str(e))
         raise socket.error('SSH conn fail')
 
-    print('Connected to ssh server {}:{}'.format(
+    CONST.LOGGER.log('Connected to ssh server {}:{}'.format(
         conf.remote['host'], conf.remote['port']))
     return client
 
@@ -81,17 +82,17 @@ def ssh_conn_handler(context):
             (context.server.conf.dst['host'], context.server.conf.dst['port']),
             peername)
     except Exception as e:
-        print(CL.RED + 'Request to {}:{} failed: {}'.format(
-            context.server.conf.dst['host'], context.server.conf.dst['port'], str(e)), CL.NC)
+        CONST.LOGGER.log('Request to {}:{} failed: {}'.format(
+            context.server.conf.dst['host'], context.server.conf.dst['port'], str(e)), CL.RED)
         context.request.send(b'Coud not connect to dest')
         return
     if chan is None:
-        print('Request to {}:{} was rejected.'.format(
-            context.server.conf.dst['host'], context.server.conf.dst['port']))
+        CONST.LOGGER.log('Request to {}:{} was rejected.'.format(
+            context.server.conf.dst['host'], context.server.conf.dst['port']), CL.RED)
         return
 
-    print(CL.BLU + 'Connected! Tunnel: {} => {} => {}'.format(peername,
-        chan.getpeername(), (context.server.conf.dst['host'], context.server.conf.dst['port'])), CL.NC)
+    CONST.LOGGER.log('Connected! Tunnel: {} => {} => {}'.format(peername,
+        chan.getpeername(), (context.server.conf.dst['host'], context.server.conf.dst['port'])))
 
     while True:
         #Select example inspired by https://steelkiwi.com/blog/working-tcp-sockets/
@@ -109,7 +110,7 @@ def ssh_conn_handler(context):
 
     chan.close()
     context.request.close()
-    print(CL.GRY + 'Tunnel closed from', peername, CL.NC)
+    CONST.LOGGER.log('Tunnel closed from' + str(peername), CL.GRY)
 
 
 def addServerAtributes(server, transport):
@@ -118,7 +119,7 @@ def addServerAtributes(server, transport):
 
 def checkDstPort(conf, force):
     if conf.remote['port'] != 22 and not force:
-        print(CL.YEL + 'Detected a remote port != 22 for a ssh connection.\nOverwirting it to port 22. Use option -F to overwrite this behavior.' + CL.NC)
+        CONST.LOGGER.log('Detected a remote port != 22 for a ssh connection.\nOverwirting it to port 22. Use option -F to overwrite this behavior.', CL.YEL)
         conf.remote['port'] = 22
 
 
@@ -139,11 +140,10 @@ if __name__ == "__main__":
 
         args = px_parser.parseArgs()
         confs = px_parser.parseConfig()
-        if CONST.VERBOSE:
-            [print(conf) for conf in confs]
+        [CONST.LOGGER.log(conf, print_to_console=CONST.VERBOSE) for conf in confs]
 
         if args.certificate or args.key or args.ca or args.test:
-            print(CL.YEL + 'Certs, Cert-keys, CA and testMode are mot supported by this modul. Ignoring options!' + CL.NC)
+            CONST.LOGGER.log('Certs, Cert-keys, CA and testMode are mot supported by this modul. Ignoring options!' + CL.YEL)
 
         connections = []
         if args.use_subprocess:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
             try:
                 client = createSSHClient(confs[0], args.user, args.ssh_key, args.force)
             except socket.error as e:
-                print(CL.RED + 'SSHConnection Faild' + CL.NC)
+                CONST.LOGGER.log('SSHConnection Faild', CL.RED)
                 exit(0)
 
             # TunnelServer
@@ -169,21 +169,19 @@ if __name__ == "__main__":
                     tunnel.run(True)
                     connections.append(tunnel)
             except PermissionError as e:
-                print(
-                    CL.RED + 'Permission error. Action not allowed. ErrMSG: ' + str(e) + CL.NC)
+                CONST.LOGGER.log('Permission error. Action not allowed. ErrMSG: ' + str(e), CL.RED)
                 exit(0)
             except OSError as e:
-                print(
-                    CL.RED + 'OSError. Probably the port is already used. ErrMSG: ' + str(e) + CL.NC)
+                CONST.LOGGER.log('OSError. Probably the port is already used. ErrMSG: ' + str(e), CL.RED)
                 exit(0)
 
             # Put main thread to sleep
             signal.pause()
     except socket.error:
-        print(CL.RED + 'Comminication error. Please check settings!' + CL.NC)
+        CONST.LOGGER.log('Comminication error. Please check settings!', CL.RED)
         exit(0)
     except KeyboardInterrupt:
-        print('KeybordInterrupt. Shutting down...')
+        CONST.LOGGER.log('KeybordInterrupt. Shutting down...')
         if args.use_subprocess:
             [conn.stop() for conn in connections]
             [conn.join() for conn in connections]
