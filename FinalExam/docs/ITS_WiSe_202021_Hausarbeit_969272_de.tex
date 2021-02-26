@@ -19,8 +19,8 @@
 \maketitle
 
 \section{Einleitung}
-Im Rahmen der Klausurersatzleistung für das Modul IT-Sicherheit wurde eine Proxy Client-Server Architektur erstellt, mit der TCP Verbindungen umgeleitet werden können, um z.B. Filterregeln einer Firewall zu umgehen und blockierte Anwendungen dennoch zu nutzen. Der strukturelle Aufbau ist in fig \ref{fig::arch} zu sehen.\newline
-Die Client-Server Architektur nutzt eine gemeinsame Tunnelklasse. Diese besteht aus einem \textit{SocketServer.TCPServer}, der bereits die unterliegenden sockets und den nicht blockierenden Programmablauf regelt, sowie einem anwendungsspezifischen Handler der bei eintreffenden Anfragen aufgerufen wird. Server und Client haben jeweils einen eigenen Handler, der die Kommunikation zwischen einander und zu den Endpunkten steuert. Es sind gleichzeitige Verbindungen möglich.
+Im Rahmen der Klausurersatzleistung für das Modul IT-Sicherheit wurde eine Proxy Client-Server Architektur erstellt, mit der TCP Verbindungen umgeleitet werden können, um z.B. die Filterregeln einer Firewall zu umgehen und um blockierte Anwendungen dennoch zu nutzen. Der strukturelle Aufbau ist in fig. \ref{fig::arch} zu sehen.\newline
+Die Client-Server Architektur nutzt eine gemeinsame Tunnelklasse. Diese besteht aus einem \textit{SocketServer.TCPServer}, der bereits die unterliegenden sockets und den nicht blockierenden Programmablauf regelt. Server und Client haben einen anwendungsspezifischen Handler der bei eintreffenden Anfragen aufgerufen wird. Dieser steuert die Kommunikation zwischen einander, sowie zu den Endpunkten. Es sind mehrere gleichzeitige Verbindungen möglich.
 
 \begin{figure}[H]
     \centering
@@ -30,7 +30,7 @@ Die Client-Server Architektur nutzt eine gemeinsame Tunnelklasse. Diese besteht 
 \end{figure}
 
 \section{Security}
-Nach Abschluss der Aufgabe 1 besteht eine funktionstüchtige Client-Server-Proxy Architektur. Diese unterliegt jedoch bestimmten Einschränkung hinsichtlich sicherer Nutzung. Diese Einschränkungen werden nachfolgend bearbeitet.
+Nach Abschluss der Aufgabe 1 besteht eine funktionstüchtige Client-Server-Proxy Architektur, die mehrere Anfragen gleichzeitig bearbeiten kann. Diese unterliegt jedoch bestimmten Einschränkung hinsichtlich sicherer Nutzung. Diese Einschränkungen werden nachfolgend bearbeitet.
 \subsection{Entitäten}
 Die Nutzung kann auf folgende Entitäten aufgeteilt werden:
 \begin{figure}[H]
@@ -63,10 +63,10 @@ Die Nutzung kann auf folgende Entitäten aufgeteilt werden:
     \end{subfigure}
 \end{figure}
 
-\noindent Der nachfolgende Absatz beschäftigt sich mit der Beziehung zwischen Anwender und Proxy-Betreiber
+\noindent Jede Entität betreibt eine oder mehrere technische Entitäten. Diese stellen die Prozesse da, die jede Entität betreibt. Der nachfolgende Absatz beschäftigt sich mit der Beziehung zwischen Anwender und Proxy-Betreiber
 \subsection{Sicherheitsanfälligkeiten und Einschränkungen}
 \paragraph{Anwender \& Betreiber:}\label{ssec::anwender}
-\noindent Der ProxyServer ist frei aus dem Internet erreichbar und nimmt von jedem anfragendem Dienst Datenpakete entgegen. Dabei kann der Server nicht verifizieren, dass der anfragende Dienst tatsächlich der von dem Server erwartete ProxyClient ist. Das gleiche gilt für die Authentizität des Servers gegenüber des Clients. Beides verstößt gegen den Grundsatz der \textbf{Authentication}.\newline
+\noindent Der ProxyServer ist frei aus dem Internet erreichbar und nimmt von jedem Endgerät Datenpakete entgegen. Dabei kann der Server nicht verifizieren, dass der anfragende Dienst tatsächlich der von dem Server erwartete ProxyClient ist. Das gleiche gilt für die Authentizität des Servers gegenüber des Clients. Beides verstößt gegen den Grundsatz der \textbf{Authentication}.\newline
 Die Kommunikation zwischen ProxyClient und ProxyServer läuft über fremde Kommunikationswege. Jeder der Zugriff auf einen Teil dieses Kommunikationsweges hat, kann die übertragenen Informationen mitschneiden und möglicherweise gegen die Kommunikationspartner verwenden. Die Möglichkeit zum Belauschen und Lesen der Kommunikation verstößt gegen die \textbf{Confidentiality}.\newline
 Neben dem Mitlesen können die übertragenden Informationen auch verändert werden, was wiederum gegen die \textbf{Integrity} verstößt.
 \paragraph{Betreiber \& Inhaltsanbieter:}
@@ -79,7 +79,7 @@ Wie oben in \ref{ssec::anwender} bereits erwähnt, ist das Prinzip der Vertrauli
 Damit Anwender sich sicher sein können, dass sie sich mit einem vertrauenswürdigen ProxyServer verbinden, kann man eine Server Authentifizierung einführen, bei der sich der Server mit einem Zertifikat ausweist und der Client dieses Zertifikat Zertifikat überprüft. Dies löst das Problem der \textbf{Authentication} des Servers gegenüber des Clients. Gleiches kann der Client gegenüber dem Servers machen. Organisatorisch wäre dafür notwendig, dass der Server alle CA-Zertifikate besitzt, mit denen die Clients signiert wurden, was in der realen Welt eine unvorstellbare logistische Herausforderung bedeuten würde.\newline
 Technisch gesehen würden diese Zertifikate während des \ac{TLS}-Handshakes ausgetauscht werden. Ebenfalls möglich ist es mittels \ac{TLS} Nachrichten zu verschlüsseln, um dessen \textbf{Confidentiality} sicherzustellen. Die genauen Verschlüsselungsverfahren hängen von der genutzten Version und Erweiterungen von \ac{TLS} ab.\newline
 Um die \textbf{Integrity} einer Nachricht sicherzustellen wird über die Nachricht ein Hash berechnet, anschließend ebenfalls verschlüsselt und als Signatur angehängt. Der Empfänger kann den selbst berechneten Hash mit dem entschlüsseltem Hash aus der Signatur vergleichen, um dessen Integrität zu überprüfen.\newline
-Die technische Umsetzung ist mit dem \code{ssl}-Modul möglich, welches das \ac{TLS}-Protokoll vollständig implementiert.
+Die technische Umsetzung ist mit dem \ac{SSL}-Modul möglich, welches das \ac{TLS}-Protokoll vollständig implementiert.
 
 \paragraph{Verfügbarkeit und Missbrauchsschutz}
 Neben der Sicherheit der Kommunikation ist auch die Verfügbarkeit, sowie die Nutzung des Proxys für ausschließlich legale Zwecke sicherzustellen. Dies kann eben einer Eingrenzung der Nutzer durch Filter gewährleistet werden, die bestimme Dienste blockieren und Ressourcen wie Datennutzung, Anzahl der Anfragen und Rechenleistung limitieren. Loadbalancer und Backup-Systeme würden die Verfügbarkeit zusätzlich steigern.
@@ -94,19 +94,29 @@ Im Rahmen dieser Evaluation wird nur der Datendurchsatz des Proxys betrachtet, a
     \label{fig::test}
 \end{figure}
 Für die Durchführung der Durchsatzmessungen wurde auf das Werkzeug \code{iperf} zurückgegriffen. Dieses erlaubt es mittels einer Client-Server Architektur den Datendurchsatz zwischen Endpunkten zu bestimmen.\newline
-Alle Rechner (Client(Vogon), TestServer1(diggory), TestServer2(bones)) werden mit KaliLinux betrieben und nutzen Version 2.0.14a von \code{iperf} auf dem Client und Version 2.0.5 auf dem Server. Abseits der standard Konfiguration wurde auf die einheitliche Testdauer von 10s verzichtet und stattdessen eine Datenmenge von 16MB für die Übertragung festgelegt. So kann z.B. einfach die Übertragungsdauer bestimmter WebSeiten abschätzen werden. Aufgrund des natürlichen Einschätzungsvermögen für Zeit sind die Ergebnisse so auch für Leser ohne technischem Hintergrund einfacher einzuschätzen. Zusätzlich wurde das Logging-interval auf 0.5s gesetzt um genauer Intervalle extrahieren zu können. Es wurde nur der Download vom Server gemessen, ein bidirektionaler Test war Aufgrund der nicht öffentlich zugänglichen IP des Clients nicht möglich.\newline
+Alle Rechner (Client(Vogon), TestServer1(diggory), TestServer2(bones)) werden mit Linux (Kali 2020.3 auf Vogon, Ubuntu 16.04 auf diggory/bones) betrieben und nutzen Version 2.0.14a von \code{iperf} auf dem Client und Version 2.0.5 auf dem Server. Abseits der standard Konfiguration wurde auf die einheitliche Testdauer von 10s verzichtet und stattdessen eine Datenmenge von 16MB für die Übertragung festgelegt. So kann z.B. einfach die Übertragungsdauer bestimmter WebSeiten abschätzen werden. Aufgrund des natürlichen Einschätzungsvermögen für Zeit sind die Ergebnisse so auch für Leser ohne technischem Hintergrund einfacher einzuschätzen. Zusätzlich wurde das Logging-interval auf 0.5s gesetzt um genauer Intervalle extrahieren zu können. Es wurde nur der Download vom Server gemessen, ein bidirektionaler Test war Aufgrund der nicht öffentlich zugänglichen IP des Clients nicht möglich.\newline
 Als Basisfall wurde ein direkte Messung ohne Proxy zu einem der System diggory durchgeführt. Um einem realistischem Einsatz zu simulieren, wurde anschließend der ProxyServer auf dem zweitem Testrechner (bones) gestartet, welcher dann eine Verbindung zur iperf Instanz auf diggory herstellt. So erhält man eine Topologie von drei Rechnern, dem Client, der ProxyServer und der Zielserver, wie sie auch in der Realität anzufinden wäre.\newline
-Der ProxyServer wurde dann in den Konfiguration KeinSSL, ServerAuthentification, ClientServerAthentification und ClientServerAthentificationACL getestet. Ein Testlauf besteht aus 15 Iterationen über diese Konfigurationen. Insgesamt wurden 4 Testläufe zu unterschiedlichen Uhrzeiten, alle neun Stunden, durchgeführt. Ein automatisiertes Script befindet sich im Anhang.
+Der ProxyServer wurde dann in den Konfiguration SSHTunnel, KeinSSL, ServerAuthentification, ClientServerAthentification und ClientServerAthentificationACL getestet. Ein Testlauf besteht aus 15 Iterationen über diese Konfigurationen. Insgesamt wurden acht Testläufe zu unterschiedlichen Uhrzeiten, alle sechs Stunden, durchgeführt. Ein automatisiertes Script befindet sich im Anhang.
 \subsection{Analyse der Ergebnisse}
 Die generierten Log-Dateien wurden mit dem beiliegendem Script ausgelesen und erzeugen alle nachfolgenden Grafiken.
-
-\begin{figure}
+\noindent Abbildung \@\ref{fig::boxres} zeigt die Messergebnisse für den Datendurchsatz aller verschiedener Proxy Konfigurationen. Entgegen der Erwartungen liefert die direkte Verbindung (ohne Proxy) den geringsten Durchsatz mit einer durchschnittlichen Geschwindigkeit von 35.45 Mbit/s.
+Um potentiell ungewollte Variationen auszuschließen wurde der Test mit dem \code{-N} Flag von \code{iperf} wiederholt, was die Kernel-Pufferung deaktiviert. Die Testergebnisse blieben jedoch unverändert.\newline
+Bei abgebrochenen Tests fiel auf, dass \code{iperf} sehr hohe Durchsätze lieferte. Das ist dadurch begründet, dass \code{iperf} annimmt das Daten im Sendefenster bereits am empfangen wurden obwohl der Server noch nichts empfangen wurde. Dieses Phänomen ist den Serverlogs entsprechend nicht während gültiger Tests aufgetreten. Durch das Verkleinern des Proxy Empfangspuffers konnte ein systematisch verringerter Datendurchsatz über alle Konfigurationen gemessen werden. Nach dieser Beobachtung und weiteren Nachforschungen mit Wireshark wurde ein Implementierungsfehler im Proxy ausgeschlossen. Die Tatsache, dass der SSHTunnel, der keinen eigenständig implementierten Code enthält ebenfalls performanter ist die direkte Proxyverbindung unterstützt diese Annahme. Zu vermuten ist, dass \code{iperf} bereits die Bestätigungen zu dem lokalen Proxy-Clients nutzt für die Durchsatzmessungen. Dieses verhalten bedarf jedoch weiterer Nachforschungen.\newline
+Alle anderen Proxy Konfiguration lieferten einen durchschnittlichen Durchsatz von 70.63 bis 75.92 Mbit/s. Mit steigenden Sicherheit Funktionen ließ der Durchsatz jeweils um ca. 2 Mbit/s nach. Dies ist durch den Zusätzlichen Datenverkehr von \ac{SSL} zu begründen. Dennoch ist dies der doppelte Durchsatz ohne Proxy und ca. 20Mbis/s mehr als die Leistung des SSHTunnels. Eine weitere interessante Tatsache ist die Variation des Durchsatzes über alle Konfigurationen hinweg. Die eigene Proxyanwendung schwankt um ein vielfaches mehr als die direkte Verbindung und der SSHTunnel.\newline
+Die Ergebnisse zeigen jedoch, dass der Durchsatz mehr als ausreichend für einfaches Web-Browsing ist. In nicht überwachten praktischen Tests ließen sich auch Videos ohne Probleme abspielen. Die nicht evaluierte zusätzliche Latenz durch den Proxy könnte jedoch Einfluss auf Echtzeit Anwendungen haben. Dies sollte in einem späteren Zeitpunkt untersucht werden.
+\begin{figure}[]
     \centering
-    \includegraphics[width=0.95\linewidth]{boxplot.pdf}
+    \includegraphics[width=0.9\linewidth]{boxplot.pdf}
     \caption{Throughput test results}\label{fig::boxres}
 \end{figure}
 
-\subsection{Fazit}
+\section{SOCKS}
+Das SOCKS Protokoll ist ein weiteres design zur Umsetzung eines Proxy-Systems. Anders als die aktuelle Implementation braucht SOCKS keine separate Client Anwendung. Diese ist im allgemeinem bereits in der Anwendung die den Proxy nutzen will integriert. Dies verringerter den Konfigurationsaufwand und erlaubt es der Anwendung dynamisch den Zielserver zu ändern. Das bedeutet außerdem, dass die Anwendung den Namen des Zielservers kennt und mittels dessen Zertifikat den Names des Hosts überprüfen kann. Damit ist SOCKS auch in der Lage \code{https} Verbindungen aufzubauen.
+
+\section{Fazit}
+Die erstellte Proxy-Architektur erfüllt seinen Zweck einen durch die Firewall blockierten Dienst dennoch zu benutzen. Mit der Nutzung von \ac{SSL} laufen Nutzer auch nicht Gefahr all ihre Informationen unverschlüsselt über fremde Kommunikationswege zu übertragenen. Clientseitige Authentifizierung erfordert erheblichen zusätzlichen Aufwand und sollte für Endnutzer nur in eingebetteten Systemen genutzt werden um fehlerhafte Bedienung zu vermeiden. Die Serverseitige Authentifizierung ist jedoch dringend zu empfehlen und deutlich einfacher zu konfigurieren.\newline
+Das Erstellen eines Konfigurationseintrags für jeden Zielserver beeinträchtigt zusätzlich die Nutzbarkeit des Proxys und zeigt erneut welche Vorteile SOCKS bietet. Web-browsing und Anwendungen mit moderaten Bandbreitenanforderungen sind ohne Einschränkungen nutzbar. Echtzeitanwendungen wie \ac{VoIP} oder Spiele könnten durch die zusätzliche Latenz und inkonsistentere Verbindung negativ beeinflusst werden.\newline
+Je nach Anwendungsscenario stellt der Proxy jedoch eine akzeptable Lösung für das Nutzen von Diensten da, die anderseits nicht nutzbar wären.
 
 % Anhang
 \newpage
