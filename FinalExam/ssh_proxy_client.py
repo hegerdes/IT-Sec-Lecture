@@ -50,22 +50,23 @@ def createSSHClient(conf, user, keyfile, force=False):
     client.load_system_host_keys()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-    key = paramiko.RSAKey.from_private_key_file(keyfile)
 
     # Port check for ssh dst
     checkDstPort(conf, force)
 
     CONST.LOGGER.log("*** Connecting SSHTunnel...", CL.GRN)
     try:
+        key = paramiko.RSAKey.from_private_key_file(keyfile)
         client.connect(*tuple(conf.remote.values()), user, pkey=key)
     except paramiko.PasswordRequiredException:
-        CONST.LOGGER.log('FAILD: Please log in with user and password', CL.RED)
-        password = getpass.getpass(
-            "Password for %s@%s: " % (user, conf.remote['host']))
-        client.connect(*tuple(conf.remote.values()), user, password)
-    except Exception as e:
-        CONST.LOGGER.log('ConnectionFail; Please check arguments\n', CL.RED, str(e))
-        raise socket.error('SSH conn fail')
+        try:
+            CONST.LOGGER.log('FAILD: Please log in with user and password', CL.RED)
+            password = getpass.getpass(
+                "Password for %s@%s: " % (user, conf.remote['host']))
+            client.connect(*tuple(conf.remote.values()), user, password)
+        except Exception as e:
+            CONST.LOGGER.log('ConnectionFail; Please check arguments\n', CL.RED, str(e))
+            raise socket.error('SSH conn fail')
 
     CONST.LOGGER.log('Connected to ssh server {}:{}'.format(
         conf.remote['host'], conf.remote['port']))
@@ -128,15 +129,15 @@ if __name__ == "__main__":
     try:
         px_parser = ProxyParser()
         px_parser.parser.add_argument(
-            '--config-file', '-f', help='Config file', default='conf/config.txt')
+            '--config-file', '-f', help='Config file', required=True)
         px_parser.parser.add_argument(
             '--force', '-F', action='store_true', default=False)
         px_parser.parser.add_argument(
             '--use-subprocess', '-s', action='store_true', default=False)
         px_parser.parser.add_argument(
-            '--user', '-u', help='username', default='hegerdes') # TODO replace with os.getlogin()
+            '--user', '-u', help='username', default=os.getlogin())
         px_parser.parser.add_argument('--ssh-key', '-K', help='ssh key file',
-            default=os.path.join(os.environ['HOME'], '.ssh', 'ITS'))  # TODO replace with .ssh/id_rsa
+            default=os.path.join(os.environ['HOME'], '.ssh', 'id_rsa'))
 
         args = px_parser.parseArgs()
         confs = px_parser.parseConfig()

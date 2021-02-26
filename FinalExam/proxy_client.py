@@ -134,7 +134,7 @@ if __name__ == "__main__":
     try:
         px_parser = ProxyParser()
         px_parser.parser.add_argument(
-            '--config-file', '-f', help='Config file', default='conf/config.txt')
+            '--config-file', '-f', help='Config file', required=True)
         args = px_parser.parseArgs()
 
         confs = px_parser.parseConfig()
