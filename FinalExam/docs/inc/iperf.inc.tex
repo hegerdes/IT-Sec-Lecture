@@ -2,13 +2,16 @@
 \subsection{Iperf test script}
 \begin{lstlisting}[frame=single, language=bash, caption={Iperf test script},label=code::iperf]
 #!/bin/bash
+trap "kill 0" EXIT
 
 ITERATIONS=15
 PACKAGE_SIZE=16MB
 SERVER="diggory"
 LOG_FILE="iperf_${SERVER}_new_1.log"
 
-# Example server call
+# Starting clients in background & example iperf call"
+python3 ../proxy_client.py -f ../conf/config_iperf_bones.txt -t &
+python3 ../ssh_proxy_client.py -f ../conf/config_ssh.txt &
 # iperf -s -i 0.5 -N -p 2622
 
 for iteration in $(seq 1 $ITERATIONS); do
