@@ -93,7 +93,7 @@ if __name__ == "__main__":
     res = dict(zip(header, [[] for i in range(len(header))]))
     [[res[k].extend(v) for k, v in checkAVG(parseLogs(log_path)).items()] for log_path in args.file]
     print(res)
-    [print('AVG {:.2f} for {}'.format(sum(v)/len(v),k  )) for k, v in res.items()]
+    [print('Mean: {:.2f} Std: {:.2f} Var: {:.2f} for {}'.format(np.mean(np.array(v)), np.std(np.array(v)), np.var(np.array(v)), k)) for k, v in res.items()]
     print('Parsed {} interations.\nFor every configuration {}'.format(len(res['NoProxy']) * len(header), len(res['NoProxy'])))
 
-    plot(res)
+    # plot(res)

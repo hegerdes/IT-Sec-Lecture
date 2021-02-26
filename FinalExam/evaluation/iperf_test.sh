@@ -15,7 +15,7 @@ GRN='\033[0;32m'
 ITERATIONS=15
 PACKAGE_SIZE=16MB
 SERVER="diggory"
-LOG_FILE="iperf_${SERVER}_new_8.log"
+LOG_FILE="iperf_${SERVER}_new_none.log"
 
 #Set CWD
 cd "$(dirname "$0")"

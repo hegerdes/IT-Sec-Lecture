@@ -4881,7 +4881,8 @@ TCP window size: 2.50 MByte (default)
 [  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
 [  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
 [  3] 2.5000-2.6424 sec  1.00 MBytes  58.9 Mbits/sec
-[  3] 0.0000-2.6424 sec  16.1 MBytes  51.2 Mbits/secNoProxy
+[  3] 0.0000-2.6424 sec  16.1 MBytes  51.2 Mbits/sec
+NoProxy
 ------------------------------------------------------------
 Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
 TCP window size: 85.0 KByte (default)
