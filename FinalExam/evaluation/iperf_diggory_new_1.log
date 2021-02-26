@@ -1,0 +1,1259 @@
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size:  272 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 36996 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.38 MBytes  23.1 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.5000-3.5483 sec   384 KBytes  65.1 Mbits/sec
+[  3] 0.0000-3.5483 sec  16.1 MBytes  38.1 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57412 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  9.50 MBytes   159 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.37 MBytes  39.8 Mbits/sec
+[  3] 1.5000-1.8658 sec  1.58 MBytes  36.2 Mbits/sec
+[  3] 0.0000-1.8658 sec  16.1 MBytes  72.3 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48694 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  2.88 MBytes  48.2 Mbits/sec
+[  3] 0.5000-1.0000 sec   320 KBytes  5.24 Mbits/sec
+[  3] 1.0000-1.5000 sec   416 KBytes  6.82 Mbits/sec
+[  3] 1.5000-2.0000 sec   544 KBytes  8.91 Mbits/sec
+[  3] 2.0000-2.5000 sec   800 KBytes  13.1 Mbits/sec
+[  3] 2.5000-3.0000 sec   960 KBytes  15.7 Mbits/sec
+[  3] 3.0000-3.5000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 3.5000-4.0000 sec   736 KBytes  12.1 Mbits/sec
+[  3] 4.0000-4.5000 sec   832 KBytes  13.6 Mbits/sec
+[  3] 4.5000-5.0000 sec   928 KBytes  15.2 Mbits/sec
+[  3] 5.0000-5.5000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 5.5000-6.0000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 6.0000-6.5000 sec   832 KBytes  13.6 Mbits/sec
+[  3] 6.5000-7.0000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 7.0000-7.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 7.5000-8.0000 sec   352 KBytes  5.77 Mbits/sec
+[  3] 8.0000-8.5000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 8.5000-9.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 9.0000-9.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 9.5000-9.8272 sec   448 KBytes  11.2 Mbits/sec
+[  3] 0.0000-9.8272 sec  16.0 MBytes  13.7 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38828 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  3.00 MBytes  50.3 Mbits/sec
+[  3] 0.5000-1.0000 sec   288 KBytes  4.72 Mbits/sec
+[  3] 1.0000-1.5000 sec   576 KBytes  9.44 Mbits/sec
+[  3] 1.5000-2.0000 sec   800 KBytes  13.1 Mbits/sec
+[  3] 2.0000-2.5000 sec   800 KBytes  13.1 Mbits/sec
+[  3] 2.5000-3.0000 sec   832 KBytes  13.6 Mbits/sec
+[  3] 3.0000-3.5000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 3.5000-4.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 4.0000-4.5000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 4.5000-5.0000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 5.0000-5.5000 sec  1.06 MBytes  17.8 Mbits/sec
+[  3] 5.5000-6.0000 sec   608 KBytes  9.96 Mbits/sec
+[  3] 6.0000-6.5000 sec   704 KBytes  11.5 Mbits/sec
+[  3] 6.5000-7.0000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 7.0000-7.5000 sec   864 KBytes  14.2 Mbits/sec
+[  3] 7.5000-8.0000 sec   736 KBytes  12.1 Mbits/sec
+[  3] 8.0000-8.5000 sec   320 KBytes  5.24 Mbits/sec
+[  3] 8.5000-9.0000 sec   960 KBytes  15.7 Mbits/sec
+[  3] 9.0000-9.2733 sec   544 KBytes  16.3 Mbits/sec
+[  3] 0.0000-9.2733 sec  16.0 MBytes  14.5 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37338 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.5 MBytes   193 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.46 MBytes  41.3 Mbits/sec
+[  3] 1.0000-1.4383 sec  2.08 MBytes  39.8 Mbits/sec
+[  3] 0.0000-1.4383 sec  16.0 MBytes  93.6 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 33868 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  4.25 MBytes  71.3 Mbits/sec
+[  3] 0.5000-1.0000 sec  3.38 MBytes  56.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  1.62 MBytes  27.3 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.7924 sec  1.75 MBytes  50.2 Mbits/sec
+[  3] 0.0000-2.7924 sec  16.1 MBytes  48.4 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size:  162 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37016 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.62 MBytes  27.1 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.5000-3.5523 sec  18.3 KBytes  2.87 Mbits/sec
+[  3] 0.0000-3.5523 sec  16.0 MBytes  37.8 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57432 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.5 MBytes   193 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.56 MBytes  42.9 Mbits/sec
+[  3] 1.0000-1.3350 sec  2.02 MBytes  50.5 Mbits/sec
+[  3] 0.0000-1.3350 sec  16.1 MBytes   101 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48714 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.88 MBytes   149 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.56 MBytes  42.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.5000-1.9106 sec  2.39 MBytes  48.9 Mbits/sec
+[  3] 0.0000-1.9106 sec  16.1 MBytes  70.6 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38848 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  3.75 MBytes  62.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  5.75 MBytes  96.5 Mbits/sec
+[  3] 1.0000-1.5000 sec  4.00 MBytes  67.0 Mbits/sec
+[  3] 1.5000-1.9558 sec  2.58 MBytes  47.4 Mbits/sec
+[  3] 0.0000-1.9558 sec  16.1 MBytes  68.9 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37358 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  6.50 MBytes   109 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.68 MBytes  45.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.18 MBytes  36.6 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.3042 sec  2.14 MBytes  59.1 Mbits/sec
+[  3] 0.0000-2.3042 sec  16.0 MBytes  58.3 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 33888 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.47 MBytes   142 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.31 MBytes  38.8 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.56 MBytes  43.0 Mbits/sec
+[  3] 2.0000-2.1467 sec   531 KBytes  29.7 Mbits/sec
+[  3] 0.0000-2.1467 sec  16.1 MBytes  62.9 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37036 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.13 MBytes  18.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.00 MBytes  33.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.00 MBytes  33.6 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 3.5000-3.8015 sec  1.62 MBytes  45.2 Mbits/sec
+[  3] 0.0000-3.8015 sec  16.1 MBytes  35.6 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57452 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.8 MBytes   180 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.37 MBytes  39.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.37 MBytes  39.8 Mbits/sec
+[  3] 1.5000-1.5699 sec   532 KBytes  62.3 Mbits/sec
+[  3] 0.0000-1.5699 sec  16.0 MBytes  85.5 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48734 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.50 MBytes   143 Mbits/sec
+[  3] 0.5000-1.0000 sec  4.31 MBytes  72.3 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.81 MBytes  47.1 Mbits/sec
+[  3] 1.5000-1.5430 sec   404 KBytes  77.0 Mbits/sec
+[  3] 0.0000-1.5430 sec  16.0 MBytes  87.0 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38868 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  7.88 MBytes   132 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.43 MBytes  40.8 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.44 MBytes  40.9 Mbits/sec
+[  3] 2.0000-2.0599 sec   723 KBytes  98.8 Mbits/sec
+[  3] 0.0000-2.0599 sec  16.1 MBytes  65.5 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37378 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.88 MBytes   149 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.78 MBytes  46.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.31 MBytes  38.7 Mbits/sec
+[  3] 1.5000-2.0000 sec  1.31 MBytes  22.0 Mbits/sec
+[  3] 2.0000-2.0112 sec   852 KBytes   624 Mbits/sec
+[  3] 0.0000-2.0112 sec  16.1 MBytes  67.2 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 33908 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6518 sec  1.00 MBytes  55.3 Mbits/sec
+[  3] 0.0000-2.6518 sec  16.1 MBytes  51.0 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37056 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.63 MBytes  27.3 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.5000-3.5287 sec   256 KBytes  73.1 Mbits/sec
+[  3] 0.0000-3.5287 sec  16.1 MBytes  38.3 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57472 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.5 MBytes   193 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.43 MBytes  40.8 Mbits/sec
+[  3] 1.0000-1.4765 sec  2.14 MBytes  37.7 Mbits/sec
+[  3] 0.0000-1.4765 sec  16.1 MBytes  91.3 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48756 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.1 MBytes   170 Mbits/sec
+[  3] 0.5000-1.0000 sec  4.06 MBytes  68.1 Mbits/sec
+[  3] 1.0000-1.5000 sec  1.18 MBytes  19.9 Mbits/sec
+[  3] 1.5000-1.5078 sec   659 KBytes   692 Mbits/sec
+[  3] 0.0000-1.5078 sec  16.0 MBytes  89.1 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38890 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.5 MBytes   176 Mbits/sec
+[  3] 0.5000-1.0000 sec  3.09 MBytes  51.8 Mbits/sec
+[  3] 1.0000-1.4023 sec  2.52 MBytes  52.5 Mbits/sec
+[  3] 0.0000-1.4023 sec  16.1 MBytes  96.3 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37400 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.1 MBytes   170 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.24 MBytes  37.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 1.5000-1.7209 sec   976 KBytes  36.2 Mbits/sec
+[  3] 0.0000-1.7209 sec  16.1 MBytes  78.3 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 33930 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6333 sec  1.00 MBytes  62.9 Mbits/sec
+[  3] 0.0000-2.6333 sec  16.1 MBytes  51.4 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size:  255 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37078 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.50 MBytes  25.2 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.5000-3.5152 sec   256 KBytes   138 Mbits/sec
+[  3] 0.0000-3.5152 sec  16.1 MBytes  38.5 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57494 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.6 MBytes   178 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.56 MBytes  42.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.56 MBytes  43.0 Mbits/sec
+[  3] 1.5000-1.7036 sec   272 KBytes  11.0 Mbits/sec
+[  3] 0.0000-1.7036 sec  16.0 MBytes  78.8 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48776 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.50 MBytes   143 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.46 MBytes  41.3 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.44 MBytes  40.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.44 MBytes  40.9 Mbits/sec
+[  3] 2.0000-2.1955 sec   213 KBytes  8.94 Mbits/sec
+[  3] 0.0000-2.1955 sec  16.0 MBytes  61.3 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38910 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.3 MBytes   189 Mbits/sec
+[  3] 0.5000-1.0000 sec  1.31 MBytes  21.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.5414 sec  1.02 MBytes   206 Mbits/sec
+[  3] 0.0000-1.5414 sec  16.1 MBytes  87.5 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37420 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  7.75 MBytes   130 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.68 MBytes  45.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.37 MBytes  39.8 Mbits/sec
+[  3] 2.0000-2.0859 sec   532 KBytes  50.7 Mbits/sec
+[  3] 0.0000-2.0859 sec  16.1 MBytes  64.6 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 33950 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6288 sec  1.00 MBytes  65.1 Mbits/sec
+[  3] 0.0000-2.6288 sec  16.1 MBytes  51.5 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size:  162 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37098 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.25 MBytes  21.0 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  1.88 MBytes  31.5 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.5000-3.7604 sec  1.38 MBytes  44.3 Mbits/sec
+[  3] 0.0000-3.7604 sec  16.1 MBytes  36.0 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57514 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.96 MBytes   150 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.69 MBytes  45.1 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.37 MBytes  39.8 Mbits/sec
+[  3] 1.5000-1.9530 sec  2.02 MBytes  37.4 Mbits/sec
+[  3] 0.0000-1.9530 sec  16.0 MBytes  68.9 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48796 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.38 MBytes   141 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.56 MBytes  42.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.31 MBytes  38.8 Mbits/sec
+[  3] 1.5000-1.7827 sec  2.76 MBytes  82.0 Mbits/sec
+[  3] 0.0000-1.7827 sec  16.0 MBytes  75.3 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38930 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  9.13 MBytes   153 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.77 MBytes  46.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.12 MBytes  35.6 Mbits/sec
+[  3] 1.5000-1.9250 sec  2.02 MBytes  39.9 Mbits/sec
+[  3] 0.0000-1.9250 sec  16.0 MBytes  69.9 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37440 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  7.63 MBytes   128 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.84 MBytes  47.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.44 MBytes  40.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.69 MBytes  45.1 Mbits/sec
+[  3] 2.0000-2.0970 sec   532 KBytes  44.9 Mbits/sec
+[  3] 0.0000-2.0970 sec  16.1 MBytes  64.4 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 33970 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6648 sec  1.00 MBytes  50.9 Mbits/sec
+[  3] 0.0000-2.6648 sec  16.1 MBytes  50.8 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37118 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.5000-2.0000 sec  3.00 MBytes  50.3 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 3.0000-3.1569 sec  1.00 MBytes  53.5 Mbits/sec
+[  3] 0.0000-3.1569 sec  16.1 MBytes  42.8 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57534 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  9.75 MBytes   164 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.56 MBytes  42.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.43 MBytes  40.8 Mbits/sec
+[  3] 1.5000-1.7723 sec  1.33 MBytes  40.9 Mbits/sec
+[  3] 0.0000-1.7723 sec  16.1 MBytes  76.1 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48816 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  6.75 MBytes   113 Mbits/sec
+[  3] 0.5000-1.0000 sec  4.25 MBytes  71.2 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.8995 sec  2.52 MBytes  52.9 Mbits/sec
+[  3] 0.0000-1.8995 sec  16.0 MBytes  70.7 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38950 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.4 MBytes   174 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.5000-1.5439 sec   462 KBytes  86.2 Mbits/sec
+[  3] 0.0000-1.5439 sec  16.1 MBytes  87.3 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37460 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.63 MBytes   145 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.43 MBytes  40.8 Mbits/sec
+[  3] 1.5000-1.7746 sec  2.33 MBytes  71.2 Mbits/sec
+[  3] 0.0000-1.7746 sec  16.0 MBytes  75.7 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 33990 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6409 sec  1.00 MBytes  59.5 Mbits/sec
+[  3] 0.0000-2.6409 sec  16.1 MBytes  51.2 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37138 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec   692 KBytes  11.3 Mbits/sec
+[  3] 0.5000-1.0000 sec   379 KBytes  6.21 Mbits/sec
+[  3] 1.0000-1.5000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 1.5000-2.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 2.0000-2.5000 sec  1.00 MBytes  16.8 Mbits/sec
+[  3] 2.5000-3.0000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 3.0000-3.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 3.5000-4.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 4.0000-4.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 4.5000-5.0000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 5.0000-5.5000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 5.5000-6.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 6.0000-6.5000 sec   640 KBytes  10.5 Mbits/sec
+[  3] 6.5000-7.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 7.0000-7.5000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 7.5000-8.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 8.0000-8.5000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 8.5000-9.0000 sec   640 KBytes  10.5 Mbits/sec
+[  3] 9.0000-9.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 9.5000-10.0000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 10.0000-10.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 10.5000-11.0000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 11.0000-11.3970 sec   675 KBytes  13.9 Mbits/sec
+[  3] 0.0000-11.3970 sec  16.1 MBytes  11.8 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57554 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  7.50 MBytes   126 Mbits/sec
+[  3] 0.5000-1.0000 sec  1.15 MBytes  19.3 Mbits/sec
+[  3] 1.0000-1.5000 sec  1.25 MBytes  21.0 Mbits/sec
+[  3] 1.5000-2.0000 sec  1.75 MBytes  29.3 Mbits/sec
+[  3] 2.0000-2.5000 sec  1.69 MBytes  28.3 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.00 MBytes  33.5 Mbits/sec
+[  3] 3.0000-3.1201 sec   725 KBytes  49.4 Mbits/sec
+[  3] 0.0000-3.1201 sec  16.0 MBytes  43.1 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48838 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.0 MBytes   168 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.06 MBytes  34.5 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.6119 sec  1.52 MBytes   114 Mbits/sec
+[  3] 0.0000-1.6119 sec  16.1 MBytes  83.6 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38972 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.0 MBytes   168 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.49 MBytes  41.8 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.31 MBytes  38.8 Mbits/sec
+[  3] 1.5000-1.7234 sec  1.27 MBytes  47.6 Mbits/sec
+[  3] 0.0000-1.7234 sec  16.1 MBytes  78.2 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37482 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.3 MBytes   172 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.31 MBytes  38.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.6514 sec  1.02 MBytes  56.5 Mbits/sec
+[  3] 0.0000-1.6514 sec  16.1 MBytes  81.6 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34012 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6325 sec  1.00 MBytes  63.3 Mbits/sec
+[  3] 0.0000-2.6325 sec  16.1 MBytes  51.4 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37160 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.25 MBytes  21.0 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.5000-3.5468 sec   384 KBytes  67.2 Mbits/sec
+[  3] 0.0000-3.5468 sec  16.1 MBytes  38.1 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57576 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.0 MBytes   168 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.69 MBytes  45.1 Mbits/sec
+[  3] 1.0000-1.5000 sec  1.25 MBytes  20.9 Mbits/sec
+[  3] 1.5000-1.7287 sec  2.08 MBytes  76.3 Mbits/sec
+[  3] 0.0000-1.7287 sec  16.0 MBytes  77.7 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48858 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.0 MBytes   185 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.21 MBytes  37.1 Mbits/sec
+[  3] 1.0000-1.3724 sec  2.83 MBytes  63.8 Mbits/sec
+[  3] 0.0000-1.3724 sec  16.0 MBytes  98.0 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 38992 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.50 MBytes   143 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.71 MBytes  45.5 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.68 MBytes  45.0 Mbits/sec
+[  3] 1.5000-1.8826 sec  2.14 MBytes  47.0 Mbits/sec
+[  3] 0.0000-1.8826 sec  16.0 MBytes  71.5 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37502 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.1 MBytes   170 Mbits/sec
+[  3] 0.5000-1.0000 sec  3.87 MBytes  64.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  1.19 MBytes  19.9 Mbits/sec
+[  3] 1.5000-1.5133 sec   916 KBytes   563 Mbits/sec
+[  3] 0.0000-1.5133 sec  16.1 MBytes  89.1 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34032 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6567 sec  1.00 MBytes  53.5 Mbits/sec
+[  3] 0.0000-2.6567 sec  16.1 MBytes  50.9 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37180 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.63 MBytes  27.3 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.00 MBytes  33.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.0000-3.4859 sec  2.50 MBytes  43.2 Mbits/sec
+[  3] 0.0000-3.4859 sec  16.1 MBytes  38.8 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57596 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.3 MBytes   173 Mbits/sec
+[  3] 0.5000-1.0000 sec  1023 KBytes  16.8 Mbits/sec
+[  3] 1.0000-1.5000 sec   703 KBytes  11.5 Mbits/sec
+[  3] 1.5000-2.0000 sec  1.25 MBytes  21.0 Mbits/sec
+[  3] 2.0000-2.5000 sec  1.25 MBytes  21.0 Mbits/sec
+[  3] 2.5000-2.9966 sec  1.51 MBytes  25.6 Mbits/sec
+[  3] 0.0000-2.9966 sec  16.0 MBytes  44.8 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48880 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.3 MBytes   172 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.74 MBytes  46.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.43 MBytes  40.8 Mbits/sec
+[  3] 1.5000-1.6465 sec   660 KBytes  36.9 Mbits/sec
+[  3] 0.0000-1.6465 sec  16.1 MBytes  81.9 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 39014 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  7.63 MBytes   128 Mbits/sec
+[  3] 0.5000-1.0000 sec  3.15 MBytes  52.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.31 MBytes  38.8 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.1118 sec   469 KBytes  34.3 Mbits/sec
+[  3] 0.0000-2.1118 sec  16.0 MBytes  63.7 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37524 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.9 MBytes   182 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.56 MBytes  42.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.37 MBytes  39.8 Mbits/sec
+[  3] 1.5000-1.6690 sec   275 KBytes  13.3 Mbits/sec
+[  3] 0.0000-1.6690 sec  16.1 MBytes  80.8 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34054 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6285 sec  1.00 MBytes  65.3 Mbits/sec
+[  3] 0.0000-2.6285 sec  16.1 MBytes  51.5 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37202 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.62 MBytes  27.1 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.00 MBytes  33.6 Mbits/sec
+[  3] 1.0000-1.5000 sec  1.88 MBytes  31.5 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.5000-3.6594 sec   914 KBytes  47.0 Mbits/sec
+[  3] 0.0000-3.6594 sec  16.0 MBytes  36.7 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57618 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.6 MBytes   178 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.74 MBytes  46.0 Mbits/sec
+[  3] 1.0000-1.4619 sec  2.70 MBytes  49.1 Mbits/sec
+[  3] 0.0000-1.4619 sec  16.1 MBytes  92.2 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48900 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.00 MBytes   134 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.71 MBytes  45.5 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.31 MBytes  38.8 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.37 MBytes  39.8 Mbits/sec
+[  3] 2.0000-2.0409 sec   661 KBytes   132 Mbits/sec
+[  3] 0.0000-2.0409 sec  16.0 MBytes  65.9 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 39034 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.4 MBytes   174 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.68 MBytes  45.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.5000-1.5552 sec   398 KBytes  59.2 Mbits/sec
+[  3] 0.0000-1.5552 sec  16.1 MBytes  86.7 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37544 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.6 MBytes   195 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.37 MBytes  39.7 Mbits/sec
+[  3] 1.0000-1.4851 sec  2.08 MBytes  36.0 Mbits/sec
+[  3] 0.0000-1.4851 sec  16.1 MBytes  90.8 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34074 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.0000-2.5000 sec  1.62 MBytes  27.3 Mbits/sec
+[  3] 2.5000-2.6836 sec  1.88 MBytes  85.6 Mbits/sec
+[  3] 0.0000-2.6836 sec  16.1 MBytes  50.4 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37222 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.63 MBytes  27.3 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 3.5000-3.5091 sec   256 KBytes   231 Mbits/sec
+[  3] 0.0000-3.5091 sec  16.1 MBytes  38.5 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57638 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.63 MBytes   145 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.68 MBytes  45.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.37 MBytes  39.8 Mbits/sec
+[  3] 1.5000-1.8345 sec  2.33 MBytes  58.4 Mbits/sec
+[  3] 0.0000-1.8345 sec  16.0 MBytes  73.2 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48920 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  9.88 MBytes   166 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.56 MBytes  42.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.6437 sec  1.14 MBytes  66.7 Mbits/sec
+[  3] 0.0000-1.6437 sec  16.1 MBytes  82.0 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 39054 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.1 MBytes   170 Mbits/sec
+[  3] 0.5000-1.0000 sec  3.96 MBytes  66.5 Mbits/sec
+[  3] 1.0000-1.4993 sec  1.96 MBytes  32.9 Mbits/sec
+[  3] 0.0000-1.4993 sec  16.0 MBytes  89.8 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37564 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.3 MBytes   189 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.52 MBytes  42.3 Mbits/sec
+[  3] 1.0000-1.3933 sec  2.27 MBytes  48.4 Mbits/sec
+[  3] 0.0000-1.3933 sec  16.0 MBytes  96.6 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34094 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6239 sec  1.00 MBytes  67.7 Mbits/sec
+[  3] 0.0000-2.6239 sec  16.1 MBytes  51.6 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37242 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 3.0000-3.2155 sec  1.38 MBytes  53.5 Mbits/sec
+[  3] 0.0000-3.2155 sec  16.1 MBytes  42.1 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57658 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.88 MBytes   149 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.71 MBytes  45.5 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.9617 sec  1.96 MBytes  35.5 Mbits/sec
+[  3] 0.0000-1.9617 sec  16.0 MBytes  68.6 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48940 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  11.3 MBytes   189 Mbits/sec
+[  3] 0.5000-1.0000 sec  1.02 MBytes  17.2 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.5118 sec  1.33 MBytes   944 Mbits/sec
+[  3] 0.0000-1.5118 sec  16.1 MBytes  89.4 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 39074 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.50 MBytes   143 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.75 MBytes  46.1 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.25 MBytes  37.7 Mbits/sec
+[  3] 1.5000-1.8765 sec  2.58 MBytes  57.5 Mbits/sec
+[  3] 0.0000-1.8765 sec  16.1 MBytes  71.8 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37584 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.75 MBytes   147 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.68 MBytes  45.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.31 MBytes  38.7 Mbits/sec
+[  3] 1.5000-1.7696 sec  2.26 MBytes  70.5 Mbits/sec
+[  3] 0.0000-1.7696 sec  16.0 MBytes  75.9 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34114 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6599 sec  1.00 MBytes  52.5 Mbits/sec
+[  3] 0.0000-2.6599 sec  16.1 MBytes  50.9 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size: 85.0 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37262 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.13 MBytes  18.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.12 MBytes  35.7 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.00 MBytes  33.6 Mbits/sec
+[  3] 1.5000-2.0000 sec  1.75 MBytes  29.4 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 2.5000-3.0000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 3.0000-3.5000 sec  2.38 MBytes  39.8 Mbits/sec
+[  3] 3.5000-3.8873 sec  2.00 MBytes  43.3 Mbits/sec
+[  3] 0.0000-3.8873 sec  16.1 MBytes  34.8 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57678 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  9.31 MBytes   156 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.69 MBytes  45.1 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-1.8352 sec  1.52 MBytes  38.0 Mbits/sec
+[  3] 0.0000-1.8352 sec  16.0 MBytes  73.2 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48960 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.1 MBytes   170 Mbits/sec
+[  3] 0.5000-1.0000 sec  1.12 MBytes  18.8 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.69 MBytes  45.1 Mbits/sec
+[  3] 1.5000-1.7705 sec  2.14 MBytes  66.4 Mbits/sec
+[  3] 0.0000-1.7705 sec  16.1 MBytes  76.2 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 39094 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.00 MBytes   134 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.28 MBytes  38.2 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.0000-2.2104 sec   660 KBytes  25.7 Mbits/sec
+[  3] 0.0000-2.2104 sec  16.0 MBytes  60.9 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37604 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  9.75 MBytes   164 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  43.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.12 MBytes  35.6 Mbits/sec
+[  3] 1.5000-1.8232 sec  1.52 MBytes  39.4 Mbits/sec
+[  3] 0.0000-1.8232 sec  16.0 MBytes  73.7 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34134 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6632 sec  1.00 MBytes  51.4 Mbits/sec
+[  3] 0.0000-2.6632 sec  16.1 MBytes  50.8 Mbits/sec
+NoProxy
+------------------------------------------------------------
+Client connecting to diggory.informatik.uni-osnabrueck.de, TCP port 2622
+TCP window size:  366 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.222.128 port 37282 connected with 131.173.33.209 port 2622
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  1.13 MBytes  18.9 Mbits/sec
+[  3] 0.5000-1.0000 sec   256 KBytes  4.19 Mbits/sec
+[  3] 1.0000-1.5000 sec   271 KBytes  4.44 Mbits/sec
+[  3] 1.5000-2.0000 sec   384 KBytes  6.29 Mbits/sec
+[  3] 2.0000-2.5000 sec   640 KBytes  10.5 Mbits/sec
+[  3] 2.5000-3.0000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 3.0000-3.5000 sec   384 KBytes  6.29 Mbits/sec
+[  3] 3.5000-4.0000 sec   640 KBytes  10.5 Mbits/sec
+[  3] 4.0000-4.5000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 4.5000-5.0000 sec   512 KBytes  8.39 Mbits/sec
+[  3] 5.0000-5.5000 sec   640 KBytes  10.5 Mbits/sec
+[  3] 5.5000-6.0000 sec  1.04 MBytes  17.4 Mbits/sec
+[  3] 6.0000-6.5000 sec  1.88 MBytes  31.5 Mbits/sec
+[  3] 6.5000-7.0000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 7.0000-7.5000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 7.5000-8.0000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 8.0000-8.5000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 8.5000-9.0000 sec  1.00 MBytes  16.8 Mbits/sec
+[  3] 9.0000-9.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 9.5000-10.0000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 10.0000-10.5000 sec   896 KBytes  14.7 Mbits/sec
+[  3] 10.5000-10.6277 sec   408 KBytes  26.2 Mbits/sec
+[  3] 0.0000-10.6277 sec  16.1 MBytes  12.7 Mbits/sec
+ProxyNoSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8000
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 57698 connected with 127.0.0.1 port 8000
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.5 MBytes   177 Mbits/sec
+[  3] 0.5000-1.0000 sec  1.69 MBytes  28.3 Mbits/sec
+[  3] 1.0000-1.5000 sec   959 KBytes  15.7 Mbits/sec
+[  3] 1.5000-2.0000 sec   895 KBytes  14.7 Mbits/sec
+[  3] 2.0000-2.5000 sec   768 KBytes  12.6 Mbits/sec
+[  3] 2.5000-3.0000 sec   767 KBytes  12.6 Mbits/sec
+[  3] 3.0000-3.0549 sec   598 KBytes  89.1 Mbits/sec
+[  3] 0.0000-3.0549 sec  16.1 MBytes  44.2 Mbits/sec
+ProxyServerSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 48980 connected with 127.0.0.1 port 8001
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  7.50 MBytes   126 Mbits/sec
+[  3] 0.5000-1.0000 sec   448 KBytes  7.33 Mbits/sec
+[  3] 1.0000-1.5000 sec   448 KBytes  7.34 Mbits/sec
+[  3] 1.5000-2.0000 sec   767 KBytes  12.6 Mbits/sec
+[  3] 2.0000-2.5000 sec   448 KBytes  7.34 Mbits/sec
+[  3] 2.5000-3.0000 sec   831 KBytes  13.6 Mbits/sec
+[  3] 3.0000-3.5000 sec  1.12 MBytes  18.9 Mbits/sec
+[  3] 3.5000-4.0000 sec  1023 KBytes  16.8 Mbits/sec
+[  3] 4.0000-4.5000 sec   831 KBytes  13.6 Mbits/sec
+[  3] 4.5000-5.0000 sec  1.19 MBytes  19.9 Mbits/sec
+[  3] 5.0000-5.5000 sec   767 KBytes  12.6 Mbits/sec
+[  3] 5.5000-5.8629 sec   852 KBytes  19.2 Mbits/sec
+[  3] 0.0000-5.8629 sec  16.1 MBytes  23.0 Mbits/sec
+ProxyServerClientSSL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8002
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 39114 connected with 127.0.0.1 port 8002
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  8.46 MBytes   142 Mbits/sec
+[  3] 0.5000-1.0000 sec   703 KBytes  11.5 Mbits/sec
+[  3] 1.0000-1.5000 sec   127 KBytes  2.09 Mbits/sec
+[  3] 1.5000-2.0000 sec  0.000 Bytes  0.000 bits/sec
+[  3] 2.0000-2.5000 sec   256 KBytes  4.19 Mbits/sec
+[  3] 2.5000-3.0000 sec   128 KBytes  2.09 Mbits/sec
+[  3] 3.0000-3.5000 sec   192 KBytes  3.14 Mbits/sec
+[  3] 3.5000-4.0000 sec   320 KBytes  5.24 Mbits/sec
+[  3] 4.0000-4.5000 sec   384 KBytes  6.29 Mbits/sec
+[  3] 4.5000-5.0000 sec   320 KBytes  5.24 Mbits/sec
+[  3] 5.0000-5.5000 sec   448 KBytes  7.33 Mbits/sec
+[  3] 5.5000-6.0000 sec   576 KBytes  9.43 Mbits/sec
+[  3] 6.0000-6.5000 sec   384 KBytes  6.28 Mbits/sec
+[  3] 6.5000-7.0000 sec   704 KBytes  11.5 Mbits/sec
+[  3] 7.0000-7.5000 sec   383 KBytes  6.28 Mbits/sec
+[  3] 7.5000-8.0000 sec   640 KBytes  10.5 Mbits/sec
+[  3] 8.0000-8.5000 sec   703 KBytes  11.5 Mbits/sec
+[  3] 8.5000-9.0000 sec   639 KBytes  10.5 Mbits/sec
+[  3] 9.0000-9.5000 sec   448 KBytes  7.33 Mbits/sec
+[  3] 9.5000-9.7128 sec   470 KBytes  18.1 Mbits/sec
+[  3] 0.0000-9.7128 sec  16.1 MBytes  13.9 Mbits/sec
+ProxyServerClientSSLACL
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 8003
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37624 connected with 127.0.0.1 port 8003
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  10.3 MBytes   172 Mbits/sec
+[  3] 0.5000-1.0000 sec  1019 KBytes  16.7 Mbits/sec
+[  3] 1.0000-1.5000 sec   958 KBytes  15.7 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.31 MBytes  38.8 Mbits/sec
+[  3] 2.0000-2.3062 sec  1.58 MBytes  43.2 Mbits/sec
+[  3] 0.0000-2.3062 sec  16.1 MBytes  58.5 Mbits/sec
+SSHTunnel
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 2222
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 34154 connected with 127.0.0.1 port 2222
+[ ID] Interval       Transfer     Bandwidth
+[  3] 0.0000-0.5000 sec  5.00 MBytes  83.9 Mbits/sec
+[  3] 0.5000-1.0000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.0000-1.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 1.5000-2.0000 sec  2.62 MBytes  44.0 Mbits/sec
+[  3] 2.0000-2.5000 sec  2.50 MBytes  41.9 Mbits/sec
+[  3] 2.5000-2.6369 sec  1.00 MBytes  61.3 Mbits/sec
+[  3] 0.0000-2.6369 sec  16.1 MBytes  51.3 Mbits/sec

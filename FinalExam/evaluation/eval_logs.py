@@ -30,7 +30,7 @@ def parseLogs(file_path):
                 line = fr.readline().strip()
 
     for i in range(len(res)):
-        print(res[i])
+        print('Throughput [0.5s]:', res[i])
         if i%len(header) == 0:
             if 'NoProxy' not in results:
                 results['NoProxy'] = []
@@ -69,7 +69,7 @@ def checkAVG(data):
     for key, val in data.items():
         for test in val:
             out[key].append(*test[-1:])
-            print('CalcedAVG:', sum(test[:-1])/len(test[:-1]), 'OfficialAVG:', test[-1:])
+            print('CalcedAVG: {:.2f}\tOfficialAVG: {:3.2f}'.format(sum(test[:-1])/len(test[:-1]), test[-1]))
 
     return out
 
@@ -81,20 +81,19 @@ def plot(data):
 
     ax.set_yticklabels(data.keys())
     ax.set_xlabel('Mbits')
-    # ax.set_xscale('log')
     plt.savefig('docs/fig/boxplot.pdf')
     plt.show()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Lunches an iperf logparser')
-    parser.add_argument('--file', '-f', help='Path to logfile', default='evaluation/iperf_diggory.log',required=False, nargs='+')
+    parser.add_argument('--file', '-f', help='Path to logfile[s]', default='evaluation/iperf_diggory.log',required=True, nargs='+')
 
     args = parser.parse_args()
-    print(args.file)
     res = dict(zip(header, [[] for i in range(len(header))]))
-
-    for log_path in args.file:
-        [res[k].extend(v) for k, v in checkAVG(parseLogs(log_path)).items()]
+    [[res[k].extend(v) for k, v in checkAVG(parseLogs(log_path)).items()] for log_path in args.file]
     print(res)
+    [print('AVG {:.2f} for {}'.format(sum(v)/len(v),k  )) for k, v in res.items()]
+    print('Parsed {} interations.\nFor every configuration {}'.format(len(res['NoProxy']) * len(header), len(res['NoProxy'])))
+
     plot(res)
