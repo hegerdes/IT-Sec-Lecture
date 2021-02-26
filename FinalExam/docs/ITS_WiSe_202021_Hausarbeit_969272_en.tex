@@ -20,7 +20,7 @@
 
 \section{Introduction}
 Part of the IT security lecture was to create a proxy client-server system that redirects TCP connections to bypass firewalls rules and allows to hide personal informational of the clients. The structure is displayed in fig. \ref{fig::arch}. \newline
-Server and client both use a common tunneling class. It is based of a \textit{SocketServer.TCPServer}, which already handles the underlaying socket connection and does not block. Each base-tunnel instance can have a custom handler that implements the required logic and gets called for every request. These handlers handle the initial handshake between client and server Server and on success switches to redirect mode. Both, server and client can handle multiple requests at the same time.
+Server and client both use a common tunneling class. It is based of a \textit{SocketServer.TCPServer}, which already handles the underlaying socket connection and does not block. Each base-tunnel instance can have a custom handler that implements the required logic and gets called for every request. These handlers handle the initial handshake between client and server and on success switches to redirect mode. Both, server and client can handle multiple requests at the same time.
 
 \begin{figure}[H]
     \centering
@@ -65,31 +65,31 @@ The following entities are involved by using the proxy:
     \end{subfigure}
 \end{figure}
 
-\noindent Each entity runs one or more technical entities. Technical entities are the processes that a entity operates on.\newline
+\noindent Each entity runs one or more technical entities. Technical entities are the processes that an entity operates on.\newline
 The following section discusses the relation between these entities as well as the security risks that exists in-between them.
 
 \subsection{Security risks and restrictions}
 \paragraph{User \& ProxyProvider:}\label{ssec::user}
 \noindent Any internet connected device can perform requests to the proxy. The server can not be sure that the client that connects is indeed a valid client instead of a malicious client that spoofs its identity. The same problem persists on the client side. Attackers may fake the proxy server and convince users to connect to their server to perform further malicious actions. There is no way the entities can be sure about each others identity and thereby it violates the principle of \textbf{Authentication}.\newline
 Some parts of the communication infrastructure are owned by third party entities. Every one that has access to a part of the communication infrastructure can capture all confidential information on that infrastructure and use it against the recipient. This violates the principle of \textbf{Confidentiality}.\newline
-Beside capturing information it is also possible to alter the information wich violates the principle of \textbf{Integrity}.
+Beside capturing information it is also possible to alter the information which violates the principle of \textbf{Integrity}.
 \paragraph{ProxyProvider \& Content-Providers:}
-The proxy server allows strangers to access his services and also redirects any request to other services. So the server provide may be responsible for attacks on third-party services that are caused by abusive usage of his server.\newline
+The proxy server allows strangers to access his services and also redirects any request to other services. So that the server provideer may be responsible for attacks on third-party services that are caused by abusive usage of his server.\newline
 The proxy infrastructure itself can be a potential target. Too many request or bad requests (like a \ac{DoS} attack) could crash the proxy server and make it unavailable for all users.
 \paragraph{User \& Content-Providers:}
-As already described in \@\ref{ssec::user}, in the current configuration there is no confidentiality between any of the entities. The technical cause for that is that the currently used sockets don't support the \ac{TLS} protocol. Even if the application or the destination support \ac{TLS} it doesn't work because the authentication and key exchange between proxy and endpoint fails. With this restriction the user is limited to unencrypted services such as \acs{HTTP}.
+As already described in \@\ref{ssec::user}, in the current configuration there is no confidentiality between any of the entities. The technical cause for that is that the currently used sockets don't support the \ac{TLS} protocol. Even if the application or the destination support \ac{TLS} it won't work because the authentication and key exchange between proxy and endpoint fails. With this restriction the user is limited to unencrypted services such as \acs{HTTP}.
 
 \subsection{Possible solutions}
 \paragraph{Confidentiality, Integrity and Authentication}
-To ensure that the user connects to a valid proxy server one could introduce certificates for authentication. The server identifies itself with a certificate that is verifiable by the client. This solves the previously nonexistent \textbf{Authentication}. The same principle could be be applied to also allow the authentication of the client to the server. For this the server must own all CA-certificate that signed the clients certificates or all clients must be distributed with pre-generated certificates.\newline
-The certificate exchange and technical authentication would happen within the \ac{TLS} handshake. With these certificatea and their keys it is also possible to encrypt messenges with \ac{TLS}. This would ensure the \textbf{Confidentiality} of any message. The encryption algorithm depends on the version and configuration of \ac{TLS}.\newline
-To ensure \textbf{Integrity} it is possible to hash the message, encrypt the hash and append it to message as signature. The recipient can compare the hash he calculated with the decrypted hash of the sender. If both hashes match it guarantees the integrity of the message.\newline
+To ensure that the user connects to a valid proxy server one could introduce certificates for authentication. The server identifies itself with a certificate that is verifiable by the client. This solves the previously nonexistent \textbf{Authentication}. The same principle could be applied to also allow the authentication of the client to the server. For this the server must own all CA-certificate that signed the clients certificates or all clients must be distributed with pre-generated certificates.\newline
+The certificate exchange and technical authentication would happen within the \ac{TLS} handshake. With these certificates and their keys it is also possible to encrypt messenges with \ac{TLS}. This would ensure the \textbf{Confidentiality} of any message. The encryption algorithm depends on the version and configuration of \ac{TLS}.\newline
+To ensure \textbf{Integrity}, it is possible to hash the message, encrypt the hash and append it to message as signature. The recipient can compare the hash he calculated with the decrypted hash of the sender. If both hashes match, it guarantees the integrity of the message.\newline
 The technical implementation of \ac{TLS} is done in the \ac{SSL} python module.
 \paragraph{Availability and abuse protection}
-In addition to the security of communication, the availability of the services must also be ensured. This is feasible with a access control to specific user or resource limits for requests and compute time. Loadbalancers and backup systems could improve availability even further.\newline
+In addition to the security of communication, the availability of the services must also be ensured. This is feasible with an access control to specific users or with resource limits for requests and compute time. Loadbalancers and backup systems could improve availability even further.\newline
 These actions and an additional blacklist for specific services could also help to protect the server against abusive or illegal usage.
 \paragraph{Limitations}
-This approach allows it to secure the communication between proxy client and proxy server. It does not provide end-to-end encrypted usage between application and destination service. Even if the application has the destination certificate the application does not know the host of the destination (only the client proxy knows) and therefore can not validate its certificate.
+This approach allows to secure the communication between proxy client and proxy server. It does not provide end-to-end encrypted usage between application and destination service. Even if the application has the destination certificate, the application does not know the host of the destination (only the client proxy knows) and therefore can not validate its certificate.
 
 \section{Evaluation}
 In the context of this evaluation, only the throughput of the proxy is considered, other metrics such as delay and packet loss are neglected.
@@ -101,20 +101,34 @@ In the context of this evaluation, only the throughput of the proxy is considere
 \end{figure}
 The throughput measurements where made with the \code{iperf} tool. All nodes (client(Vogon), TestServer1(diggory), TestServer2(bones)) are running Linux (Kali 2020.3 on Vogon, Ubuntu 16.04 on diggory/bones) and version 2.0.14a of \code{iperf} on the client and version 2.0.5 on the server. The \code{iperf} server and client is running mostly in standard configuration except for more verbose logging (0.5s interval) and a fixed amount of data to transmit instead of a fixed test duration of 10 seconds. An exemplary call for client and server can be found in listing \ref{code::iperf}. Results with the fixed data setting makes it easier to approximate download times for in use cases and is also easier interpretable for non technical readers.\newline
 The test only covers the download throughput. Because the client is behind a NAT and has now way to expose its IP it was not possible to perform a bidirektional test.\newline
-The baseline throughput test is a direct connection between the \code{iperf} client (Vogon) to diggory without any proxy. Now diggory runs the proxy server and Vogon starts the porxy client. Iperf now connects to the proxy client which redirects the connection to bones and for there to the destination \code{iperf} server on diggory. This setup with these three nodes represent a realistic usage of the proxy in production. A systematic structure of this setup is shown in fig.\@\ref{fig::test}.\newline
+The baseline throughput test is a direct connection between the \code{iperf} client (Vogon) to diggory without any proxy. Now diggory runs the proxy server and Vogon starts the proxy client. Iperf now connects to the proxy client which redirects the connection to bones and for there to the destination \code{iperf} server on diggory. This setup with these three nodes represent a realistic usage of the proxy in production. A systematic structure of this setup is shown in fig.\@\ref{fig::test}.\newline
 The proxy was tested with a SSHProxy, noSSL, server-authentication, client-server-authentication and client-server-authentication configuration with \ac{ACL}. Each test runs 15 iterations of every configuration. In total the test was performed eight times each with 6 hours interval. The script for the exact test can be found with the resources of this paper.
 \subsection{Analysis of the results}
 Each generated log was parsed with a custom script wich also generated the following grafics.
 
+\noindent Figure \@\ref{fig::boxres} shows the results of the throughput test performed with \code{iperf}. Contrary to expectations, the direct connection (vogon to diggory) without a proxy, delivers the worst throughput with an average of 35.45 Mbit/s. To eliminate as many variations as possible the test was also performed with the \code{-N} flag for \code{iperf} to disable kernel package buffering. This did not change the results.\newline
+During the tests, if the test were canceled, it was found that the data throughput was very high (Gbit/s). This happend when \code{iperf} assumes that the packages where already acknowledged when in fact the server did not receive anything. This did not happen during valid tests, as one could see from the monitored server logs. Lowering the receive buffer size in the proxy resulted in fact in a decreased throughput, after this change and additional checks with Wireshark, the possibility of an implementation error was rejected. The results form the SSHTunnel, that did not run self implemented code, support this assumption. It is presumed that \code{iperf} could already use the acknowledged of the proxy client to calculate the throughput and thus does not represent the real speed. After all this behavior needs further investigation to allow for final statements.\newline
+All other proxy configurations provide an average throughput between 70.63 and 75.92 Mbit/s. Noticeable is a slight deterioration in \ac{SSL} configurations due to additional \ac{SSL} overhead. This is still 2x the throughput without any proxy at all. The variation in speeds, per configuration also provides some findings. The direct test without any proxy and the test with the SSHTunnel provide the most consistent throughput. Table \ref{tab::vals} shows the most significate results for the evaluation with expected value and standard deviation and variance.\newline
+This throughput evaluation shows that the proxy throughput is more than enough for simple web-browsing. Unsupervised practical tests also show usability for video streaming. The additional latency caused by the proxy, which could influence the usability of real-time applications, was not measured in this test. The additional latency caused by the proxy, which could influence the usability of real-time applications, was not measured in this test. This should be investigated at a later date.
 \begin{figure}[]
     \centering
     \includegraphics[width=0.9\linewidth]{boxplot.pdf}
     \caption{Throughput test results}\label{fig::boxres}
 \end{figure}
-\noindent Figure \@\ref{fig::boxres} shows the results of the throughput test performed with \code{iperf}. Contrary to expectations, the direct connection (vogon to diggory) without a proxy, delivers the worst throughput with an average of 35.45 Mbit/s. To eliminate as many variations as possible the test was also performed with the \code{-N} flag for \code{iperf} to disable kernel package buffering. This did not change the results.\newline
-During the tests, if the test were canceled, it was found that the data throughput was very high (Gbit/s). This happend when \code{iperf} assumes that the packages where already acknowledged when in fact the server did not receive anything. This did not happen during valid tests, as one could see from the monitored server logs. Lowering the receive buffer size in the proxy resulted in fact in a decreased throughput, after this change and additional checks with Wireshark, the possibility of an implementation error was rejected. The results form the SSHTunnel, that did not run self implemented code, support this assumption. It is presumed that \code{iperf} could already use the acknowledged of the proxy client to calculate the throughput and thus does not represent the real speed. After all this behavior needs further investigation to allow for final statements.\newline
-All other proxy configurations provide an average throughput between 70.63 and 75.92 Mbit/s. With a slight deterioration in \ac{SSL} configurations due to additional \ac{SSL} overhead. This is still 2x the throughput without any proxy at all. The variation in speeds, per configuration also provides some findings. The direct test without any proxy and the test with the SSHTunnel provide the most consistent throughput.\newline
-This throughput evaluation shows that the proxy throughput is more than enough for simple web-browsing. Unsupervised practical tests also show usability for video streaming. The additional latency caused by the proxy, which could influence the usability of real-time applications, was not measured in this test. The additional latency caused by the proxy, which could influence the usability of real-time applications, was not measured in this test. This should be investigated at a later date.
+\begin{table}[]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+                            & AVG   & Std   & Var    \\ \hline
+    NoProxy                 & 35.45 & 7.26  & 52.75  \\ \hline
+    SSHTunnel               & 47.87 & 6.60  & 43.54  \\ \hline
+    ProxyNoSSL              & 75.92 & 18.86 & 355.88 \\ \hline
+    ProxyServerSSL          & 73.19 & 15.23 & 231.88 \\ \hline
+    ProxyServerClientSSL    & 71.78 & 17.85 & 318.56 \\ \hline
+    ProxyServerClientSSLACL & 70.87 & 17.72 & 313.88 \\ \hline
+    \end{tabular}
+    \caption{\code{Iperf} throughput results}\label{tab::vals}
+    \end{table}
 
 \section{SOCKS}
 The SOCKS protocol is another design of a proxy system. Unlike the current implementation, SOCKS does not need a dedicated client application. The SOCKS client is in general integrated within the application that uses the proxy. This reduces setup complexity. Another advantage is that the client can dynamically change the destination host here. This means that the application also knows the host address and can check the server certificate for the desired host name. This allows the usage of https connections via SOCKS.

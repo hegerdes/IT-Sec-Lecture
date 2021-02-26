@@ -102,13 +102,27 @@ Die generierten Log-Dateien wurden mit dem beiliegendem Script ausgelesen und er
 \noindent Abbildung \@\ref{fig::boxres} zeigt die Messergebnisse für den Datendurchsatz aller verschiedener Proxy Konfigurationen. Entgegen der Erwartungen liefert die direkte Verbindung (ohne Proxy) den geringsten Durchsatz mit einer durchschnittlichen Geschwindigkeit von 35.45 Mbit/s.
 Um potentiell ungewollte Variationen auszuschließen wurde der Test mit dem \code{-N} Flag von \code{iperf} wiederholt, was die Kernel-Pufferung deaktiviert. Die Testergebnisse blieben jedoch unverändert.\newline
 Bei abgebrochenen Tests fiel auf, dass \code{iperf} sehr hohe Durchsätze lieferte. Das ist dadurch begründet, dass \code{iperf} annimmt das Daten im Sendefenster bereits am empfangen wurden obwohl der Server noch nichts empfangen wurde. Dieses Phänomen ist den Serverlogs entsprechend nicht während gültiger Tests aufgetreten. Durch das Verkleinern des Proxy Empfangspuffers konnte ein systematisch verringerter Datendurchsatz über alle Konfigurationen gemessen werden. Nach dieser Beobachtung und weiteren Nachforschungen mit Wireshark wurde ein Implementierungsfehler im Proxy ausgeschlossen. Die Tatsache, dass der SSHTunnel, der keinen eigenständig implementierten Code enthält ebenfalls performanter ist die direkte Proxyverbindung unterstützt diese Annahme. Zu vermuten ist, dass \code{iperf} bereits die Bestätigungen zu dem lokalen Proxy-Clients nutzt für die Durchsatzmessungen. Dieses verhalten bedarf jedoch weiterer Nachforschungen.\newline
-Alle anderen Proxy Konfiguration lieferten einen durchschnittlichen Durchsatz von 70.63 bis 75.92 Mbit/s. Mit steigenden Sicherheit Funktionen ließ der Durchsatz jeweils um ca. 2 Mbit/s nach. Dies ist durch den Zusätzlichen Datenverkehr von \ac{SSL} zu begründen. Dennoch ist dies der doppelte Durchsatz ohne Proxy und ca. 20Mbis/s mehr als die Leistung des SSHTunnels. Eine weitere interessante Tatsache ist die Variation des Durchsatzes über alle Konfigurationen hinweg. Die eigene Proxyanwendung schwankt um ein vielfaches mehr als die direkte Verbindung und der SSHTunnel.\newline
+Alle anderen Proxy Konfiguration lieferten einen durchschnittlichen Durchsatz von 70.63 bis 75.92 Mbit/s. Mit steigenden Sicherheit Funktionen ließ der Durchsatz jeweils um ca. 2 Mbit/s nach. Dies ist durch den Zusätzlichen Datenverkehr von \ac{SSL} zu begründen. Dennoch ist dies der doppelte Durchsatz ohne Proxy und ca. 20Mbis/s mehr als die Leistung des SSHTunnels. Eine weitere interessante Tatsache ist die Variation des Durchsatzes über alle Konfigurationen hinweg. Die eigene Proxyanwendung schwankt um ein vielfaches mehr als die direkte Verbindung und der SSHTunnel. Tabelle \ref{tab::vals} zeigt mit dem Durchschnitt, der Standartabweichung und der Varianz die signifikantesten Werte für die Durchsatzmessung.\newline
 Die Ergebnisse zeigen jedoch, dass der Durchsatz mehr als ausreichend für einfaches Web-Browsing ist. In nicht überwachten praktischen Tests ließen sich auch Videos ohne Probleme abspielen. Die nicht evaluierte zusätzliche Latenz durch den Proxy könnte jedoch Einfluss auf Echtzeit Anwendungen haben. Dies sollte in einem späteren Zeitpunkt untersucht werden.
 \begin{figure}[]
     \centering
     \includegraphics[width=0.9\linewidth]{boxplot.pdf}
     \caption{Throughput test results}\label{fig::boxres}
 \end{figure}
+\begin{table}[]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+                            & AVG   & Std   & Var    \\ \hline
+    NoProxy                 & 35.45 & 7.26  & 52.75  \\ \hline
+    SSHTunnel               & 47.87 & 6.60  & 43.54  \\ \hline
+    ProxyNoSSL              & 75.92 & 18.86 & 355.88 \\ \hline
+    ProxyServerSSL          & 73.19 & 15.23 & 231.88 \\ \hline
+    ProxyServerClientSSL    & 71.78 & 17.85 & 318.56 \\ \hline
+    ProxyServerClientSSLACL & 70.87 & 17.72 & 313.88 \\ \hline
+    \end{tabular}
+    \caption{\code{Iperf} Durchsatz Ergebnisse}\label{tab::vals}
+    \end{table}
 
 \section{SOCKS}
 Das SOCKS Protokoll ist ein weiteres design zur Umsetzung eines Proxy-Systems. Anders als die aktuelle Implementation braucht SOCKS keine separate Client Anwendung. Diese ist im allgemeinem bereits in der Anwendung die den Proxy nutzen will integriert. Dies verringerter den Konfigurationsaufwand und erlaubt es der Anwendung dynamisch den Zielserver zu ändern. Das bedeutet außerdem, dass die Anwendung den Namen des Zielservers kennt und mittels dessen Zertifikat den Names des Hosts überprüfen kann. Damit ist SOCKS auch in der Lage \code{https} Verbindungen aufzubauen.
