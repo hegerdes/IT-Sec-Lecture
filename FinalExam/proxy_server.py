@@ -5,14 +5,16 @@ import struct
 import select
 import ssl
 import os
+import time
 import signal
 from helper.ProxyParser import ProxyParser
 from helper.ProxyParser import Config
 from helper.ProxyParser import color as CL
 from helper.ProxyParser import constants as CONST
 from helper.ProxyParser import ParseACL
+from helper.TmpTestClient import TestClient
+from helper.TmpTestClient import TestSocks
 from MySOCKS import socks_handler
-from MySOCKS import TestSocks
 from BaseProxy import Tunnel
 
 
@@ -41,7 +43,6 @@ def proxy_serv_handler(context):
                                              CONST.BIT_FLAG_MASK['ACL_FAIL_FLAG']))
             context.request.close()
             return
-
     except ssl.SSLError as e:
         CONST.LOGGER.log('Unothorized connection attampt form {}. Rejected! ErrMsg: {}'
             .format(context.request.getpeername(), e), CL.RED)
@@ -60,8 +61,7 @@ def proxy_serv_handler(context):
             CONST.LOGGER.log('Invalid request. Closing...', CL.RED)
             context.request.sendall(struct.pack(
                 '5sb', CONST.PROT_ID, CONST.BIT_FLAG_MASK['PROT_ERR_Flag']))
-            context.request.close()
-            return
+            raise struct.error('Unkonwn protocol')
 
         # DST info
         url_length = struct.unpack('I', dst_data[:4])[0]
@@ -129,42 +129,6 @@ def checkEnd(data):
     return False
 
 
-def TestClient(ip, port, message, setup_ssl=False):
-    if setup_ssl:
-        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-        ctx.verify_mode = ssl.CERT_REQUIRED
-        ctx.check_hostname = True
-        ctx.load_verify_locations("pki/certificates/ca.pem")
-        ctx.load_cert_chain('pki/certificates/client1.pem',
-                            'pki/certificates/client1.key')
-
-    dst_host = 'icanhazip.com'
-    dst_port = 80
-
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        if setup_ssl:
-            sock = ctx.wrap_socket(sock, server_hostname='localhost')
-        sock.connect((ip, port))
-        send = struct.pack('5sb', CONST.PROT_ID,
-                           CONST.BIT_FLAG_MASK['CON_Flag'])
-
-        dst_payload = struct.pack(
-            'IH' + str(len(dst_host)) + 's', len(dst_host), dst_port, dst_host.encode())
-        app_payload = struct.pack(
-            'L' + str(len(CONST.EXAMPLE_REQ)) + 's', len(CONST.EXAMPLE_REQ), CONST.EXAMPLE_REQ.encode())
-
-        if setup_ssl:
-            print('ServerCert', sock.getpeercert())
-        sock.sendall(send + dst_payload + app_payload)
-        response = sock.recv(CONST.REV_BUFFER)
-        while response:
-            print(response)
-            sock.send(struct.pack('5sb', CONST.PROT_ID,
-                                  CONST.BIT_FLAG_MASK['END_Flag']))
-            response = None
-
-
 # For eval
 def TestConfsIperf(host, ports):
     #Set CWD
@@ -173,8 +137,7 @@ def TestConfsIperf(host, ports):
     confs = list()
     for i in range(4):
         conf = Config()
-        conf.local = {
-            'host': host, 'port': ports[i]}
+        conf.local = {'host': host, 'port': ports[i]}
         confs.append(conf)
 
     conf1, conf2, conf3, conf4 = confs
@@ -248,3 +211,4 @@ if __name__ == "__main__":
     # TestClient(ip, port, "Hello World 2")
     # TestClient(ip, port, "Hello World 3")
     # TestSocks(ip, port, destination=("icanhazip.com", 80))
+    # time.sleep(10)

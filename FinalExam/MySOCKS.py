@@ -64,6 +64,7 @@ def socks_handler(context):
                     if len(data) == 0:
                         break
                     context.request.send(data)
+
     except socket.error as e:
         context.request.send(struct.pack(
             '!BBHBBBB', 0, 92, port, ip1, ip2, ip3, ip4))
@@ -91,18 +92,3 @@ def isHost(ip):
         return True
     return False
 
-
-def TestSocks(host, port, destination=("icanhazip.com", 80)):
-    import socks
-
-    s = socks.socksocket()  # Same API as socket.socket in the standard lib
-
-    s.set_proxy(socks.SOCKS4, host, port)
-    s.connect(destination)
-    s.sendall(CONST.EXAMPLE_REQ.encode())
-    response = s.recv(CONST.REV_BUFFER)
-    while response:
-        print(response)
-        s.send(struct.pack('5sb', CONST.PROT_ID,
-                           CONST.BIT_FLAG_MASK['END_Flag']))
-        response = None
