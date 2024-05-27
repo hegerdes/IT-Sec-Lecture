@@ -17,12 +17,10 @@ EXAMPLES=(example)
 cd "$(dirname "$0")"
 
 #Check openssl command
-if ! command -v openssl &> /dev/null
-then
+if ! command -v openssl &>/dev/null; then
     echo -e "${RED}openssl not be found. Exit${NC}"
     exit
 fi
-
 
 #Create DST-folder
 if [ ! -d "$DST_DIR" ]; then
@@ -86,8 +84,6 @@ for example in ${EXAMPLES[@]}; do
         exit
     fi
 done
-
-
 
 # Task 2.2 & Task 2.3
 CLIENTS=(server client1 client2 client3)
